@@ -30,5 +30,9 @@ npm i
 ```
 5. Run...
 ```
-npm start
+ng serve
+```
+6. Open in your browser
+```
+localhost:4200
 ```
