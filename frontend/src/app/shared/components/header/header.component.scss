@@ -1,0 +1,107 @@
+@use 'src/styles/styles.scss' as *;
+
+header {
+  padding: 0.5rem 1rem;
+  background-color: #222;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logo2 {
+    padding-left: 2rem;
+}
+  
+.title {
+    padding-left: 4rem;
+}
+.menu {
+  margin-top: 10px;
+}
+.menu ul {
+  padding: 0;
+  margin: 0;
+}
+
+.menu ul li {
+  list-style-type: none;
+
+  display: inline-block;
+
+  margin-left: 24px;
+
+  text-transform: uppercase;
+}
+.menu ul li a {
+  list-style: none;
+  text-decoration: none;
+  color: #ffffff;
+}
+.menu ul li a h2:hover {
+  color: $yellow;
+  cursor: pointer;
+  transition: 0.4s ease-in-out;
+}
+@media (max-width: 999px) {
+  .menu {
+    position: fixed;
+    right: -280px;
+    top: 64;
+    width: 280px;
+    height: 100%;
+    background: #222;
+    transition: 0.4s ease-in-out;
+  }
+  .menu ul li {
+    display: block;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 26px;
+    border-bottom: 1px solid #312f2f;
+  }
+  .menu_icon {
+    display: inline-block;
+    position: relative;
+    right: 0;
+    top: 20 px;
+  }
+
+  .menu_icon span {
+    width: 32px;
+    height: 3px;
+    background: #ffffff;
+    display: block;
+    transition: 0.2s ease-in-out;
+  }
+  .menu_icon span:nth-child(2) {
+    margin: 4px 0;
+  }
+  .menu_iconClass span:nth-child(2) {
+    display: none;
+  }
+
+  .menu_iconClass span:nth-child(1) {
+    transform: rotate(40deg);
+  }
+
+  .menu_iconClass span:nth-child(3) {
+    transform: rotate(-40deg);
+    margin-top: -3px;
+  }
+
+  .menuClass {
+    right: 0;
+    transition: 0.4s ease-in-out;
+  }
+}
+
+.text-end {
+  display: flex;
+  align-items: center;
+}

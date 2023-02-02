@@ -2,6 +2,8 @@
 @import 'theme/__theme-dir';
 
 // Base background color for the whole app
-html {
+html, body {
     background-color: $secondary;
+    padding: 0;
+    margin: 0;
 }

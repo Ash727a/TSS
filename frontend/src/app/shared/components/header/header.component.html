@@ -1,0 +1,33 @@
+<header>
+  <div class="logo">
+    <img
+      style="width: 64px; height: 64px"
+      class="img-fluid"
+      alt="logo"
+      src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png"
+    />
+    <h1 class="title">NASA S.U.I.T.S. | CAPCOM</h1>
+  </div>
+  <div class="text-end">
+    <div class="menu_icon" [class.menu_iconClass]="menu_icon_variable" (click)="openMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="menu" [class.menuClass]="menuVariable">
+      <ul>
+        <li *ngFor="let route of routes">
+          <a href="{{ route.path }}">
+            <h2 style="text-transform: none">{{ route.name }}</h2>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <img
+      src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg"
+      style="width: 85px; height: 65px"
+      class="logo2 img-fluid float-right"
+      alt="placeholder"
+    />
+  </div>
+</header>
