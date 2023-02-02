@@ -1,0 +1,7 @@
+@import 'base/__base-dir';
+@import 'theme/__theme-dir';
+
+// Base background color for the whole app
+html {
+    background-color: $secondary;
+}
