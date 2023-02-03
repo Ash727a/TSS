@@ -1,10 +1,10 @@
 <h1 align="center">
-  :astronaut: S.U.I.T.S. Telemetry Stream Server 
+  :astronaut: S.U.I.T.S. Telemetry Stream Server
 <br>
 | CAPCOM |
 </h1>
 <h4 align="center">
-  CAPCOM Web Interface for the S.U.I.T.S. Telemetry Stream Server 
+  CAPCOM Web Interface for the S.U.I.T.S. Telemetry Stream Server :rocket:
 </h4>
 
 ---
