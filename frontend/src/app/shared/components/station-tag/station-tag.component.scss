@@ -1,0 +1,22 @@
+@import 'src/styles/styles.scss';
+
+.UIA {
+    background-color: $blue;
+}
+
+.GEO {
+    background-color: $orange;
+}
+
+.ROV {
+    background-color: $lime;
+}
+
+h5 {
+    font-weight: 600;
+    padding: 0.4rem 1.4rem;
+    width: 2rem;
+    border-radius: 0.2rem;
+    text-align: center;
+    align-content: center;
+}

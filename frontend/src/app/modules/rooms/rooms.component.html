@@ -1,3 +1,15 @@
-<app-shared-card>
-    <p>rooms works!</p>
+<app-shared-card title="Rooms">
+  <div class="rooms-row-container">
+    <div class="rooms-row" *ngFor="let room of rooms">
+      <div class="item left">
+        <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
+        <h5>{{ room.teamName }}</h5>
+        <h5>Room {{ room.number }}</h5>
+      </div>
+      <div class="item right">
+        <app-shared-station-tag station="{{ room.station }}">{{ room.station }}</app-shared-station-tag>
+        <app-shared-outlined-button>SWITCH</app-shared-outlined-button>
+      </div>
+    </div>
+  </div>
 </app-shared-card>

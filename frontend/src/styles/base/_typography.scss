@@ -2,6 +2,7 @@
 
 * {
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-weight: 300;
 }
 
 h1 {
@@ -21,7 +22,6 @@ h2 {
 h3 {
     font-size: 1.5rem; // 24px
     color: $primary-text;
-    font-weight: bold;
     padding: 0;
     margin: 0;
 }

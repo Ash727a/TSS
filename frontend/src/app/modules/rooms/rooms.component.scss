@@ -1,0 +1,30 @@
+@import 'src/styles/styles.scss';
+
+.rooms-row-container {
+    margin-top: 1.5rem;
+}
+
+.rooms-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0rem;
+    background-color: $secondary;
+    border-radius: 0.3rem;
+}
+
+// on hover
+.rooms-row:hover {
+    background-color: $gray;
+    cursor: pointer;
+}
+
+.rooms-row .item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5rem;
+}

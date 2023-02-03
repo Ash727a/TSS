@@ -11,7 +11,9 @@ import { RoomsComponent } from './modules/rooms/rooms.component';
 import { TelemetryComponent } from './modules/telemetry/telemetry.component';
 import { LogsComponent } from './modules/logs/logs.component';
 import { CardComponent } from './shared/components/card/card.component';
-import { StatusIndicatorComponent } from './shared/components/status-indicator/status-indicator.component'
+import { StatusIndicatorComponent } from './shared/components/status-indicator/status-indicator.component';
+import { OutlinedButtonComponent } from './shared/components/outlined-button/outlined-button.component';
+import { StationTagComponent } from './shared/components/station-tag/station-tag.component'
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { StatusIndicatorComponent } from './shared/components/status-indicator/s
     LogsComponent,
     CardComponent,
     StatusIndicatorComponent,
+    OutlinedButtonComponent,
+    StationTagComponent,
   ],
   imports: [
     BrowserModule,
