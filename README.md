@@ -1,10 +1,10 @@
 <h1 align="center">
-  :astronaut: S.U.I.T.S. Telemetry Stream Server
+  :man_astronaut: S.U.I.T.S. Telemetry Stream Server :woman_astronaut:
 <br>
 | CAPCOM |
 </h1>
 <h4 align="center">
-  CAPCOM Web Interface for the S.U.I.T.S. Telemetry Stream Server :rocket:
+  :telescope: CAPCOM Web Interface for the S.U.I.T.S. Telemetry Stream Server :rocket:
 </h4>
 
 ---
