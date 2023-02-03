@@ -7,24 +7,41 @@
 h1 {
     font-size: 2rem; // 32px
     color: $primary-text;
+    padding: 0;
+    margin: 0;
 }
 
 h2 {
     font-size: 1.5rem; // 24px
     color: $primary-text;
+    padding: 0;
+    margin: 0;
 }
 
 h3 {
-    font-size: 1.5em; // 24px
+    font-size: 1.5rem; // 24px
     color: $primary-text;
     font-weight: bold;
+    padding: 0;
+    margin: 0;
 }
 
 h4 {
-    font-size: 1.25em; // 20px
+    font-size: 1.25rem; // 20px
     color: $primary-text;
+    padding: 0;
+    margin: 0;
+}
+
+h5 {
+    font-size: 1rem; // 20px
+    color: $primary-text;
+    padding: 0;
+    margin: 0;
 }
 
 body {
     color: $primary-text;
+    padding: 0;
+    margin: 0;
 }

@@ -1,0 +1,10 @@
+.table-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+th.small, td.small {
+    padding: 0.5rem 1rem;
+    justify-content: center;
+    display: flex;
+}

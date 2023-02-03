@@ -1,5 +1,7 @@
 <div class="card-container">
-  <div class="card center">
+  <div class="card">
+    <h1 *ngIf="title">{{ title }}</h1>
+    <h3 *ngIf="subtitle">{{ subtitle }}</h3>
     <ng-content></ng-content>
   </div>
 </div>

@@ -6,7 +6,13 @@
       alt="logo"
       src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png"
     />
-    <h1 class="title">NASA S.U.I.T.S. | CAPCOM</h1>
+    <h2 class="title" style="display: flex">NASA S.U.I.T.S.</h2>
+
+    <div class="subtitle-container" style="padding-left: 0.5rem">
+      <h3 class="subtitle">|</h3>
+      <h5 class="subtitle" style="padding-left: 0.2rem; padding-top: 0.2rem">CAPCOM</h5>
+      <h3 class="subtitle" style="padding-left: 0.2rem">|</h3>
+    </div>
   </div>
   <div class="text-end">
     <div class="menu_icon" [class.menu_iconClass]="menu_icon_variable" (click)="openMenu()">
@@ -18,7 +24,7 @@
       <ul>
         <li *ngFor="let route of routes">
           <a href="{{ route.path }}">
-            <h2 style="text-transform: none">{{ route.name }}</h2>
+            <h4 style="text-transform: none">{{ route.name }}</h4>
           </a>
         </li>
       </ul>

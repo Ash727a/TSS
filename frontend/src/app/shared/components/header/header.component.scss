@@ -8,19 +8,31 @@ header {
 }
 
 .logo {
-    width: auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .logo2 {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
-  
+
 .title {
-    padding-left: 4rem;
+  padding-left: 2rem;
 }
+
+.subtitle-container {
+  padding-top: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.subtitle {
+  color: $yellow;
+}
+
 .menu {
   margin-top: 10px;
 }
@@ -43,11 +55,12 @@ header {
   text-decoration: none;
   color: #ffffff;
 }
-.menu ul li a h2:hover {
+.menu ul li a h4:hover {
   color: $yellow;
   cursor: pointer;
   transition: 0.4s ease-in-out;
 }
+
 @media (max-width: 999px) {
   .menu {
     position: fixed;
