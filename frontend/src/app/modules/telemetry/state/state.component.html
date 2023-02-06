@@ -1,0 +1,26 @@
+<div class="table-container">
+  <table style="text-align: left">
+    <thead>
+      <th><h4>Telemetry</h4></th>
+      <th><h4>Value</h4></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sensor of sensors1">
+        <td>{{ sensor.name }}</td>
+        <td>{{ sensor.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table style="text-align: left">
+    <thead>
+      <th><h4>Telemetry</h4></th>
+      <th><h4>Value</h4></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sensor of sensors2">
+        <td>{{ sensor.name }}</td>
+        <td>{{ sensor.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

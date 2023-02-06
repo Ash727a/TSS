@@ -1,0 +1,87 @@
+<div class="two-column">
+  <div class="column-item">
+    <div class="row">
+      <app-shared-control-button type="start" [disabled]="!connected" (click)="startTelemetry()"
+        >Start</app-shared-control-button
+      >
+      <app-shared-control-button type="stop" [disabled]="!connected" (click)="stopTelemetry()"
+        >Stop</app-shared-control-button
+      >
+    </div>
+    <h5 *ngIf="connected" class="connection-heartbeat-text">Connected for... {{ display }}</h5>
+  </div>
+  <div class="column-item gap">
+    <div class="row">
+      <!-- <div class="column" *ngFor="let switch of switches; let index = index;" >
+          <div class="switch-item">
+            <h4 class="switch-label">{{ switch.name }}</h4>
+            <app-shared-toggle-switch
+              [type]="'error'"
+              (click)="toggleTelemetry()"
+              [isErroring]="switch.value"
+            ></app-shared-toggle-switch>
+          </div>
+      </div> -->
+      <div class="column">
+        <div class="switch-item">
+          <h4
+            class="switch-label"
+            [ngClass]="{ erroring: switches[0].value, flashAnimation: switches[0].value && shouldAnimationStart() }"
+          >
+            {{ switches[0].name }}
+          </h4>
+          <app-shared-toggle-switch
+            [type]="'error'"
+            [id]="0"
+            [isErroring]="switches[0].value"
+            (checked)="handleChange($event)"
+          ></app-shared-toggle-switch>
+        </div>
+        <div class="switch-item">
+          <h4
+            class="switch-label"
+            [ngClass]="{ erroring: switches[1].value, flashAnimation: switches[1].value && shouldAnimationStart() }"
+          >
+            {{ switches[1].name }}
+          </h4>
+          <app-shared-toggle-switch
+            [type]="'error'"
+            [id]="1"
+            [isErroring]="switches[1].value"
+            (checked)="handleChange($event)"
+          ></app-shared-toggle-switch>
+        </div>
+      </div>
+      <div class="column">
+        <div class="switch-item">
+          <h4
+            class="switch-label"
+            [ngClass]="{ erroring: switches[2].value, flashAnimation: switches[2].value && shouldAnimationStart() }"
+          >
+            {{ switches[2].name }}
+          </h4>
+          <app-shared-toggle-switch
+            [type]="'error'"
+            [id]="2"
+            [isErroring]="switches[2].value"
+            (checked)="handleChange($event)"
+          ></app-shared-toggle-switch>
+        </div>
+        <div class="switch-item">
+          <h4
+            class="switch-label"
+            [ngClass]="{ erroring: switches[3].value, flashAnimation: switches[3].value && shouldAnimationStart() }"
+          >
+            {{ switches[3].name }}
+          </h4>
+          <app-shared-toggle-switch
+            [type]="'error'"
+            [id]="3"
+            [isErroring]="switches[3].value"
+            (checked)="handleChange($event)"
+          ></app-shared-toggle-switch>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -17,6 +17,8 @@ import { OutlinedButtonComponent } from './shared/components/outlined-button/out
 import { StationTagComponent } from './shared/components/station-tag/station-tag.component';
 import { ControlButtonComponent } from './shared/components/control-button/control-button.component';
 import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-switch.component';
+import { ControllerComponent } from './modules/telemetry/controller/controller.component';
+import { StateComponent } from './modules/telemetry/state/state.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-
     StationTagComponent,
     ControlButtonComponent,
     ToggleSwitchComponent,
+    ControllerComponent,
+    StateComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, NgbModule, FormsModule],
   providers: [],
