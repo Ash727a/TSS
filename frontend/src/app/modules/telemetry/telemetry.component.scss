@@ -1,5 +1,21 @@
 @import 'src/styles/styles.scss';
 
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: top;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.col {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 .divider {
   height: 2rem;
 }

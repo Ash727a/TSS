@@ -14,7 +14,7 @@ export class ControllerComponent {
 
   constructor() {
     this.switches = [
-      { name: 'O2 ERROR', value: true },
+      { name: 'O2 ERROR', value: false },
       { name: 'PUMP ERROR', value: false },
       { name: 'FAN ERROR', value: false },
       { name: 'POWER ERROR', value: false },
