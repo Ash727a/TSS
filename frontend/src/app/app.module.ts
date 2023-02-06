@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,7 +14,9 @@ import { LogsComponent } from './modules/logs/logs.component';
 import { CardComponent } from './shared/components/card/card.component';
 import { StatusIndicatorComponent } from './shared/components/status-indicator/status-indicator.component';
 import { OutlinedButtonComponent } from './shared/components/outlined-button/outlined-button.component';
-import { StationTagComponent } from './shared/components/station-tag/station-tag.component'
+import { StationTagComponent } from './shared/components/station-tag/station-tag.component';
+import { ControlButtonComponent } from './shared/components/control-button/control-button.component';
+import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-switch.component';
 
 @NgModule({
   declarations: [
@@ -28,13 +31,11 @@ import { StationTagComponent } from './shared/components/station-tag/station-tag
     StatusIndicatorComponent,
     OutlinedButtonComponent,
     StationTagComponent,
+    ControlButtonComponent,
+    ToggleSwitchComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, NgbModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
