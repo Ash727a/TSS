@@ -19,6 +19,7 @@ import { ControlButtonComponent } from './shared/components/control-button/contr
 import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-switch.component';
 import { ControllerComponent } from './modules/telemetry/controller/controller.component';
 import { StateComponent } from './modules/telemetry/state/state.component';
+import { ModalComponent } from './shared/components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { StateComponent } from './modules/telemetry/state/state.component';
     ToggleSwitchComponent,
     ControllerComponent,
     StateComponent,
+    ModalComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, NgbModule, FormsModule],
   providers: [],

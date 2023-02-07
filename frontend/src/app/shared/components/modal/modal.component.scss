@@ -1,0 +1,29 @@
+// ADAPTED FROM https://github.com/hssanbzlm/angular_reusable_modal_pattern/tree/master/src/app/modal
+.modal-container {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .header-button-area {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    transform: translate(0rem, -2rem);
+  }
+}
+
+.btn-container {
+  display: flex;
+}
+button {
+  margin: 5px;
+}

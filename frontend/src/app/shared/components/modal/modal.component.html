@@ -1,0 +1,10 @@
+<!-- ADAPTED FROM https://github.com/hssanbzlm/angular_reusable_modal_pattern/tree/master/src/app/modal -->
+<div class="modal-container">
+  <app-shared-card size="medium">
+    <div class="header-button-area">
+      <app-shared-outlined-button (click)="closeMe()">X</app-shared-outlined-button>
+    </div>
+    <h1 class="title">{{ title }}</h1>
+    <p class="body">{{ body }}</p>
+  </app-shared-card>
+</div>
