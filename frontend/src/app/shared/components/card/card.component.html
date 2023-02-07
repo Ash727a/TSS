@@ -1,4 +1,4 @@
-<div class="card-container">
+<div [ngClass]="{ 'card-container': true, 'medium': size == 'medium', 'small': size == 'small' }">
   <div class="card">
     <h1 *ngIf="title">{{ title }}</h1>
     <h3 *ngIf="subtitle">{{ subtitle }}</h3>

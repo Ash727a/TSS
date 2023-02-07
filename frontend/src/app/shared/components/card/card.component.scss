@@ -7,6 +7,7 @@
     justify-content: center;
     height: 100%;
     width: 100%;
+    max-width: 100rem;
 }
 
 .card {
@@ -21,3 +22,12 @@
     border-radius: 0.8rem;
 }
 
+.medium {
+    width: 70vw;
+    align-self: center;
+}
+
+.small {
+    width: 50vw;
+    align-self: center;
+}

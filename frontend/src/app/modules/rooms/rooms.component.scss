@@ -1,7 +1,13 @@
 @import 'src/styles/styles.scss';
 
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .rooms-row-container {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
 }
 
 .rooms-row {

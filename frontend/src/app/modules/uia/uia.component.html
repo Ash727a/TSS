@@ -1,36 +1,38 @@
-<app-shared-card title="UIA Statistics" subtitle="Room [number]">
-  <div class="table-container">
-    <table style="text-align: left">
-      <thead>
-        <th class="small"><h4>Status</h4></th>
-        <th><h4>Sensor</h4></th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let sensor of sensors1">
-          <td class="small">
-            <app-shared-status-indicator
-              status="{{ sensor.status === true ? 'green' : 'red' }}"
-            ></app-shared-status-indicator>
-          </td>
-          <td>{{ sensor.name }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <table style="text-align: left">
-      <thead>
-        <th class="small"><h4>Status</h4></th>
-        <th><h4>Sensor</h4></th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let sensor of sensors2">
-          <td class="small">
-            <app-shared-status-indicator
-              status="{{ sensor.status === true ? 'green' : 'red' }}"
-            ></app-shared-status-indicator>
-          </td>
-          <td>{{ sensor.name }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</app-shared-card>
+<div class="container">
+  <app-shared-card size="small" title="UIA Statistics" subtitle="Room [number]">
+    <div class="table-container">
+      <table style="text-align: left">
+        <thead>
+          <th class="small"><h4>Status</h4></th>
+          <th><h4>Sensor</h4></th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sensor of sensors1">
+            <td class="small">
+              <app-shared-status-indicator
+                status="{{ sensor.status === true ? 'green' : 'red' }}"
+              ></app-shared-status-indicator>
+            </td>
+            <td>{{ sensor.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table style="text-align: left">
+        <thead>
+          <th class="small"><h4>Status</h4></th>
+          <th><h4>Sensor</h4></th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sensor of sensors2">
+            <td class="small">
+              <app-shared-status-indicator
+                status="{{ sensor.status === true ? 'green' : 'red' }}"
+              ></app-shared-status-indicator>
+            </td>
+            <td>{{ sensor.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-shared-card>
+</div>
