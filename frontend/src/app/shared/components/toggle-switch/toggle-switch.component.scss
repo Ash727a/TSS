@@ -1,10 +1,13 @@
 @import 'src/styles/styles.scss';
 
+$TOGGLE-HEIGHT: 25px;
+$TOGGLE-WIDTH: 55px;
+
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: $TOGGLE-WIDTH;
+  height: $TOGGLE-HEIGHT;
   input {
     opacity: 0;
     width: 0;
@@ -40,8 +43,8 @@
 .slider:before {
   position: absolute;
   content: '';
-  height: 26px;
-  width: 26px;
+  height: $TOGGLE-HEIGHT - 8px;
+  width: $TOGGLE-HEIGHT - 8px;
   left: 4px;
   bottom: 4px;
   background-color: $white;
@@ -57,7 +60,7 @@ input {
     + .slider:before {
       -webkit-transform: translateX(26px);
       -ms-transform: translateX(26px);
-      transform: translateX(26px);
+      transform: translateX($TOGGLE-WIDTH - $TOGGLE-HEIGHT);
     }
     + .slider.error {
       background-color: $red;
