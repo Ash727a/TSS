@@ -28,7 +28,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {}
-  openModal() {
+  openModal(roomNumber: number) {
+    console.log(roomNumber);
     this.sub = this.modalService.openModal(this.entry, this.modalContent.nativeElement.innerHTML).subscribe((v) => {
       // Logic here
     });
@@ -39,5 +40,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
       this.sub.unsubscribe();
       this.modalOpen = false;
     }
+  }
+  switch(){
+    console.log('switch clicked');
   }
 }
