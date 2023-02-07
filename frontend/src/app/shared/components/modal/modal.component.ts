@@ -8,13 +8,14 @@ import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angu
 })
 export class ModalComponent implements OnInit, OnDestroy {
   constructor() {}
-  @Input() title: string = '';
-  @Input() body: string = '';
+  // @Input() title: string = '';
+  // @Input() body: string = '';
+  @Input() modalContent: string | undefined;
   @Output() closeMeEvent = new EventEmitter();
   @Output() confirmEvent = new EventEmitter();
 
   ngOnInit(): void {
-    console.log('Modal init');
+    // console.log('Modal init');
   }
 
   closeMe() {
@@ -25,6 +26,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Modal destroyed');
+    // console.log('Modal destroyed');
   }
 }

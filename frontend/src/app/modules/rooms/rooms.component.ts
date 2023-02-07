@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ContentChild, ViewContainerRef, ElementRef } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 
@@ -10,10 +10,13 @@ import { Subscription } from 'rxjs';
 })
 export class RoomsComponent implements OnInit, OnDestroy {
   rooms: { number: number; teamName: string; status: string; station: string | undefined | null }[] = [];
+  modalOpen: boolean = false;
 
   @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
   sub!: Subscription;
+
+  @ViewChild('modal') modalContent!: ElementRef;
 
   constructor(private modalService: ModalService) {
     this.rooms = [
@@ -26,11 +29,15 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {}
   openModal() {
-    this.sub = this.modalService.openModal(this.entry, 'Title', 'body').subscribe((v) => {
+    this.sub = this.modalService.openModal(this.entry, this.modalContent.nativeElement.innerHTML).subscribe((v) => {
       // Logic here
     });
+    this.modalOpen = true;
   }
   ngOnDestroy(): void {
-    if (this.sub) this.sub.unsubscribe();
+    if (this.sub) {
+      this.sub.unsubscribe();
+      this.modalOpen = false;
+    }
   }
 }

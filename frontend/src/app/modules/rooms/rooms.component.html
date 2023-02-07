@@ -9,9 +9,12 @@
         </div>
         <div class="item right">
           <app-shared-station-tag station="{{ room.station }}">{{ room.station }}</app-shared-station-tag>
-          <app-shared-outlined-button (click)="openModal()" #modal>SWITCH</app-shared-outlined-button>
+          <app-shared-outlined-button (click)="openModal()">SWITCH</app-shared-outlined-button>
         </div>
       </div>
     </div>
   </app-shared-card>
+</div>
+<div #modal class="inline-hidden">
+  <h1>Hi</h1>
 </div>
