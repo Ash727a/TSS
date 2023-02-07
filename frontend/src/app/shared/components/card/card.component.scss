@@ -8,26 +8,26 @@
     height: 100%;
     width: 100%;
     max-width: 100rem;
-}
 
-.card {
-    background-color: $primary;
-    width: 100%;
-    align-self: center;
-    display: flex;
-    padding: 3rem 1rem;
-    text-align: center;
-    justify-content: center;
-    flex-direction: column;
-    border-radius: 0.8rem;
-}
+    &.medium {
+        width: 70vw;
+        align-self: center;
+    }
 
-.medium {
-    width: 70vw;
-    align-self: center;
-}
+    &.small {
+        width: 50vw;
+        align-self: center;
+    }
 
-.small {
-    width: 50vw;
-    align-self: center;
+    .card {
+        background-color: $primary;
+        width: 100%;
+        align-self: center;
+        display: flex;
+        padding: 3rem 1rem;
+        text-align: center;
+        justify-content: center;
+        flex-direction: column;
+        border-radius: 0.8rem;
+    }
 }

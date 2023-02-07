@@ -20,6 +20,5 @@ export class ToggleSwitchComponent {
     };
     this.checked.emit(payload);
   }
-  constructor() {
-  }
+  constructor() {}
 }

@@ -8,10 +8,9 @@ footer {
     margin-top: 3rem;
     text-align: center;
     bottom: 0;
-    // position: absolute;
-}
-
-footer a {
-    text-decoration: none;
-    color: $primary-text;
+    
+    a {
+        text-decoration: none;
+        color: $primary-text;
+    }
 }

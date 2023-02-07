@@ -1,13 +1,13 @@
 @import 'src/styles/styles.scss';
 
-.container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-self: center;
-}
 
-.card-container {
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+
+  .card-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -16,14 +16,15 @@
     padding-right: 5%;
     width: 100%;
     max-width: 100rem;
-}
 
-.col {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
+    .col {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
 
-.divider {
-  height: 2rem;
+      .divider {
+        height: 2rem;
+      }
+    }
+  }
 }

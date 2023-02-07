@@ -14,13 +14,14 @@ button {
     text-decoration: none;
     text-transform: uppercase;
     transition: all 0.2s ease-in-out;
+
     &:hover {
         background-color: $lightGray;
         border-color: $lightGray;
     }
-}
 
-button h5 {
-    font-weight: 600;
-    font-size: 0.8rem;
+    h5 {
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
 }
