@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild, ViewChildren, QueryList, ContentChild, ViewContainerRef, ElementRef, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-rooms',
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class RoomsComponent implements OnInit, OnDestroy {
   rooms: { number: number; teamName: string; status: string; station: string | undefined | null }[] = [];
   modalOpen: boolean = false;
-  selectedRoom: { number: number; teamName: string; status: string; station: string | undefined | null } | null = null
+  selectedRoom: { number: number; teamName: string; status: string; station: string | undefined | null } | null = null;
 
   @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
@@ -24,7 +25,13 @@ export class RoomsComponent implements OnInit, OnDestroy {
       { number: 1, teamName: 'Team 1', status: 'green', station: 'UIA' },
       { number: 2, teamName: 'Team 2', status: 'green', station: 'GEO' },
       { number: 3, teamName: 'Team 3', status: 'green', station: 'ROV' },
-      { number: 4, teamName: 'Team 4', status: 'green', station: 'UIA' },
+      { number: 4, teamName: 'Team 4', status: 'green', station: '' },
+      { number: 5, teamName: 'Team 5', status: 'green', station: '' },
+      { number: 6, teamName: 'Team 6', status: 'green', station: '' },
+      { number: 7, teamName: 'Team 7', status: 'green', station: '' },
+      { number: 8, teamName: 'Team 8', status: 'green', station: '' },
+      { number: 9, teamName: 'Team 9', status: 'green', station: '' },
+      { number: 10, teamName: 'Team 10', status: 'green', station: '' },
     ];
   }
 

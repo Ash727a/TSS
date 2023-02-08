@@ -1,34 +1,38 @@
 @import 'src/styles/styles.scss';
 
-
 .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 100rem;
+
+  &.large {
+    width: 80vw;
+    align-self: center;
+  }
+
+  &.medium {
+    width: 70vw;
+    align-self: center;
+  }
+
+  &.small {
+    width: 50vw;
+    align-self: center;
+  }
+
+  .card {
+    background-color: $primary;
     width: 100%;
-    max-width: 100rem;
-
-    &.medium {
-        width: 70vw;
-        align-self: center;
-    }
-
-    &.small {
-        width: 50vw;
-        align-self: center;
-    }
-
-    .card {
-        background-color: $primary;
-        width: 100%;
-        align-self: center;
-        display: flex;
-        padding: 3rem 1rem;
-        text-align: center;
-        justify-content: center;
-        flex-direction: column;
-        border-radius: 0.8rem;
-    }
+    box-sizing: border-box; // Removes scroll overflow when width 100% with padding
+    -webkit-box-sizing: border-box; // Removes scroll overflow when width 100% with padding
+    -moz-box-sizing: border-box; // Removes scroll overflow when width 100% with padding
+    padding: 3rem 1rem;
+    align-self: center;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 0.8rem;
+  }
 }

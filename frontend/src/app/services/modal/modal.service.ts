@@ -2,15 +2,20 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef, TemplateRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ModalComponent } from '@shared/components/modal/modal.component';
+import { WindowScrollingService } from '@services/window-scrolling/window-scrolling.service';
+
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
   private componentRef!: ComponentRef<ModalComponent>;
   private componentSubscriber!: Subject<string>;
-  constructor(private resolver: ComponentFactoryResolver) {}
+  constructor(private resolver: ComponentFactoryResolver, private windowScrolling: WindowScrollingService) {
+    this.windowScrolling = windowScrolling;
+  }
 
   openModal(entry: ViewContainerRef, modalContentRef: TemplateRef<any>) {
-    let factory = this.resolver.resolveComponentFactory(ModalComponent);
+    this.windowScrolling.disable();
+    const factory = this.resolver.resolveComponentFactory(ModalComponent);
     this.componentRef = entry.createComponent(factory);
     this.componentRef.instance.modalContentRef = modalContentRef;
     this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
@@ -19,8 +24,8 @@ export class ModalService {
     return this.componentSubscriber.asObservable();
   }
 
-
   closeModal() {
+    this.windowScrolling.enable();
     this.componentSubscriber.complete();
     this.componentRef.destroy();
   }

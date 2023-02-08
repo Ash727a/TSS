@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-uia',
@@ -8,6 +8,8 @@ import { Component } from '@angular/core';
 export class UIAComponent {
   sensors1: { name: string; status: boolean }[] = [];
   sensors2: { name: string; status: boolean }[] = [];
+
+  @Input() room: { number: number; teamName: string; status: string; station: string | undefined | null } | null | undefined = undefined;
 
   constructor() {
     this.sensors1 = [
