@@ -1,5 +1,5 @@
 // ADAPTED FROM https://github.com/hssanbzlm/angular_reusable_modal_pattern/tree/master/src/app/modal
-import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, TemplateRef, Type  } from '@angular/core';
 
 @Component({
   selector: 'app-shared-modal',
@@ -8,9 +8,7 @@ import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angu
 })
 export class ModalComponent implements OnInit, OnDestroy {
   constructor() {}
-  // @Input() title: string = '';
-  // @Input() body: string = '';
-  @Input() modalContent: string | undefined;
+  @Input() modalContentRef: TemplateRef<any> | null = null;
   @Output() closeMeEvent = new EventEmitter();
   @Output() confirmEvent = new EventEmitter();
 

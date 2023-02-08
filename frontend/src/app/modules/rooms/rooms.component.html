@@ -15,10 +15,8 @@
     </div>
   </app-shared-card>
 </div>
-<div #modal class="inline-hidden">
+<!-- Modal Component & Content -->
+<ng-template #modal>
   <app-uia></app-uia>
-  <h1>{{ selectedRoom?.teamName }}</h1>
-  <h1>{{ selectedRoom?.number }}</h1>
-  <h1>{{ selectedRoom?.status }}</h1>
-  <h1>{{ selectedRoom?.station }}</h1>
-</div>
+  <!-- <app-telemetry></app-telemetry> -->
+</ng-template>

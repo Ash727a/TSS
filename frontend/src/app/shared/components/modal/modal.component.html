@@ -4,7 +4,7 @@
     <div class="header-button-area">
       <app-shared-outlined-button (click)="closeMe()">X</app-shared-outlined-button>
     </div>
-    <div class="global-styles" [innerHTML]="modalContent">
-    </div>
+    <ng-container *ngTemplateOutlet="modalContentRef">
+    </ng-container>
   </app-shared-card>
 </div>

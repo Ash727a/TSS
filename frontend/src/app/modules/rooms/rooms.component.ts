@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ContentChild, ViewContainerRef, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewChildren, QueryList, ContentChild, ViewContainerRef, ElementRef, TemplateRef } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 
@@ -17,7 +17,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   entry!: ViewContainerRef;
   sub!: Subscription;
 
-  @ViewChild('modal') modalContent!: ElementRef;
+  @ViewChild('modal') modalContentRef!: TemplateRef<any>;
 
   constructor(private modalService: ModalService) {
     this.rooms = [
@@ -33,7 +33,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
-      this.sub = this.modalService.openModal(this.entry, this.modalContent.nativeElement.innerHTML).subscribe((v) => {
+      this.sub = this.modalService.openModal(this.entry, this.modalContentRef).subscribe((v) => {
         // Logic here
       });
       this.modalOpen = true;
