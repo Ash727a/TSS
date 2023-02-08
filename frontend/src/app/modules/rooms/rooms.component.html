@@ -1,7 +1,7 @@
 <div class="container">
   <app-shared-card title="Rooms" size="medium">
     <div class="rooms-row-container">
-      <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room.number)">
+      <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room)">
         <div class="item left">
           <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
           <h5>{{ room.teamName }}</h5>
@@ -16,5 +16,9 @@
   </app-shared-card>
 </div>
 <div #modal class="inline-hidden">
-  <h1>Hi</h1>
+  <app-uia></app-uia>
+  <h1>{{ selectedRoom?.teamName }}</h1>
+  <h1>{{ selectedRoom?.number }}</h1>
+  <h1>{{ selectedRoom?.status }}</h1>
+  <h1>{{ selectedRoom?.station }}</h1>
 </div>

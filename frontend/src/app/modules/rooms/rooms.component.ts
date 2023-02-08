@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 export class RoomsComponent implements OnInit, OnDestroy {
   rooms: { number: number; teamName: string; status: string; station: string | undefined | null }[] = [];
   modalOpen: boolean = false;
+  selectedRoom: { number: number; teamName: string; status: string; station: string | undefined | null } | null = null
 
   @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
@@ -28,17 +29,21 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {}
-  openModal(roomNumber: number) {
-    console.log(roomNumber);
-    this.sub = this.modalService.openModal(this.entry, this.modalContent.nativeElement.innerHTML).subscribe((v) => {
-      // Logic here
-    });
-    this.modalOpen = true;
+  openModal(room: { number: number; teamName: string; status: string; station: string | undefined | null}) {
+    this.selectedRoom = room;
+    // Wait a little bit for a HTML to update so the correct data is displayed in the modal
+    setTimeout(() => {
+      this.sub = this.modalService.openModal(this.entry, this.modalContent.nativeElement.innerHTML).subscribe((v) => {
+        // Logic here
+      });
+      this.modalOpen = true;
+   }, 100);
   }
   ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
       this.modalOpen = false;
+      this.selectedRoom = null;
     }
   }
   switch(){
