@@ -1,5 +1,6 @@
-const dotenv = require('dotenv').config();
-const app = require('./express/app');
+// const dotenv = require('dotenv').config();
+const app = require('express');
+const cors = require('cors');
 const sequelize = require('./sequelize');
 
 const API_PORT = process.env.API_PORT;
