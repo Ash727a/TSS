@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef 
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 // Backend
-import { APIService } from '@services/api/api.service';
+import { RoomsService } from '@services/api/rooms.service';
 
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.scss'],
-  providers: [ModalService, APIService],
+  providers: [ModalService, RoomsService],
 })
 export class RoomsComponent implements OnInit, OnDestroy {
 //   createdAt
@@ -36,7 +36,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   @ViewChild('modal') modalContentRef!: TemplateRef<any>;
 
-  constructor(private modalService: ModalService, private apiService: APIService) {
+  constructor(private modalService: ModalService, private roomsService: RoomsService) {
     // this.rooms = [
     //   { id: 1, teamName: 'Team 1', status: 'green', station: 'UIA' },
     //   { id: 2, teamName: 'Team 2', status: 'green', station: 'GEO' },
@@ -52,7 +52,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.apiService
+    this.roomsService
       .getRooms()
       .then((result) => {
         this.rooms = result;

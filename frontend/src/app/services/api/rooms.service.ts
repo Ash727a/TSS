@@ -5,7 +5,7 @@ const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()
-export class APIService {
+export class RoomsService {
   constructor(private http: HttpClient) {}
 
   async getRooms(): Promise<any> {
