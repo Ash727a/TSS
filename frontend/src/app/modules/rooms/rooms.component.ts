@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
+import { Room } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 
@@ -11,24 +12,10 @@ import { RoomsService } from '@services/api/rooms.service';
   providers: [ModalService, RoomsService],
 })
 export class RoomsComponent implements OnInit, OnDestroy {
-//   createdAt
-// : 
-// "2023-02-14T16:21:48.100Z"
-// id
-// : 
-// 1
-// name
-// : 
-// "alpha"
-// updatedAt
-// : 
-// "2023-02-14T16:21:48.100Z"
-// users
-// : 
-// 0
-  rooms: { id: number; name: string; status: string; station: string, updatedAt: Date, createdAt: Date, users: number | undefined | null }[] = [];
+
+  rooms: Room[] = [];
   modalOpen: boolean = false;
-  selectedRoom: { id: number; name: string; status: string; station: string, updatedAt: Date, createdAt: Date, users: number | undefined | null } | null = null;
+  selectedRoom: Room | null = null;
 
   @ViewChild('modal', { read: ViewContainerRef })
   entry!: ViewContainerRef;
@@ -63,7 +50,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
       });
   }
 
-  openModal(room: { id: number; name: string; status: string; station: string, updatedAt: Date, createdAt: Date, users: number | undefined | null }) {
+  openModal(room: Room) {
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {

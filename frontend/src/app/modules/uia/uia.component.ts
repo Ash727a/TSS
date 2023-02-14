@@ -1,15 +1,16 @@
 import { Component, Input } from '@angular/core';
+import { Room, StatusSensor } from '@core/interfaces';
 
 @Component({
   selector: 'app-uia',
   templateUrl: './uia.component.html',
-  styleUrls: ['./uia.component.scss']
+  styleUrls: ['./uia.component.scss'],
 })
 export class UIAComponent {
-  sensors1: { name: string; status: boolean }[] = [];
-  sensors2: { name: string; status: boolean }[] = [];
+  sensors1: StatusSensor[] = [];
+  sensors2: StatusSensor[] = [];
 
-  @Input() room: { id: number; name: string; status: string; station: string, updatedAt: Date, createdAt: Date, users: number | undefined | null }| null | undefined = undefined;
+  @Input() room: Room | null = null;
 
   constructor() {
     this.sensors1 = [

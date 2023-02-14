@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Switch } from '@core/interfaces';
 
 @Component({
   selector: 'app-telemetry-controller',
@@ -8,7 +9,7 @@ import { Component } from '@angular/core';
 export class ControllerComponent {
   DEFAULT_DISPLAY: string = '00:00';
   connected: boolean = false;
-  switches: { name: string; value: boolean }[];
+  switches: Switch[];
   display: string = this.DEFAULT_DISPLAY;
   timer!: ReturnType<typeof setTimeout>;
 

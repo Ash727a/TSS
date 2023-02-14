@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ValueSensor } from '@core/interfaces';
 
 @Component({
   selector: 'app-telemetry-state',
@@ -6,8 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./state.component.scss'],
 })
 export class StateComponent {
-  sensors1: { name: string; value: string }[] = [];
-  sensors2: { name: string; value: string }[] = [];
+  sensors1: ValueSensor[] = [];
+  sensors2: ValueSensor[] = [];
 
   constructor() {
     this.sensors1 = [
