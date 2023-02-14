@@ -4,12 +4,14 @@
       <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room)">
         <div class="item left">
           <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
-          <h5>{{ room.teamName }}</h5>
-          <h5>Room {{ room.number }}</h5>
+          <div class="fixed-width">
+            <h5>{{ room.name }}</h5>
+          </div>
+          <h5>Room {{ room.id }}</h5>
         </div>
         <div class="item right">
           <app-shared-station-tag station="{{ room.station }}">{{ room.station }}</app-shared-station-tag>
-          <app-shared-outlined-button (click)="$event.stopPropagation();switch()">SWITCH</app-shared-outlined-button>
+          <app-shared-outlined-button (click)="$event.stopPropagation(); switch()">SWITCH</app-shared-outlined-button>
         </div>
       </div>
     </div>

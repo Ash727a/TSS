@@ -38,3 +38,10 @@
 .inline-hidden {
   display: none;
 }
+
+div {
+  .fixed-width {
+    width: 6rem;
+    text-align: left;
+  }
+}
