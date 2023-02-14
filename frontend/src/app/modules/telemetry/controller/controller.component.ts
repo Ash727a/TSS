@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Switch } from '@core/interfaces';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { Switch, TelemetryData } from '@core/interfaces';
 // Backend
 import { TelemetryService } from '@services/api/telemetry.service';
 
@@ -10,6 +10,8 @@ import { TelemetryService } from '@services/api/telemetry.service';
   providers: [TelemetryService],
 })
 export class ControllerComponent {
+  @Output() telemetryDataEmitter:EventEmitter<any> = new EventEmitter();
+
   private static readonly DEFAULT_DISPLAY: string = '00:00';
   connected: boolean = false;
   switches: Switch[];
@@ -20,7 +22,7 @@ export class ControllerComponent {
   selectedRoom: number = 1;
   simInterval!: ReturnType<typeof setTimeout>;
   connErr: string = '';
-  telemetryData: {} = {};
+  telemetryData: TelemetryData = {} as TelemetryData;
   evaSimState: string = '';
 
   constructor(private telemetryService: TelemetryService) {
@@ -47,7 +49,9 @@ export class ControllerComponent {
 
       if (secondsNumber < 10) {
         secondsDisplay = '0' + secondsNumber;
-      } else secondsDisplay = secondsNumber;
+      } else {
+        secondsDisplay = secondsNumber;
+      }
 
       let minute = Math.floor(totalSeconds / 60);
       let prefix = minute < 10 ? '0' : '';
@@ -60,7 +64,8 @@ export class ControllerComponent {
     // Start the simulation
     this.evaSimState = 'start';
     this.telemetryService.simulationControl(this.selectedRoom, this.evaSimState).then((res) => {
-      if (!res.ok) { // Error
+      if (!res.ok) {
+        // Error
         console.log(`An error ocurred starting the sim!`);
       } else {
         // If the sim start returns ok, let's get the data on interval
@@ -91,12 +96,12 @@ export class ControllerComponent {
   // When the user presses the STOP button
   stopTelemetry() {
     this.evaSimState = 'stop';
-    this.telemetryService.simulationControl(this.selectedRoom, this.evaSimState).then(res => {
+    this.telemetryService.simulationControl(this.selectedRoom, this.evaSimState).then((res) => {
       clearInterval(this.simInterval);
       clearInterval(this.timer);
       this.display = ControllerComponent.DEFAULT_DISPLAY;
       this.connected = false;
-      this.telemetryData = {}; // Clear the sim data
+      this.telemetryData = {} as TelemetryData; // Clear the sim data
     });
   }
 
@@ -109,6 +114,7 @@ export class ControllerComponent {
     }
     return true;
   }
+
   handleChange(event: any) {
     this.switches[event.id].value = event.value;
   }

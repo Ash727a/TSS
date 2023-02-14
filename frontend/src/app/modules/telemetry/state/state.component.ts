@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ValueSensor } from '@core/interfaces';
+import { Component, Input } from '@angular/core';
+import { ValueSensor, TelemetryData } from '@core/interfaces';
 
 @Component({
   selector: 'app-telemetry-state',
@@ -7,12 +7,14 @@ import { ValueSensor } from '@core/interfaces';
   styleUrls: ['./state.component.scss'],
 })
 export class StateComponent {
+  @Input() telemetryData: TelemetryData = {} as TelemetryData;
+
   sensors1: ValueSensor[] = [];
   sensors2: ValueSensor[] = [];
 
   constructor() {
     this.sensors1 = [
-      { name: 'Primary Oxygen', value: '-' },
+      { name: 'Primary Oxygen', value: this.telemetryData.p_o2 ?? '-' },
       { name: 'Secondary Oxygen', value: '-' },
       { name: 'Suit Pressure', value: '-' },
       { name: 'Sub Pressure', value: '-' },
