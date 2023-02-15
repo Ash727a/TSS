@@ -109,6 +109,7 @@ export class ControllerComponent {
     this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       clearInterval(this.simInterval);
       // clearInterval(this.timer);
+      this.resetSwitchesToDefault();
       this.display = ControllerComponent.DEFAULT_DISPLAY;
       this.connected = false;
       this.telemetryData = {} as TelemetryData; // Clear the sim data
@@ -128,5 +129,11 @@ export class ControllerComponent {
 
   handleChange(event: any) {
     this.switches[event.id].value = event.value;
+  }
+
+  resetSwitchesToDefault() {
+    this.switches.forEach((s) => {
+      s.value = false;
+    });
   }
 }
