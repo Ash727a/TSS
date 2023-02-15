@@ -10,7 +10,7 @@ export class UIAComponent {
   sensors1: StatusSensor[] = [];
   sensors2: StatusSensor[] = [];
 
-  @Input() room: Room | null = null;
+  @Input() selectedRoom: Room | null = null;
 
   constructor() {
     this.sensors1 = [

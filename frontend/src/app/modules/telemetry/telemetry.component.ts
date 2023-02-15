@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TelemetryData, Room } from '@core/interfaces';
 
 @Component({
@@ -8,8 +8,9 @@ import { TelemetryData, Room } from '@core/interfaces';
 })
 
 export class TelemetryComponent {
+  @Input() selectedRoom: Room | null = null;
   telemetryData: TelemetryData = {} as TelemetryData;
-  selectedRoom: Room = { id: 1 } as Room;
 
-  constructor() {}
+  constructor() {
+  }
 }

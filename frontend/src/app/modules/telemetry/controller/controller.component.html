@@ -8,7 +8,7 @@
         >Stop</app-shared-control-button
       >
     </div>
-    <h5 *ngIf="connected" class="connection-heartbeat-text">Connected for... {{ display }}</h5>
+    <h5 *ngIf="connected" class="connection-heartbeat-text">Connected for... {{ telemetryData.timer }}</h5>
     <div class="column-item gap">
       <div class="row">
         <!-- <div class="column" *ngFor="let switch of switches; let index = index;" >

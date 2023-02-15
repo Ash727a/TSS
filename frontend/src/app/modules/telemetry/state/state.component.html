@@ -7,7 +7,14 @@
     <tbody>
       <tr *ngFor="let sensor of sensors1">
         <td>{{ sensor.name }}</td>
-        <td><h5 class="title">{{ sensor.value }}</h5></td>
+        <td>
+          <h5 *ngIf="sensor.value" [ngClass]="{ 'title fixed-width': true, invisible: sensor.name === '' }">
+            {{ sensor.value }}
+          </h5>
+          <div *ngIf="!sensor.value" [ngClass]="{ 'fixed-width': true, invisible: sensor.name === '' }">
+            <div class="divider"></div>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -19,7 +26,14 @@
     <tbody>
       <tr *ngFor="let sensor of sensors2">
         <td>{{ sensor.name }}</td>
-        <td><h5 class="title">{{ sensor.value }}</h5></td>
+        <td>
+          <h5 *ngIf="sensor.value" [ngClass]="{ 'title fixed-width': true, invisible: sensor.name === '' }">
+            {{ sensor.value }}
+          </h5>
+          <div *ngIf="!sensor.value" [ngClass]="{ 'fixed-width': true, invisible: sensor.name === '' }">
+            <div class="divider"></div>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -7,6 +7,7 @@ import { ValueSensor, TelemetryData } from '@core/interfaces';
   styleUrls: ['./state.component.scss'],
 })
 export class StateComponent {
+  private static readonly EMPTY_TEXT_LABEL = '';
   @Input() telemetryData: TelemetryData = {} as TelemetryData;
 
   sensors1: ValueSensor[] = [];
@@ -14,16 +15,6 @@ export class StateComponent {
 
   constructor() {
     this.mapTelemetryDataToTable();
-    // Even out the rows for each table (fill with blank space until both are equal)
-    if (this.sensors1.length > this.sensors2.length) {
-      while (this.sensors1.length > this.sensors2.length) {
-        this.sensors2.push({ name: '', value: '' });
-      }
-    } else {
-      while (this.sensors2.length > this.sensors1.length) {
-        this.sensors1.push({ name: '', value: '' });
-      }
-    }
   }
 
   mapTelemetryDataToTable() {
@@ -50,10 +41,21 @@ export class StateComponent {
       { name: 'O2 Time Left', value: this.translateDataToDisplayString(this.telemetryData.t_oxygen, '') },
       { name: 'H2O Left', value: this.translateDataToDisplayString(this.telemetryData.t_water, '') },
     ];
+
+    // Even out the rows for each table (fill with blank space until both are equal)
+    if (this.sensors1.length > this.sensors2.length) {
+      while (this.sensors1.length > this.sensors2.length) {
+        this.sensors2.push({ name: '', value: StateComponent.EMPTY_TEXT_LABEL });
+      }
+    } else {
+      while (this.sensors2.length > this.sensors1.length) {
+        this.sensors1.push({ name: '', value: StateComponent.EMPTY_TEXT_LABEL });
+      }
+    }
   }
 
   translateDataToDisplayString(data: any, metricSuffix: string = '') {
-    return data ? `${data} ${metricSuffix}` : '-';
+    return data ? `${data} ${metricSuffix}` : StateComponent.EMPTY_TEXT_LABEL;
   }
 
   // Detects when the telemetry data changes
