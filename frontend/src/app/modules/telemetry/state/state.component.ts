@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { ValueSensor, TelemetryData } from '@core/interfaces';
 
 @Component({
@@ -13,29 +13,7 @@ export class StateComponent {
   sensors2: ValueSensor[] = [];
 
   constructor() {
-    this.sensors1 = [
-      { name: 'Primary Oxygen', value: this.telemetryData.p_o2 ?? '-' },
-      { name: 'Secondary Oxygen', value: '-' },
-      { name: 'Suit Pressure', value: '-' },
-      { name: 'Sub Pressure', value: '-' },
-      { name: 'O2 Pressure', value: '-' },
-      { name: 'O2 Rate', value: '-' },
-      { name: 'H2O Gas Pressure', value: '-' },
-      { name: 'H2O Liquid Pressure', value: '-' },
-      { name: 'SOP Pressure', value: '-' },
-      { name: 'SOP Rate', value: '-' },
-    ];
-
-    this.sensors2 = [
-      { name: 'EVA Time', value: '-' },
-      { name: 'Heart Rate', value: '-' },
-      { name: 'Fan Tachometer', value: '-' },
-      { name: 'Battery Capacity', value: '-' },
-      { name: 'Temperature', value: '-' },
-      { name: 'Battery Time Left', value: '-' },
-      { name: 'O2 Time Left', value: '-' },
-      { name: 'H2O Left', value: '-' },
-    ];
+    this.mapTelemetryDataToTable();
     // Even out the rows for each table (fill with blank space until both are equal)
     if (this.sensors1.length > this.sensors2.length) {
       while (this.sensors1.length > this.sensors2.length) {
@@ -46,5 +24,41 @@ export class StateComponent {
         this.sensors1.push({ name: '', value: '' });
       }
     }
+  }
+
+  mapTelemetryDataToTable() {
+    this.sensors1 = [
+      { name: 'Primary Oxygen', value: this.translateDataToDisplayString(this.telemetryData.ox_primary, '%') },
+      { name: 'Secondary Oxygen', value: this.translateDataToDisplayString(this.telemetryData.ox_secondary, '%') },
+      { name: 'Suit Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_suit, 'psia') },
+      { name: 'Sub Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_sub, 'psia') },
+      { name: 'O2 Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_o2, 'psia') },
+      { name: 'O2 Rate', value: this.translateDataToDisplayString(this.telemetryData.rate_o2, 'psi/min') },
+      { name: 'H2O Gas Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_h2o_g, 'psia') },
+      { name: 'H2O Liquid Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_h2o_l, 'psia') },
+      { name: 'SOP Pressure', value: this.translateDataToDisplayString(this.telemetryData.p_sop, 'psia') },
+      { name: 'SOP Rate', value: this.translateDataToDisplayString(this.telemetryData.rate_sop, 'psi/min') },
+    ];
+
+    this.sensors2 = [
+      { name: 'EVA Time', value: this.translateDataToDisplayString(this.telemetryData.timer, '') },
+      { name: 'Heart Rate', value: this.translateDataToDisplayString(this.telemetryData.heart_bpm, 'bpm') },
+      { name: 'Fan Tachometer', value: this.translateDataToDisplayString(this.telemetryData.v_fan, 'rpm') },
+      { name: 'Battery Capacity', value: this.translateDataToDisplayString(this.telemetryData.cap_battery, 'amp-hr') },
+      { name: 'Temperature', value: this.translateDataToDisplayString(this.telemetryData.t_sub, 'deg F') },
+      { name: 'Battery Time Left', value: this.translateDataToDisplayString(this.telemetryData.t_battery, '') },
+      { name: 'O2 Time Left', value: this.translateDataToDisplayString(this.telemetryData.t_oxygen, '') },
+      { name: 'H2O Left', value: this.translateDataToDisplayString(this.telemetryData.t_water, '') },
+    ];
+  }
+
+  translateDataToDisplayString(data: any, metricSuffix: string = '') {
+    return data ? `${data} ${metricSuffix}` : '-';
+  }
+
+  // Detects when the telemetry data changes
+  ngOnChanges(changes: SimpleChanges) {
+    this.telemetryData = changes['telemetryData'].currentValue as TelemetryData;
+    this.mapTelemetryDataToTable();
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TelemetryData } from '@core/interfaces';
+import { TelemetryData, Room } from '@core/interfaces';
 
 @Component({
   selector: 'app-telemetry',
@@ -9,5 +9,7 @@ import { TelemetryData } from '@core/interfaces';
 
 export class TelemetryComponent {
   telemetryData: TelemetryData = {} as TelemetryData;
+  selectedRoom: Room = { id: 1 } as Room;
+
   constructor() {}
 }

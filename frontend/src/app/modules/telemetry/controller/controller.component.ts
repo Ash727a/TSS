@@ -1,5 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { Switch, TelemetryData } from '@core/interfaces';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Switch, TelemetryData, Room } from '@core/interfaces';
 // Backend
 import { TelemetryService } from '@services/api/telemetry.service';
 
@@ -10,20 +10,21 @@ import { TelemetryService } from '@services/api/telemetry.service';
   providers: [TelemetryService],
 })
 export class ControllerComponent {
+  @Input() selectedRoom: Room = {} as Room;
   @Output() telemetryDataEmitter:EventEmitter<any> = new EventEmitter();
 
   private static readonly DEFAULT_DISPLAY: string = '00:00';
-  connected: boolean = false;
-  switches: Switch[];
+  connected: boolean = false; // bool for the room's simulation connection status
+  simulationState: 'start' | 'stop' = 'stop'; // not really used except locally, used as a string for API method
+  switches: Switch[]; // array of simulation error switches the CAPCOM can throw in the sim
   display: string = ControllerComponent.DEFAULT_DISPLAY;
-  timer!: ReturnType<typeof setTimeout>;
-
+  timer!: ReturnType<typeof setTimeout>; // the displayed connection timer
+  simInterval!: ReturnType<typeof setTimeout>; // internal simulation timer
+  telemetryData: TelemetryData = {} as TelemetryData; // data passed in from the backend of the generated simulation
+  
   // TEMPORARY
-  selectedRoom: number = 1;
-  simInterval!: ReturnType<typeof setTimeout>;
   connErr: string = '';
-  telemetryData: TelemetryData = {} as TelemetryData;
-  evaSimState: string = '';
+  
 
   constructor(private telemetryService: TelemetryService) {
     this.switches = [
@@ -62,8 +63,8 @@ export class ControllerComponent {
   // When the user presses the START button
   startTelemetry() {
     // Start the simulation
-    this.evaSimState = 'start';
-    this.telemetryService.simulationControl(this.selectedRoom, this.evaSimState).then((res) => {
+    this.simulationState = 'start';
+    this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       if (!res.ok) {
         // Error
         console.log(`An error ocurred starting the sim!`);
@@ -71,6 +72,7 @@ export class ControllerComponent {
         // If the sim start returns ok, let's get the data on interval
         this.simInterval = setInterval(() => {
           this.getSimulationData();
+          this.telemetryDataEmitter.emit(this.telemetryData);
         }, 1000);
         // Set connected status to true, start the connection heartbeat timer
         this.connected = true;
@@ -83,7 +85,7 @@ export class ControllerComponent {
   private getSimulationData() {
     if (this.connErr === '') {
       this.telemetryService
-        .getTelemetry(this.selectedRoom)
+        .getTelemetry(this.selectedRoom.id)
         .then((res) => {
           this.telemetryData = res;
         })
@@ -95,13 +97,14 @@ export class ControllerComponent {
 
   // When the user presses the STOP button
   stopTelemetry() {
-    this.evaSimState = 'stop';
-    this.telemetryService.simulationControl(this.selectedRoom, this.evaSimState).then((res) => {
+    this.simulationState = 'stop';
+    this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       clearInterval(this.simInterval);
       clearInterval(this.timer);
       this.display = ControllerComponent.DEFAULT_DISPLAY;
       this.connected = false;
       this.telemetryData = {} as TelemetryData; // Clear the sim data
+      this.telemetryDataEmitter.emit(this.telemetryData);
     });
   }
 
