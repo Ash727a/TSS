@@ -17,7 +17,7 @@ export class ControllerComponent {
 
   private static readonly DEFAULT_ROOM_ID: number = 1; // Default room ID if no room is selected
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
-  protected connected: boolean = false; // bool for the room's simulation connection status
+  protected connected: boolean | undefined = undefined; // bool for the room's simulation connection status
   private simulationState: 'start' | 'stop' | '' = ''; // Not really used except locally, used as a string for API method
   protected switches: Switch[]; // Array of simulation error switches the CAPCOM can throw in the sim
   private simInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
@@ -46,6 +46,8 @@ export class ControllerComponent {
       // If the simulation is running, then start fetching and emitting that data from the running simulation
       if (result?.isRunning) {
         this.fetchAndEmitDataOnInterval();
+      } else {
+        this.connected = false;
       }
     });
   }
