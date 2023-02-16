@@ -19,14 +19,15 @@ export class TelemetryService {
       });
   }
 
-  async getTelemetry(roomID: number): Promise<any> {
+  async getTelemetryByRoomID(roomID: number): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate/room/${roomID}`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res[0];
       })
-      .catch((ex) => {
-        return { ok: false, err: ex };
+      .catch((e) => {
+        return { ok: false, err: e };
       });
   }
+
 }

@@ -1,32 +1,29 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { Switch, TelemetryData, Room } from '@core/interfaces';
 // Backend
+import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
+
 
 @Component({
   selector: 'app-telemetry-controller',
   templateUrl: './controller.component.html',
   styleUrls: ['./controller.component.scss'],
-  providers: [TelemetryService],
+  providers: [RoomsService, TelemetryService],
 })
 export class ControllerComponent {
   @Input() selectedRoom: Room | null = null;
-  @Output() telemetryDataEmitter:EventEmitter<any> = new EventEmitter();
+  @Output() telemetryDataEmitter: EventEmitter<any> = new EventEmitter();
 
-  private static readonly DEFAULT_DISPLAY: string = '00:00';
-  connected: boolean = false; // bool for the room's simulation connection status
-  simulationState: 'start' | 'stop' = 'stop'; // not really used except locally, used as a string for API method
-  switches: Switch[]; // array of simulation error switches the CAPCOM can throw in the sim
-  display: string = ControllerComponent.DEFAULT_DISPLAY;
-  // timer!: ReturnType<typeof setTimeout>; // the displayed connection timer
-  simInterval!: ReturnType<typeof setTimeout>; // internal simulation timer
-  telemetryData: TelemetryData = {} as TelemetryData; // data passed in from the backend of the generated simulation
-  
-  // TEMPORARY
-  connErr: string = '';
+  private static readonly DEFAULT_ROOM_ID: number = 1; // Default room ID if no room is selected
+  private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
+  protected connected: boolean = false; // bool for the room's simulation connection status
+  private simulationState: 'start' | 'stop' = 'stop'; // Not really used except locally, used as a string for API method
+  protected switches: Switch[]; // Array of simulation error switches the CAPCOM can throw in the sim
+  private simInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
+  protected telemetryData: TelemetryData = {} as TelemetryData; // Data passed in from the backend of the generated simulation
 
-
-  constructor(private telemetryService: TelemetryService) {
+  constructor(private roomsService: RoomsService, private telemetryService: TelemetryService) {
     this.switches = [
       { name: 'O2 ERROR', value: false },
       { name: 'PUMP ERROR', value: false },
@@ -35,37 +32,46 @@ export class ControllerComponent {
     ];
   }
 
-  // initTimer() {
-  //   let totalSeconds: number = 0;
-  //   let secondsDisplay: any = '0';
-  //   let secondsNumber: number = 0;
+  ngOnInit() {
+    // If no room is selected, get Room 1 data and default to Room 1
+    if (this.selectedRoom === null) {
+      // Get the default room
+      this.roomsService.getRoomById(ControllerComponent.DEFAULT_ROOM_ID).then((result) => {
+        this.selectedRoom = result;
+      });
+      // Get the telemetry data for the default room
+      this.telemetryService.getTelemetryByRoomID(ControllerComponent.DEFAULT_ROOM_ID).then((result) => {
+        // If the simulation is running, then start fetching and emitting that data from the running simulation
+        if (result?.isRunning) {
+          this.fetchAndEmitDataOnInterval();
+        }
+      });
+    }
+  }
 
-  //   this.timer = setInterval(() => {
-  //     totalSeconds++;
-  //     if (secondsNumber < 59) {
-  //       secondsNumber++;
-  //     } else {
-  //       secondsNumber = 0;
-  //     }
+  /**
+   * Fetches the simulation data from the backend and emits it to the parent component
+   */
+  private fetchAndEmitDataOnInterval() {
+    // Start the interval of getting the simulation data then emitting it
+    this.simInterval = setInterval(() => {
+      this.getSimulationData();
+      this.telemetryDataEmitter.emit(this.telemetryData);
+    }, ControllerComponent.SIMULATION_FETCH_INTERVAL);
+    // Set connected status to true
+    this.connected = true;
+  }
 
-  //     if (secondsNumber < 10) {
-  //       secondsDisplay = '0' + secondsNumber;
-  //     } else {
-  //       secondsDisplay = secondsNumber;
-  //     }
-
-  //     let minute = Math.floor(totalSeconds / 60);
-  //     let prefix = minute < 10 ? '0' : '';
-  //     this.display = `${prefix}${minute}:${secondsDisplay}`;
-  //   }, 1000);
-  // }
-
-  // When the user presses the START button
-  startTelemetry() {
-    // Start the simulation
+  /**
+   * When the user presses the START button, start a new simulation with the selected room
+   * @returns
+   */
+  protected startTelemetry() {
+    // Check if a room is selected
     if (!this.selectedRoom?.id) {
       return;
     }
+    // Start the simulation
     this.simulationState = 'start';
     this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       if (!res.ok) {
@@ -73,52 +79,48 @@ export class ControllerComponent {
         console.log(`An error ocurred starting the sim!`);
       } else {
         // If the sim start returns ok, let's get the data on interval
-        this.simInterval = setInterval(() => {
-          this.getSimulationData();
-          this.telemetryDataEmitter.emit(this.telemetryData);
-        }, 1000);
-        // Set connected status to true, start the connection heartbeat timer
-        this.connected = true;
-        // this.initTimer();
+        this.fetchAndEmitDataOnInterval();
       }
     });
   }
 
-  // Get EVA Sim Data
+  /**
+   * Gets the telemetry simulation data from the backend by room ID
+   */
   private getSimulationData() {
-    if (this.connErr === '') {
-      if (this.selectedRoom?.id) {
-        this.telemetryService
-          .getTelemetry(this.selectedRoom.id)
-          .then((res) => {
-            this.telemetryData = res;
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
+    if (!this.selectedRoom?.id) {
+      return;
     }
+    this.telemetryService
+      .getTelemetryByRoomID(this.selectedRoom.id)
+      .then((res) => {
+        this.telemetryData = res;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
-  // When the user presses the STOP button
-  stopTelemetry() {
+  /**
+   * When the user presses the STOP button, stop the simulation and reset the switches to default
+   * @returns 
+   */
+  protected stopTelemetry() {
     if (!this.selectedRoom?.id) {
       return;
     }
     this.simulationState = 'stop';
     this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       clearInterval(this.simInterval);
-      // clearInterval(this.timer);
       this.resetSwitchesToDefault();
-      this.display = ControllerComponent.DEFAULT_DISPLAY;
       this.connected = false;
       this.telemetryData = {} as TelemetryData; // Clear the sim data
       this.telemetryDataEmitter.emit(this.telemetryData);
     });
   }
 
-  shouldAnimationStart() {
-    // only return true every five seconds
+  protected shouldAnimationStart() {
+    // Only return true every five seconds
     const date = new Date();
     const seconds = date.getSeconds();
     if (seconds % 5 == 0) {
@@ -127,11 +129,18 @@ export class ControllerComponent {
     return true;
   }
 
-  handleChange(event: any) {
+  /**
+   * Handler for when an error switch is flipped
+   * @param event 
+   */
+  protected handleChange(event: any) {
     this.switches[event.id].value = event.value;
   }
 
-  resetSwitchesToDefault() {
+  /**
+   * Resets the switches to their default values
+   */
+  private resetSwitchesToDefault() {
     this.switches.forEach((s) => {
       s.value = false;
     });
