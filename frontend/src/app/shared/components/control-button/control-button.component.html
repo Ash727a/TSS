@@ -1,4 +1,4 @@
-<button [ngClass]="{'green': type == 'start' && disabled, 'red': type === 'stop' && !disabled}">
+<button [ngClass]="{'green': type == 'start' && !disabled, 'red': type === 'stop' && !disabled, 'gray': disabled}">
   <h4>
     <ng-content></ng-content>
   </h4>

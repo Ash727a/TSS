@@ -1,14 +1,16 @@
 <div class="two-column">
   <div class="column-item">
     <div class="row">
-      <app-shared-control-button type="start" [disabled]="!connected" (click)="startTelemetry()"
+      <app-shared-control-button type="start" [disabled]="connected || (!connected && !!telemetryData?.timer)" (click)="startTelemetry()"
         >Start</app-shared-control-button
       >
-      <app-shared-control-button type="stop" [disabled]="!connected" (click)="stopTelemetry()"
+      <!-- "connected || ((connected && !telemetryData?.timer) || (connected && !!telemetryData?.isRunning))" -->
+      <app-shared-control-button type="stop" [disabled]="!connected || !telemetryData?.isRunning" (click)="stopTelemetry()"
         >Stop</app-shared-control-button
       >
     </div>
-    <h5 *ngIf="connected" class="connection-heartbeat-text">Connected for... {{ telemetryData.timer }}</h5>
+    <h5 *ngIf="connected && !telemetryData?.timer" class="connection-heartbeat-text">Connecting...</h5>
+    <h5 *ngIf="connected && telemetryData?.timer" class="connection-heartbeat-text">Connected for... {{ telemetryData.timer }}</h5>
     <div class="column-item gap">
       <div class="row">
         <!-- <div class="column" *ngFor="let switch of switches; let index = index;" >

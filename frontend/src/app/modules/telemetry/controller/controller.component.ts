@@ -18,7 +18,7 @@ export class ControllerComponent {
   private static readonly DEFAULT_ROOM_ID: number = 1; // Default room ID if no room is selected
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
   protected connected: boolean = false; // bool for the room's simulation connection status
-  private simulationState: 'start' | 'stop' = 'stop'; // Not really used except locally, used as a string for API method
+  private simulationState: 'start' | 'stop' | '' = ''; // Not really used except locally, used as a string for API method
   protected switches: Switch[]; // Array of simulation error switches the CAPCOM can throw in the sim
   private simInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
   protected telemetryData: TelemetryData = {} as TelemetryData; // Data passed in from the backend of the generated simulation
@@ -33,20 +33,21 @@ export class ControllerComponent {
   }
 
   ngOnInit() {
+    let roomID = this.selectedRoom?.id ?? ControllerComponent.DEFAULT_ROOM_ID;
     // If no room is selected, get Room 1 data and default to Room 1
     if (this.selectedRoom === null) {
       // Get the default room
-      this.roomsService.getRoomById(ControllerComponent.DEFAULT_ROOM_ID).then((result) => {
+      this.roomsService.getRoomById(roomID).then((result) => {
         this.selectedRoom = result;
       });
-      // Get the telemetry data for the default room
-      this.telemetryService.getTelemetryByRoomID(ControllerComponent.DEFAULT_ROOM_ID).then((result) => {
-        // If the simulation is running, then start fetching and emitting that data from the running simulation
-        if (result?.isRunning) {
-          this.fetchAndEmitDataOnInterval();
-        }
-      });
     }
+    // Get the telemetry data for the room
+    this.telemetryService.getTelemetryByRoomID(roomID).then((result) => {
+      // If the simulation is running, then start fetching and emitting that data from the running simulation
+      if (result?.isRunning) {
+        this.fetchAndEmitDataOnInterval();
+      }
+    });
   }
 
   /**
