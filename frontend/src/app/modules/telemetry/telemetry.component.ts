@@ -13,14 +13,14 @@ export class TelemetryComponent {
   @Input() selectedRoom: Room | null = null;
   telemetryData: TelemetryData = {} as TelemetryData;
 
-  constructor(private roomService: RoomsService) {
+  constructor(private roomsService: RoomsService) {
     
   }
 
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1
     if (this.selectedRoom === null) {
-      this.roomService.getRoomById(1).then((result) => {
+      this.roomsService.getRoomById(1).then((result) => {
         this.selectedRoom = result;
         this.telemetryData = result.telemetryData;
       });
