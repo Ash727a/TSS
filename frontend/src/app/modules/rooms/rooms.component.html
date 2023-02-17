@@ -1,6 +1,7 @@
 <div class="container">
   <app-shared-card title="Rooms" size="medium">
     <div class="rooms-row-container">
+      <div *ngIf="loaded && !rooms?.length"><h4>No Rooms</h4></div>
       <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room)">
         <div class="item left">
           <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>

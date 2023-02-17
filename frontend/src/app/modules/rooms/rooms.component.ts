@@ -16,6 +16,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   private static readonly POLL_ROOM_STATUS_INTERVAL: number = 3000; // The rate at which the simulation data is fetched from the backend
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
 
+  protected loaded = false;
   rooms: Room[] = [];
   modalOpen: boolean = false;
   selectedRoom: Room | null = null;
@@ -40,6 +41,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
       })
       .catch((e) => {
         console.warn(e);
+      }).finally(() => {
+        this.loaded = true;
       });
     this.startPollRoomStatus();
   }
