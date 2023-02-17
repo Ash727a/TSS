@@ -30,4 +30,14 @@ export class TelemetryService {
       });
   }
 
+  async getAllRoomTelemetry(): Promise<any> {
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return res;
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

@@ -4,14 +4,17 @@ import { Subscription } from 'rxjs';
 import { Room } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
+import { TelemetryService } from '@services/api/telemetry.service';
 
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.scss'],
-  providers: [ModalService, RoomsService],
+  providers: [ModalService, RoomsService, TelemetryService],
 })
 export class RoomsComponent implements OnInit, OnDestroy {
+  private static readonly POLL_ROOM_STATUS_INTERVAL: number = 3000; // The rate at which the simulation data is fetched from the backend
+  private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
 
   rooms: Room[] = [];
   modalOpen: boolean = false;
@@ -23,31 +26,35 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   @ViewChild('modal') modalContentRef!: TemplateRef<any>;
 
-  constructor(private modalService: ModalService, private roomsService: RoomsService) {
-    // this.rooms = [
-    //   { id: 1, teamName: 'Team 1', status: 'green', station: 'UIA' },
-    //   { id: 2, teamName: 'Team 2', status: 'green', station: 'GEO' },
-    //   { id: 3, teamName: 'Team 3', status: 'green', station: 'ROV' },
-    //   { id: 4, teamName: 'Team 4', status: 'green', station: '' },
-    //   { id: 5, teamName: 'Team 5', status: 'green', station: '' },
-    //   { id: 6, teamName: 'Team 6', status: 'green', station: '' },
-    //   { id: 7, teamName: 'Team 7', status: 'green', station: '' },
-    //   { id: 8, teamName: 'Team 8', status: 'green', station: '' },
-    //   { id: 9, teamName: 'Team 9', status: 'green', station: '' },
-    //   { id: 10, teamName: 'Team 10', status: 'green', station: '' },
-    // ];
-  }
+  constructor(
+    private modalService: ModalService,
+    private roomsService: RoomsService,
+    private telemetryService: TelemetryService
+  ) {}
 
   ngOnInit(): void {
     this.roomsService
       .getRooms()
       .then((result) => {
         this.rooms = result;
-        console.log(this.rooms);
       })
       .catch((e) => {
         console.warn(e);
       });
+    this.startPollRoomStatus();
+  }
+
+  startPollRoomStatus() {
+    this.pollRoomStatusInterval = setInterval(() => {
+      this.telemetryService.getAllRoomTelemetry().then((result) => {
+        // match all rooms by their room id and filter out only their isRunning status
+        this.rooms = this.rooms.map((room) => {
+          let isRunning = result.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
+          room.status = isRunning ? 'green' : 'gray';
+          return room;
+        });
+      });
+    }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
   openModal(room: Room) {
@@ -66,6 +73,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
       this.modalOpen = false;
       this.selectedRoom = null;
     }
+    clearInterval(this.pollRoomStatusInterval);
   }
   switch() {
     console.log('switch clicked');

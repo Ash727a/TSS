@@ -14,6 +14,11 @@ module.exports = (sequelize) => {
             allowNull: false,
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        stationName: {
+            allowNull: false,
+            type: DataTypes.STRING,
+            defaultValue: ''
         }
 	});
 };

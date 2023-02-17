@@ -3,7 +3,11 @@ const { getIdParam } = require('../helpers');
 
 async function getAll(req, res) {
 	const simulationstate = await models.simulationstate.findAll();
-	res.status(200).json(simulationstate);
+	if (simulationstate) {
+		res.status(200).json(simulationstate);
+	} else {
+		res.status(404).send('404 - Not found');
+	}
 };
 
 async function getById(req, res) {

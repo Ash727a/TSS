@@ -6,6 +6,7 @@ export interface Room {
   updatedAt: Date;
   createdAt: Date;
   users: number;
+  stationName: string;
 }
 
 export interface StatusSensor {
