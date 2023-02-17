@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Room, StatusSensor } from '@core/interfaces';
+import { Room, StatusSensor, UIAData } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { UIAService } from '@services/api/uia.service';
@@ -13,7 +13,7 @@ import { UIAService } from '@services/api/uia.service';
 export class UIAComponent {
   protected sensors1: StatusSensor[] = [];
   protected sensors2: StatusSensor[] = [];
-  private uiaData: any = {};
+  private uiaData: UIAData = {} as UIAData;
 
   @Input() selectedRoom: Room | null = null;
 
@@ -33,12 +33,12 @@ export class UIAComponent {
         console.log(this.uiaData);
       }
     });
-
+    console.log(this.uiaData);
     this.sensors1 = [
       { name: 'EMU1', status: this.uiaData?.emu1 ?? undefined },
       { name: 'EV1 SUPPLY', status: this.uiaData?.ev1_supply ?? undefined },
       { name: 'EV1 WASTE', status: this.uiaData?.ev1_waste ?? undefined },
-      { name: 'EV1 OXYGEN', status: this.uiaData?.ev1_O2 ?? undefined },
+      // { name: 'EV1 OXYGEN', status: this.uiaData?.ev1_O2 ?? undefined },
       { name: 'O2 VENT', status: this.uiaData?.O2_vent ?? undefined },
     ];
 
@@ -46,7 +46,7 @@ export class UIAComponent {
       { name: 'EMU2', status: this.uiaData?.emu2 ?? undefined },
       { name: 'EV2 SUPPLY', status: this.uiaData?.ev2_supply ?? undefined },
       { name: 'EV2 WASTE', status: this.uiaData?.ev2_waste ?? undefined },
-      { name: 'EV2 OXYGEN', status: this.uiaData?.ev2_O2 ?? undefined },
+      // { name: 'EV2 OXYGEN', status: this.uiaData?.ev2_O2 ?? undefined },
       { name: 'DEPRESS PUMP', status: this.uiaData?.depress_pump ?? undefined },
     ];
   }
