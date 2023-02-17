@@ -6,12 +6,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./toggle-switch.component.scss'],
 })
 export class ToggleSwitchComponent {
-  parentSelector: boolean = false;
-  @Input() id: number = 0;
-  @Input() type: string = 'default';
-  @Input() disabled: boolean = false;
-  @Input() isErroring: boolean = false;
-  @Output() checked: EventEmitter<object> = new EventEmitter<object>();
+  @Input() public id: number = 0;
+  @Input() public type: string = 'default';
+  @Input() public disabled: boolean = false;
+  @Input() public isErroring: boolean = false;
+  @Output() private checked: EventEmitter<object> = new EventEmitter<object>();
+  protected parentSelector: boolean = false;
 
   onChange(event: any, id: number) {
     const payload = {

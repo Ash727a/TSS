@@ -15,17 +15,15 @@ import { TelemetryService } from '@services/api/telemetry.service';
 export class RoomsComponent implements OnInit, OnDestroy {
   private static readonly POLL_ROOM_STATUS_INTERVAL: number = 3000; // The rate at which the simulation data is fetched from the backend
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
-
   protected loaded = false;
-  rooms: Room[] = [];
-  modalOpen: boolean = false;
-  selectedRoom: Room | null = null;
+  protected rooms: Room[] = [];
+  private modalOpen: boolean = false;
+  protected selectedRoom: Room | null = null;
 
-  @ViewChild('modal', { read: ViewContainerRef })
-  entry!: ViewContainerRef;
-  sub!: Subscription;
+  @ViewChild('modal', { read: ViewContainerRef }) private entry!: ViewContainerRef;
+  private sub!: Subscription;
 
-  @ViewChild('modal') modalContentRef!: TemplateRef<any>;
+  @ViewChild('modal') private modalContentRef!: TemplateRef<any>;
 
   constructor(
     private modalService: ModalService,
@@ -47,7 +45,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.startPollRoomStatus();
   }
 
-  startPollRoomStatus() {
+  private startPollRoomStatus() {
     this.pollRoomStatusInterval = setInterval(() => {
       this.telemetryService.getAllRoomTelemetry().then((result) => {
         // match all rooms by their room id and filter out only their isRunning status
@@ -60,7 +58,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
     }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
-  openModal(room: Room) {
+  protected openModal(room: Room) {
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
@@ -70,6 +68,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
       this.modalOpen = true;
     }, 100);
   }
+  
   ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
@@ -78,7 +77,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
     }
     clearInterval(this.pollRoomStatusInterval);
   }
-  switch() {
+
+  protected switch() {
     console.log('switch clicked');
   }
 }

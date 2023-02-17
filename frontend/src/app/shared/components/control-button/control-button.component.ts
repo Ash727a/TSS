@@ -6,6 +6,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./control-button.component.scss']
 })
 export class ControlButtonComponent {
-  @Input() disabled: boolean = true;
-  @Input() type: string = 'default';
+  @Input() public disabled: boolean = true;
+  @Input() public type: string = 'default';
 }

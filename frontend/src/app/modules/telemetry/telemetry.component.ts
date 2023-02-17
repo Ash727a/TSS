@@ -10,12 +10,10 @@ import { RoomsService } from '@services/api/rooms.service';
   providers: [RoomsService],
 })
 export class TelemetryComponent {
-  @Input() selectedRoom: Room | null = null;
-  telemetryData: TelemetryData = {} as TelemetryData;
+  @Input() public selectedRoom: Room | null = null;
+  protected telemetryData: TelemetryData = {} as TelemetryData;
 
-  constructor(private roomsService: RoomsService) {
-    
-  }
+  constructor(private roomsService: RoomsService) {}
 
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1

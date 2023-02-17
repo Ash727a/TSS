@@ -10,10 +10,8 @@ import * as moment from 'moment';
 })
 export class AppComponent {
   private static readonly DATETIME_FORMAT = 'MM-DD-YYYY hh:mm:ss A';
-
-  lastConnectionTime = moment().format(AppComponent.DATETIME_FORMAT);
-  connectionStatus: string = 'pending';
-  title = 'TSS';
+  protected lastConnectionTime = moment().format(AppComponent.DATETIME_FORMAT);
+  protected connectionStatus: string = 'pending';
   constructor(private serverService: ServerService) {}
 
   ngOnInit() {

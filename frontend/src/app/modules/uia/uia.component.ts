@@ -11,14 +11,13 @@ import { UIAService } from '@services/api/uia.service';
   providers: [RoomsService, UIAService],
 })
 export class UIAComponent {
-  sensors1: StatusSensor[] = [];
-  sensors2: StatusSensor[] = [];
-  uiaData: any = {};
+  protected sensors1: StatusSensor[] = [];
+  protected sensors2: StatusSensor[] = [];
+  private uiaData: any = {};
 
   @Input() selectedRoom: Room | null = null;
 
-  constructor(private roomsService: RoomsService, private uiaService: UIAService) {
-  }
+  constructor(private roomsService: RoomsService, private uiaService: UIAService) {}
 
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1

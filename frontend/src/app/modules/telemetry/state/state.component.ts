@@ -8,16 +8,16 @@ import { ValueSensor, TelemetryData } from '@core/interfaces';
 })
 export class StateComponent {
   private static readonly EMPTY_TEXT_LABEL = '';
-  @Input() telemetryData: TelemetryData = {} as TelemetryData;
+  @Input() public telemetryData: TelemetryData = {} as TelemetryData;
 
-  sensors1: ValueSensor[] = [];
-  sensors2: ValueSensor[] = [];
+  protected sensors1: ValueSensor[] = [];
+  protected sensors2: ValueSensor[] = [];
 
   constructor() {
     this.mapTelemetryDataToTable();
   }
 
-  mapTelemetryDataToTable() {
+  private mapTelemetryDataToTable() {
     this.sensors1 = [
       { name: 'Primary Oxygen', value: this.translateDataToDisplayString(this.telemetryData?.ox_primary, '%') },
       { name: 'Secondary Oxygen', value: this.translateDataToDisplayString(this.telemetryData?.ox_secondary, '%') },
@@ -54,7 +54,7 @@ export class StateComponent {
     }
   }
 
-  translateDataToDisplayString(data: any, metricSuffix: string = '') {
+  private translateDataToDisplayString(data: any, metricSuffix: string = '') {
     return data ? `${data} ${metricSuffix}` : StateComponent.EMPTY_TEXT_LABEL;
   }
 

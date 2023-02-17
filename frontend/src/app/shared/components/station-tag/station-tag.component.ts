@@ -7,6 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class StationTagComponent {
   // @Input() station: "UIA" | "GEO" | "ROV" | undefined | null;
-  @Input() station: string | undefined | null;
+  @Input() public station: string | undefined | null;
 
 }

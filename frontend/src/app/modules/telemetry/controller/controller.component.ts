@@ -12,8 +12,8 @@ import { TelemetryService } from '@services/api/telemetry.service';
   providers: [RoomsService, TelemetryService],
 })
 export class ControllerComponent {
-  @Input() selectedRoom: Room | null = null;
-  @Output() telemetryDataEmitter: EventEmitter<any> = new EventEmitter();
+  @Input() public selectedRoom: Room | null = null;
+  @Output() public telemetryDataEmitter: EventEmitter<any> = new EventEmitter();
 
   private static readonly DEFAULT_ROOM_ID: number = 1; // Default room ID if no room is selected
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend

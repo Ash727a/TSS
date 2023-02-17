@@ -6,8 +6,8 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./status-indicator.component.scss'],
 })
 export class StatusIndicatorComponent implements OnInit {
-  @Input() status: any;
-  color: string | undefined;
+  @Input() public status: any;
+  protected color: string | undefined;
 
   constructor() {}
 
