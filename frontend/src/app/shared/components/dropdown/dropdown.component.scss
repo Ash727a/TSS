@@ -1,0 +1,44 @@
+@import 'src/styles/styles.scss';
+
+.dropdown {
+  min-width: 5rem;
+  position: absolute;
+  z-index: 1000;
+  background-color: $secondary;
+  border-radius: 0.5rem;
+}
+
+.activeOption {
+  background-color: #0004ff;
+  color: white;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow-y: auto;
+  max-height: 5rem;
+  list-style: none;
+  li {
+    padding: 0.5rem 1rem;
+    color: black;
+    min-height: 1rem;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  /* border-radius: 5px; */
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $gray;
+  border-radius: 1rem;
+  /* border-radius: 5px 0 0 5px; */
+  /* box-shadow: inset 5px -5px 5px rgba(58, 114, 60, 1); */
+}

@@ -17,13 +17,24 @@ export class RoomsComponent implements OnInit, OnDestroy {
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
   protected loaded = false;
   protected rooms: Room[] = [];
-  private modalOpen: boolean = false;
   protected selectedRoom: Room | null = null;
+  protected modalOpen = false;
+  protected dropdownOpen = false;
+  protected stations = [
+    { value: 'UIA', isActive: false },
+    { value: 'GEO', isActive: false },
+    { value: 'ROV', isActive: false },
+  ];
 
   @ViewChild('modal', { read: ViewContainerRef }) private entry!: ViewContainerRef;
   private sub!: Subscription;
 
   @ViewChild('modal') private modalContentRef!: TemplateRef<any>;
+
+  @ViewChild('dropdown', { read: ViewContainerRef }) private dropdownEntry!: ViewContainerRef;
+  private dropdownSub!: Subscription;
+
+  @ViewChild('dropdown') private dropdownContentRef!: TemplateRef<any>;
 
   constructor(
     private modalService: ModalService,
@@ -39,7 +50,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
       })
       .catch((e) => {
         console.warn(e);
-      }).finally(() => {
+      })
+      .finally(() => {
         this.loaded = true;
       });
     this.startPollRoomStatus();
@@ -59,21 +71,48 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   protected openModal(room: Room) {
+    if (this.dropdownOpen) {
+      return;
+    }
+    this.modalOpen = true;
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
       this.sub = this.modalService.openModal(this.entry, this.modalContentRef).subscribe((v) => {
-        // Logic here
+        if (v === 'close') {
+          this.selectedRoom = null;
+          this.modalOpen = false;
+        }
       });
-      this.modalOpen = true;
     }, 100);
   }
-  
+
+  protected openDropdown(room: Room) {
+    if (this.modalOpen) {
+      return;
+    }
+    this.selectedRoom = room;
+    // Wait a little bit for a HTML to update so the correct data is displayed in the modal
+    setTimeout(() => {
+      this.dropdownOpen = true;
+      this.dropdownSub = this.modalService
+        .openModal(this.dropdownEntry, this.dropdownContentRef, false)
+        .subscribe((v) => {
+          if (v === 'close') {
+            this.selectedRoom = null;
+            this.dropdownOpen = false;
+          }
+        });
+    }, 100);
+  }
+
   ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-      this.modalOpen = false;
+    if (this.sub || this.dropdownSub) {
+      this.sub?.unsubscribe();
+      this.dropdownSub?.unsubscribe();
       this.selectedRoom = null;
+      this.modalOpen = false;
+      this.dropdownOpen = false;
     }
     clearInterval(this.pollRoomStatusInterval);
   }

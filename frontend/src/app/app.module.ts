@@ -20,6 +20,7 @@ import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-
 import { ControllerComponent } from './modules/telemetry/controller/controller.component';
 import { StateComponent } from './modules/telemetry/state/state.component';
 import { ModalComponent } from './shared/components/modal/modal.component';
+import { DropdownComponent } from './shared/components/dropdown/dropdown.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ModalComponent } from './shared/components/modal/modal.component';
     ControllerComponent,
     StateComponent,
     ModalComponent,
+    DropdownComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],

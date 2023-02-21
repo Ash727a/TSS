@@ -1,0 +1,18 @@
+<form #testForm="ngForm" class="dropdown">
+  <!-- <div class="col-auto">
+    <div class="input-group mb-2" style="width: 50%">
+      <input name="dropdown" class="form-control" type="text" [(ngModel)]="dropdown" />
+    </div>
+  </div> -->
+
+  <ul class="list-group" >
+    <li
+      [ngClass]="item.isActive ? 'activeOption' : ''"
+      (click)="selectOption($event, index)"
+      *ngFor="let item of options; let index = index"
+      class="item"
+    >
+      {{ item.value }}
+    </li>
+  </ul>
+</form>
