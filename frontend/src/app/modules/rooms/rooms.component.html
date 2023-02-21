@@ -11,7 +11,7 @@
           <h5>Room {{ room.id }}</h5>
         </div>
         <div class="item right">
-          <app-shared-station-tag [station]="room.station" [selected]="true">{{ room.station }}</app-shared-station-tag>
+          <app-shared-station-tag [station]="room.stationName" [selected]="true">{{ room.stationName }}</app-shared-station-tag>
           <div (click)="$event.stopPropagation()">
             <app-shared-outlined-button (click)="$event.stopPropagation(); openDropdown(room)">
               SWITCH
@@ -19,7 +19,7 @@
             <app-shared-dropdown
               [options]="stations"
               *ngIf="dropdownOpen && selectedRoom?.id == room?.id"
-              (close)="closeDropdown()"
+              (close)="closeDropdown($event)"
             />
           </div>
         </div>

@@ -16,9 +16,10 @@ export class DropdownComponent implements OnInit {
   protected activeIndex: number = 0;
 
   @Input('options') options: { isActive?: boolean; value: string }[] = [];
-  @Output() private close: EventEmitter<string> = new EventEmitter<string>();
+  @Output() private close: EventEmitter<object> = new EventEmitter<object>();
 
   ngOnInit() {
+    console.log('init dropdown')
     for (let i = 0; i < this.options.length; i++) {
       if (this.options[i].isActive) {
         this.activeIndex = i + 1;
@@ -48,7 +49,11 @@ export class DropdownComponent implements OnInit {
     this.options.forEach((opt: any, index: number) => {
       opt.isActive = this.activeIndex === index;
     });
-    this.close.emit('close');
+    const payload = {
+      type: 'close',
+      index: this.activeIndex
+    }
+    this.close.emit(payload);
   }
 
   ngOnDestroy() {

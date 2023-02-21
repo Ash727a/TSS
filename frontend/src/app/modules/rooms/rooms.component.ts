@@ -54,24 +54,45 @@ export class RoomsComponent implements OnInit, OnDestroy {
       .finally(() => {
         this.loaded = true;
       });
+    this.getRoomData();
     this.startPollRoomStatus();
   }
 
   private startPollRoomStatus() {
     this.pollRoomStatusInterval = setInterval(() => {
-      this.telemetryService.getAllRoomTelemetry().then((result) => {
-        // match all rooms by their room id and filter out only their isRunning status
-        this.rooms = this.rooms.map((room) => {
-          let isRunning = result.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
-          room.status = isRunning ? 'green' : 'gray';
-          return room;
-        });
-      });
+      this.getRoomData();
     }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
+  private getRoomData() {
+    this.roomsService.getRooms().then((roomsResult) => {
+      this.telemetryService.getAllRoomTelemetry().then((telemetryResult) => {
+        this.rooms = this.rooms.map((room: any) => {
+          let stationName = roomsResult.filter((data: any) => data.id === room.id)[0].stationName;
+          let isRunning = telemetryResult.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
+          room.status = isRunning ? 'green' : 'gray';
+          room.stationName = stationName;
+          return room;
+        });
+      });
+    });
+
+      // this.rooms = this.rooms.map((room: any) => {
+      //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
+      //   room.stationName = stationName;
+      //   return room;
+      // });
+      // })
+      // this.telemetryService.getAllRoomTelemetry().then((result) => {
+      //   this.rooms = this.rooms.map((room: any) => {
+      //     let isRunning = result.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
+      //     room.status = isRunning ? 'green' : 'gray';
+      //     return room;
+      //   });
+      // });
+  }
+
   protected openModal(room: Room) {
-    console.log('open modal')
     if (this.dropdownOpen) {
       return;
     }
@@ -107,13 +128,45 @@ export class RoomsComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  protected closeDropdown() {
-    console.log('close dropdown');
-    // this.dropdownSub?.unsubscribe();
+  protected closeDropdown(event: any) {
+    const { type, index } = event;
+    if (this.selectedRoom && type === 'close') {
+      const stationName = index !== 0 ? this.stations[index].value : '';
+      this.handleStationSwitch(stationName);
+    }
     this.selectedRoom = null;
     this.dropdownOpen = false;
     this.modalService.closeModal();
   }
+
+  private handleStationSwitch(stationName: string) {
+    if (!this.selectedRoom) {
+      return;
+    }
+    const previousAssignedRoomID = this.rooms.find(
+      (room) => room.stationName === stationName &&
+                room.id !== this.selectedRoom?.id &&
+                room.stationName !== 'None' &&
+                room.stationName !== ''
+      )?.id ;
+    // If the room is already assigned to the station, unassign it
+    if (previousAssignedRoomID !== undefined) {
+      const payload = {
+        id: previousAssignedRoomID,
+        stationName: '',
+      };
+      this.roomsService.updateRoomById(previousAssignedRoomID, payload).then((result) => {
+      });
+    }
+    // Assign the room to the station
+    const payload = {
+      ...this.selectedRoom,
+      stationName,
+    };
+    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {
+    });
+  }
+
 
   ngOnDestroy(): void {
     if (this.sub || this.dropdownSub) {

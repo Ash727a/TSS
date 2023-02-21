@@ -27,4 +27,13 @@ export class RoomsService {
       return { ok: false, err: e };
     }
   }
+
+  async updateRoomById(roomID: number, room: any): Promise<any> {
+    try {
+      const updatedRoom = await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));
+      return updatedRoom;
+    } catch (e) {
+      return { ok: false, err: e };
+    }
+  }
 }
