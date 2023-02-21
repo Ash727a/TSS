@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-
+import { HttpClientModule } from '@angular/common/http';
+// App
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/components/header/header.component';
@@ -19,6 +20,7 @@ import { ToggleSwitchComponent } from './shared/components/toggle-switch/toggle-
 import { ControllerComponent } from './modules/telemetry/controller/controller.component';
 import { StateComponent } from './modules/telemetry/state/state.component';
 import { ModalComponent } from './shared/components/modal/modal.component';
+import { DropdownComponent } from './shared/components/dropdown/dropdown.component';
 
 @NgModule({
   declarations: [
@@ -38,8 +40,9 @@ import { ModalComponent } from './shared/components/modal/modal.component';
     ControllerComponent,
     StateComponent,
     ModalComponent,
+    DropdownComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
 })

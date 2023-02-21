@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  menu_icon_variable: boolean = false;
-  menuVariable: boolean = false;
-  routes: { name: string; path: string }[] = []
+  protected menu_icon_variable: boolean = false;
+  protected menuVariable: boolean = false;
+  protected routes: { name: string; path: string }[] = []
 
   constructor() {
     this.routes = [

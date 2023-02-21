@@ -1,14 +1,14 @@
 <div class="container">
   <div class="card-container">
     <div class="col">
-      <app-shared-card title="Telemetry Controller" subtitle="Room [number]">
-        <app-telemetry-controller></app-telemetry-controller>
+      <app-shared-card title="Telemetry Controller" subtitle="Room {{ selectedRoom?.id }}">
+        <app-telemetry-controller (telemetryDataEmitter)="telemetryData=$event" [selectedRoom]="selectedRoom"></app-telemetry-controller>
       </app-shared-card>
     </div>
     <div class="col">
       <div class="divider"></div>
       <app-shared-card title="Telemetry State">
-        <app-telemetry-state></app-telemetry-state>
+        <app-telemetry-state [telemetryData]="telemetryData"></app-telemetry-state>
       </app-shared-card>
     </div>
   </div>

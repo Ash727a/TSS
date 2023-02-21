@@ -2,7 +2,11 @@
 <div class="content-container">
   <div class="info-row">
     <h5>USER ID, SOCKET URL</h5>
-    <h5>CONNECTION HEARTBEAT</h5>
+    <div>
+      <h5 *ngIf="connectionStatus === 'pending'" class="yellow-text flashAnimation">Connecting...</h5>
+      <h5 *ngIf="connectionStatus === 'connected'" class="green-text flashAnimation">Connected: {{ lastConnectionTime }}</h5>
+      <h5 *ngIf="connectionStatus === 'disconnected'" class="red-text">Not Connected</h5>
+    </div>
   </div>
   <router-outlet></router-outlet>
 </div>

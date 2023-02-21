@@ -1,0 +1,71 @@
+@import 'src/styles/styles.scss';
+
+$max-height: 10rem;
+$min-width: 5rem;
+
+.dropdown-container {
+  min-width: $min-width;
+  position: absolute;
+  z-index: 1000;
+
+  .dropdown {
+    border-radius: 0.5rem;
+    background-color: $secondary;
+
+  }
+
+  .submit-button {
+    margin-top: 0.2rem;
+    background-color: $green;
+    color: white;
+    border-radius: 0.3rem;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+        opacity: 0.9;
+        background-color: $green;
+    }
+
+    & * {
+        font-weight: 500;
+    }
+  }
+}
+
+.activeOption {
+  background-color: $primary;
+  color: white;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  overflow-y: auto;
+  max-height: $max-height;
+  list-style: none;
+  li {
+    padding: 0.5rem 0.5rem;
+    color: black;
+    min-height: 1rem;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  /* border-radius: 5px; */
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $lightGray;
+  border-radius: 1rem;
+  /* border-radius: 5px 0 0 5px; */
+  /* box-shadow: inset 5px -5px 5px rgba(58, 114, 60, 1); */
+}

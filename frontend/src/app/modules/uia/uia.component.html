@@ -1,5 +1,5 @@
 <div class="container">
-  <app-shared-card size="small" title="UIA Statistics" subtitle="Room {{ room?.number }}">
+  <app-shared-card size="small" title="UIA Statistics" subtitle="Room {{ selectedRoom?.id }}">
     <div class="table-container">
       <table style="text-align: left">
         <thead>
@@ -10,7 +10,7 @@
           <tr *ngFor="let sensor of sensors1">
             <td class="small">
               <app-shared-status-indicator
-                status="{{ sensor.status === true ? 'green' : 'red' }}"
+                status="{{ sensor.status === true ? 'green' : sensor.status === false ? 'red' : 'gray' }}"
               ></app-shared-status-indicator>
             </td>
             <td>{{ sensor.name }}</td>
@@ -26,7 +26,7 @@
           <tr *ngFor="let sensor of sensors2">
             <td class="small">
               <app-shared-status-indicator
-                status="{{ sensor.status === true ? 'green' : 'red' }}"
+                status="{{ sensor.status === true ? 'green' : sensor.status === false ? 'red' : 'gray' }}"
               ></app-shared-status-indicator>
             </td>
             <td>{{ sensor.name }}</td>

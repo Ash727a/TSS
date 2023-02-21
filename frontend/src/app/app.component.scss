@@ -1,3 +1,5 @@
+@import 'src/styles/styles.scss';
+
 .content-container {
   padding: 0rem 2rem;
   min-height: 100vh;
@@ -11,3 +13,30 @@
   }
 }
 
+.yellow-text {
+  color: $yellow;
+}
+
+.green-text {
+  color: $green;
+}
+
+.red-text {
+  color: $red;
+}
+
+.flashAnimation {
+  animation: blinking 2s infinite;
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

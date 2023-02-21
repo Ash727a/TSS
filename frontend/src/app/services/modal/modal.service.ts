@@ -13,11 +13,12 @@ export class ModalService {
     this.windowScrolling = windowScrolling;
   }
 
-  openModal(entry: ViewContainerRef, modalContentRef: TemplateRef<any>) {
+  openModal(entry: ViewContainerRef, modalContentRef: TemplateRef<any>, hasContent: boolean = true) {
     this.windowScrolling.disable();
     const factory = this.resolver.resolveComponentFactory(ModalComponent);
     this.componentRef = entry.createComponent(factory);
     this.componentRef.instance.modalContentRef = modalContentRef;
+    this.componentRef.instance.hasContent = hasContent;
     this.componentRef.instance.closeMeEvent.subscribe(() => this.closeModal());
     this.componentRef.instance.confirmEvent.subscribe(() => this.confirm());
     this.componentSubscriber = new Subject<string>();
@@ -25,6 +26,7 @@ export class ModalService {
   }
 
   closeModal() {
+    this.componentSubscriber.next('close');
     this.windowScrolling.enable();
     this.componentSubscriber.complete();
     this.componentRef.destroy();

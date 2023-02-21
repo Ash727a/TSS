@@ -8,10 +8,10 @@ import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, TemplateRef,
 })
 export class ModalComponent implements OnInit, OnDestroy {
   constructor() {}
-  @Input() modalContentRef: TemplateRef<any> | null = null;
-  @Output() closeMeEvent = new EventEmitter();
-  @Output() confirmEvent = new EventEmitter();
-
+  @Input() public modalContentRef: TemplateRef<any> | null = null;
+  @Input() public hasContent: boolean = true;
+  @Output() public closeMeEvent = new EventEmitter();
+  @Output() public confirmEvent = new EventEmitter();
   ngOnInit(): void {
     // console.log('Modal init');
   }

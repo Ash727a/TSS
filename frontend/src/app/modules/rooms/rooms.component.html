@@ -1,15 +1,27 @@
 <div class="container">
   <app-shared-card title="Rooms" size="medium">
     <div class="rooms-row-container">
+      <div *ngIf="loaded && !rooms?.length"><h4>No Rooms</h4></div>
       <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room)">
         <div class="item left">
           <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
-          <h5>{{ room.teamName }}</h5>
-          <h5>Room {{ room.number }}</h5>
+          <div class="fixed-width">
+            <h5>{{ room.name }}</h5>
+          </div>
+          <h5>Room {{ room.id }}</h5>
         </div>
         <div class="item right">
-          <app-shared-station-tag station="{{ room.station }}">{{ room.station }}</app-shared-station-tag>
-          <app-shared-outlined-button (click)="$event.stopPropagation();switch()">SWITCH</app-shared-outlined-button>
+          <app-shared-station-tag [station]="room.stationName" [selected]="true">{{ room.stationName }}</app-shared-station-tag>
+          <div (click)="$event.stopPropagation()">
+            <app-shared-outlined-button (click)="$event.stopPropagation(); openDropdown(room)">
+              SWITCH
+            </app-shared-outlined-button>
+            <app-shared-dropdown
+              [options]="stations"
+              *ngIf="dropdownOpen && selectedRoom?.id == room?.id"
+              (close)="closeDropdown($event)"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -17,6 +29,7 @@
 </div>
 <!-- Modal Component & Content -->
 <ng-template #modal>
-  <app-telemetry></app-telemetry>
-  <app-uia *ngIf="selectedRoom?.station == 'UIA'" [room]="selectedRoom"></app-uia>
+  <app-telemetry [selectedRoom]="selectedRoom"></app-telemetry>
+  <app-uia *ngIf="selectedRoom?.station == 'UIA'" [selectedRoom]="selectedRoom"></app-uia>
 </ng-template>
+<ng-template #dropdown></ng-template>

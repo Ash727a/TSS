@@ -1,3 +1,5 @@
-<h5 [ngClass]="station">
+<div class="block" [ngClass]="station && selected ? station : station ? 'deselected' : null">
+  <h5 >
     {{ station }}
-</h5>
+  </h5>
+</div>
