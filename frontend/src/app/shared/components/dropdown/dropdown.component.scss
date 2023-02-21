@@ -3,16 +3,40 @@
 $max-height: 10rem;
 $min-width: 5rem;
 
-.dropdown {
+.dropdown-container {
   min-width: $min-width;
   position: absolute;
   z-index: 1000;
-  background-color: $secondary;
-  border-radius: 0.5rem;
+
+  .dropdown {
+    border-radius: 0.5rem;
+    background-color: $secondary;
+
+  }
+
+  .submit-button {
+    margin-top: 0.2rem;
+    background-color: $green;
+    color: white;
+    border-radius: 0.3rem;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+        opacity: 0.9;
+        background-color: $green;
+    }
+
+    & * {
+        font-weight: 500;
+    }
+  }
 }
 
 .activeOption {
-  background-color: #0004ff;
+  background-color: $primary;
   color: white;
 }
 

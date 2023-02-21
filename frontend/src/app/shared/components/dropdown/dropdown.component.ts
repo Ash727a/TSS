@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -12,14 +12,25 @@ export class DropdownComponent implements OnInit {
   public testForm: NgForm | undefined;
   public isDropDownOpen: boolean = false;
   public dropdown: string = '';
+  protected startingActiveIndex: number = 0;
+  protected activeIndex: number = 0;
 
-  @Input('options') options: { isActive?:boolean, value: string }[] = [];
+  @Input('options') options: { isActive?: boolean; value: string }[] = [];
+  @Output() private close: EventEmitter<string> = new EventEmitter<string>();
 
   ngOnInit() {
-    this.options.forEach((opt) => {
-      opt.isActive = false;
-    });
-    this.options.splice(0, 0, { value: '', isActive: true });
+    for (let i = 0; i < this.options.length; i++) {
+      if (this.options[i].isActive) {
+        this.activeIndex = i + 1;
+        this.startingActiveIndex = i + 1;
+        break;
+      }
+    }
+    // add an option to the beginning of the array
+    this.options.unshift({ value: 'None', isActive: this.activeIndex === 0 });
+    console.log(this.options);
+
+    // this.options.splice(0, 0, { value: '', isActive: true });
   }
 
   toggleDropdown() {
@@ -28,8 +39,19 @@ export class DropdownComponent implements OnInit {
 
   selectOption(evt: any, optionIndex: number) {
     this.options.forEach((opt: any, index: number) => {
-      opt.isActive = optionIndex === index;
+      this.activeIndex = optionIndex;
     });
     this.dropdown = evt.target.innerHTML;
+  }
+
+  onSubmit() {
+    this.options.forEach((opt: any, index: number) => {
+      opt.isActive = this.activeIndex === index;
+    });
+    this.close.emit('close');
+  }
+
+  ngOnDestroy() {
+    this.options.shift();
   }
 }

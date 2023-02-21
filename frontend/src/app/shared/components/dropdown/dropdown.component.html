@@ -1,18 +1,17 @@
-<form #testForm="ngForm" class="dropdown">
-  <!-- <div class="col-auto">
-    <div class="input-group mb-2" style="width: 50%">
-      <input name="dropdown" class="form-control" type="text" [(ngModel)]="dropdown" />
-    </div>
-  </div> -->
-
-  <ul class="list-group">
-    <li
-      [ngClass]="item.isActive ? 'activeOption' : ''"
-      (click)="selectOption($event, index)"
-      *ngFor="let item of options; let index = index"
-      class="item"
-    >
-      <app-shared-station-tag station="{{ item.value }}" [selected]="!!item.isActive">{{ item.value }}</app-shared-station-tag>
-    </li>
-  </ul>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" class="dropdown-container">
+  <div class="dropdown">
+    <ul class="list-group">
+      <li
+        [ngClass]="index === activeIndex ? 'activeOption' : ''"
+        (click)="selectOption($event, index)"
+        *ngFor="let item of options; let index = index"
+        class="item"
+      >
+        <app-shared-station-tag station="{{ item.value }}" [selected]="index === activeIndex">{{
+          item.value
+        }}</app-shared-station-tag>
+      </li>
+    </ul>
+  </div>
+  <button type="submit" *ngIf="startingActiveIndex !== activeIndex" class="submit-button"><h5>Assign</h5></button>
 </form>

@@ -71,6 +71,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   protected openModal(room: Room) {
+    console.log('open modal')
     if (this.dropdownOpen) {
       return;
     }
@@ -104,6 +105,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
           }
         });
     }, 100);
+  }
+
+  protected closeDropdown() {
+    console.log('close dropdown');
+    // this.dropdownSub?.unsubscribe();
+    this.selectedRoom = null;
+    this.dropdownOpen = false;
+    this.modalService.closeModal();
   }
 
   ngOnDestroy(): void {

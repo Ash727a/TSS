@@ -12,11 +12,15 @@
         </div>
         <div class="item right">
           <app-shared-station-tag [station]="room.station" [selected]="true">{{ room.station }}</app-shared-station-tag>
-          <div>
-            <app-shared-outlined-button (click)="$event.stopPropagation(); openDropdown(room)"
-              >SWITCH</app-shared-outlined-button
-            >
-            <app-shared-dropdown [options]="stations" *ngIf="dropdownOpen && selectedRoom?.id == room?.id"/>
+          <div (click)="$event.stopPropagation()">
+            <app-shared-outlined-button (click)="$event.stopPropagation(); openDropdown(room)">
+              SWITCH
+            </app-shared-outlined-button>
+            <app-shared-dropdown
+              [options]="stations"
+              *ngIf="dropdownOpen && selectedRoom?.id == room?.id"
+              (close)="closeDropdown()"
+            />
           </div>
         </div>
       </div>
@@ -28,4 +32,4 @@
   <app-telemetry [selectedRoom]="selectedRoom"></app-telemetry>
   <app-uia *ngIf="selectedRoom?.station == 'UIA'" [selectedRoom]="selectedRoom"></app-uia>
 </ng-template>
-<ng-template #dropdown> </ng-template>
+<ng-template #dropdown></ng-template>
