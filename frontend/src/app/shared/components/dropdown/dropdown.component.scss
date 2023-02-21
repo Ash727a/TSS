@@ -1,7 +1,10 @@
 @import 'src/styles/styles.scss';
 
+$max-height: 10rem;
+$min-width: 5rem;
+
 .dropdown {
-  min-width: 5rem;
+  min-width: $min-width;
   position: absolute;
   z-index: 1000;
   background-color: $secondary;
@@ -18,10 +21,10 @@ ul {
   padding: 0;
   position: relative;
   overflow-y: auto;
-  max-height: 5rem;
+  max-height: $max-height;
   list-style: none;
   li {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     color: black;
     min-height: 1rem;
   }
@@ -37,7 +40,7 @@ ul {
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: $gray;
+  background: $lightGray;
   border-radius: 1rem;
   /* border-radius: 5px 0 0 5px; */
   /* box-shadow: inset 5px -5px 5px rgba(58, 114, 60, 1); */

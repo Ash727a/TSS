@@ -5,14 +5,14 @@
     </div>
   </div> -->
 
-  <ul class="list-group" >
+  <ul class="list-group">
     <li
       [ngClass]="item.isActive ? 'activeOption' : ''"
       (click)="selectOption($event, index)"
       *ngFor="let item of options; let index = index"
       class="item"
     >
-      {{ item.value }}
+      <app-shared-station-tag station="{{ item.value }}" [selected]="!!item.isActive">{{ item.value }}</app-shared-station-tag>
     </li>
   </ul>
 </form>

@@ -12,6 +12,11 @@
     background-color: $lime;
 }
 
+.deselected {
+    background-color: $mediumGray;
+    color: $lightGray;
+}
+
 h5 {
     font-weight: 600;
     padding: 0.4rem 1.4rem;
