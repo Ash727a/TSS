@@ -19,7 +19,6 @@ export class DropdownComponent implements OnInit {
   @Output() private close: EventEmitter<object> = new EventEmitter<object>();
 
   ngOnInit() {
-    console.log('init dropdown')
     for (let i = 0; i < this.options.length; i++) {
       if (this.options[i].isActive) {
         this.activeIndex = i + 1;
@@ -27,11 +26,8 @@ export class DropdownComponent implements OnInit {
         break;
       }
     }
-    // add an option to the beginning of the array
+    // Add an option to the beginning of the array
     this.options.unshift({ value: 'None', isActive: this.activeIndex === 0 });
-    console.log(this.options);
-
-    // this.options.splice(0, 0, { value: '', isActive: true });
   }
 
   toggleDropdown() {

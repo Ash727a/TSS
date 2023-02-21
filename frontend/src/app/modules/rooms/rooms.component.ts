@@ -54,17 +54,17 @@ export class RoomsComponent implements OnInit, OnDestroy {
       .finally(() => {
         this.loaded = true;
       });
-    this.getRoomData();
+    this.refreshRoomData();
     this.startPollRoomStatus();
   }
 
   private startPollRoomStatus() {
     this.pollRoomStatusInterval = setInterval(() => {
-      this.getRoomData();
+      this.refreshRoomData();
     }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
-  private getRoomData() {
+  private refreshRoomData() {
     this.roomsService.getRooms().then((roomsResult) => {
       this.telemetryService.getAllRoomTelemetry().then((telemetryResult) => {
         this.rooms = this.rooms.map((room: any) => {
@@ -114,6 +114,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
       return;
     }
     this.selectedRoom = room;
+    for (const station of this.stations) {
+      station.isActive = station.value === room.stationName;
+    }
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
       this.dropdownOpen = true;
@@ -137,6 +140,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.selectedRoom = null;
     this.dropdownOpen = false;
     this.modalService.closeModal();
+    this.refreshRoomData();
   }
 
   private handleStationSwitch(stationName: string) {
