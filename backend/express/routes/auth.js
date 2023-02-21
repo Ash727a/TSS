@@ -1,6 +1,7 @@
 const { models } = require('../../sequelize');
 const { getIdParam } = require('../helpers');
-const crypto = require('node:crypto');
+// const crypto = require('node:crypto');
+const { v4: uuidv4 } = require('uuid');
 
 let secretkey = "admin78$Akt";
 
@@ -111,7 +112,7 @@ async function registerUser(req, res) {
 		req.body.hmd = next_hmd.name;
 	};
 
-	req.body.guid = crypto.randomUUID();
+	req.body.guid = uuidv4();
 
 	const user = await models.user.create(req.body);
 
