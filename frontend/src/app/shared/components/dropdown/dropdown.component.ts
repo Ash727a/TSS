@@ -15,19 +15,27 @@ export class DropdownComponent implements OnInit {
   protected startingActiveIndex: number = 0;
   protected activeIndex: number = 0;
 
+  @Input('buttonLabel') buttonLabel: string = 'Select';
   @Input('options') options: { isActive?: boolean; value: string }[] = [];
+  @Input('hasNoneSelection') hasNoneSelection: boolean = true;
   @Output() private close: EventEmitter<object> = new EventEmitter<object>();
 
   ngOnInit() {
+    let shiftIndex = 0;
+    if (this.hasNoneSelection) {
+      shiftIndex = 1;
+    }
     for (let i = 0; i < this.options.length; i++) {
       if (this.options[i].isActive) {
-        this.activeIndex = i + 1;
-        this.startingActiveIndex = i + 1;
+        this.activeIndex = i + shiftIndex;
+        this.startingActiveIndex = i + shiftIndex;
         break;
       }
     }
-    // Add an option to the beginning of the array
-    this.options.unshift({ value: 'None', isActive: this.activeIndex === 0 });
+    if (this.hasNoneSelection) {
+      // Add an option to the beginning of the array
+      this.options.unshift({ value: 'None', isActive: this.activeIndex === 0 });
+    }
   }
 
   toggleDropdown() {
@@ -47,8 +55,8 @@ export class DropdownComponent implements OnInit {
     });
     const payload = {
       type: 'close',
-      index: this.activeIndex
-    }
+      index: this.activeIndex,
+    };
     this.close.emit(payload);
   }
 

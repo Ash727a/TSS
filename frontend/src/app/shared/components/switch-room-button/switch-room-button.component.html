@@ -3,8 +3,8 @@
     SWITCH
   </app-shared-outlined-button>
   <app-shared-dropdown
-    [buttonLabel]="'Assign'"
-    [options]="stations"
+    [hasNoneSelection]="false"
+    [options]="roomChoices"
     *ngIf="dropdownOpen && selectedRoom?.id"
     (close)="closeDropdown($event)"
   />

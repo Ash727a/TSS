@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
 import { Switch, TelemetryData, Room } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
@@ -147,5 +147,13 @@ export class ControllerComponent {
     this.switches.forEach((s) => {
       s.value = false;
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // If the selected room changes, get the new room's telemetry data
+    const newRoom = changes['selectedRoom']?.currentValue;
+    if (newRoom) {
+      this.ngOnInit();
+    }
   }
 }

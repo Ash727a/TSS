@@ -24,4 +24,11 @@ export class TelemetryComponent {
       });
     }
   }
+
+  public dropdownVisibilityChanged(event: any) {
+    const { type, room } = event;
+    if (type === 'close' && room) {
+      this.selectedRoom = room;
+    }
+  }
 }
