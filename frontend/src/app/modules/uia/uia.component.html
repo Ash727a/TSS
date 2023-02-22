@@ -1,5 +1,9 @@
 <div class="container">
-  <app-shared-card size="small" title="UIA Statistics" subtitle="Room {{ selectedRoom?.id }}">
+  <app-shared-card size="small" title="UIA Statistics">
+    <div class="room-display-container">
+      <h3>Room {{ selectedRoom?.id }}</h3>
+      <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
+    </div>
     <div class="table-container">
       <table style="text-align: left">
         <thead>

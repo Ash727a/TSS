@@ -3,6 +3,14 @@
   display: flex;
   justify-content: center;
 
+  .room-display-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
   .table-container {
     display: flex;
     justify-content: space-between;

@@ -50,4 +50,11 @@ export class UIAComponent {
       { name: 'DEPRESS PUMP', status: this.uiaData?.depress_pump ?? undefined },
     ];
   }
+
+  public dropdownVisibilityChanged(event: any) {
+    const { type, room } = event;
+    if (type === 'close' && room) {
+      this.selectedRoom = room;
+    }
+  }
 }
