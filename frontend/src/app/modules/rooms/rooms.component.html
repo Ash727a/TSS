@@ -16,7 +16,6 @@
           }}</app-shared-station-tag>
           <app-shared-switch-station-button
             (click)="$event.stopPropagation()"
-            [selectedRoom]="selectedRoom"
             [rooms]="rooms"
             [room]="room"
             (changeEvent)="dropdownVisibilityChanged($event)"

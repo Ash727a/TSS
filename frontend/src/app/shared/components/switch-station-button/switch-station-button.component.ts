@@ -15,6 +15,17 @@ import { Room } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 
+/** | EXAMPLE USAGE |
+  <app-shared-switch-station-button
+    (click)="$event.stopPropagation()" // (Optional) If the component is nested inside a clickable, prevent the parent's click event
+    [selectedRoom]="selectedRoom"      // (Optional) Will set the currently selected room
+    [rooms]="rooms"                    // *REQUIRED* Array of rooms    
+    [room]="room"                      // *REQUIRED* Room type which is the current room
+    (changeEvent)="dropdownVisibilityChanged($event)" // (Optional) Event emitted when the dropdown is opened or closed
+    [disabledDropdown]="modalOpen"     // (Optional) If the dropdown should be disabled
+    />
+ */
+
 @Component({
   selector: 'app-shared-switch-station-button',
   templateUrl: './switch-station-button.component.html',
@@ -23,11 +34,10 @@ import { RoomsService } from '@services/api/rooms.service';
 export class SwitchStationButtonComponent implements OnInit, OnDestroy {
   @Input() public rooms: Room[] = [];
   @Input() public room: Room | null = null;
-  @Input() public selectedRoom: Room | null = null;
   @Input() public disabledDropdown: boolean = false;
-
   @Output() private changeEvent: EventEmitter<object> = new EventEmitter<object>();
 
+  protected selectedRoom: Room | null = null;
   protected dropdownOpen = false;
   protected stations = [
     { value: 'UIA', isActive: false },
