@@ -3,10 +3,12 @@
     SWITCH
   </app-shared-outlined-button>
   <app-shared-dropdown
+    [variant]="'small'"
     [buttonLabel]="'Assign'"
     [options]="stations"
     *ngIf="dropdownOpen && selectedRoom?.id"
     (close)="closeDropdown($event)"
+    [elementType]="'station'"
   />
 </div>
 <ng-template #dropdown></ng-template>

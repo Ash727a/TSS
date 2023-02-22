@@ -1,4 +1,8 @@
-<form #myForm="ngForm" (ngSubmit)="onSubmit()" class="dropdown-container">
+<form
+  #myForm="ngForm"
+  (ngSubmit)="onSubmit()"
+  [ngClass]="{ 'dropdown-container': true, small: variant === 'small', large: variant === 'large' }"
+>
   <div class="dropdown">
     <ul class="list-group">
       <li
@@ -7,11 +11,18 @@
         *ngFor="let item of options; let index = index"
         class="item"
       >
-        <app-shared-station-tag station="{{ item.value }}" [selected]="index === activeIndex">{{
-          item.value
-        }}</app-shared-station-tag>
+        <app-shared-station-tag
+          *ngIf="elementType === 'station'"
+          station="{{ item.value }}"
+          [selected]="index === activeIndex"
+        >
+          {{ item.value }}
+        </app-shared-station-tag>
+        <h4 *ngIf="elementType === 'default'">{{ item.value }}</h4>
       </li>
     </ul>
   </div>
-  <button type="submit" *ngIf="startingActiveIndex !== activeIndex" class="submit-button"><h5>{{ buttonLabel }}</h5></button>
+  <button type="submit" *ngIf="startingActiveIndex !== activeIndex" class="submit-button">
+    <h5>{{ buttonLabel }}</h5>
+  </button>
 </form>

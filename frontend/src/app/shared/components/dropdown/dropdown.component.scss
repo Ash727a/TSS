@@ -1,17 +1,36 @@
 @import 'src/styles/styles.scss';
 
-$max-height: 10rem;
-$min-width: 5rem;
+// VARIANT = "small"
+$small-max-height: 10rem;
+$small-min-width: 5rem;
+
+// VARIANT = "large"
+$large-max-height: 20rem;
+$large-min-width: 10rem;
 
 .dropdown-container {
-  min-width: $min-width;
   position: absolute;
   z-index: 1000;
+
+  &.small {
+    min-width: $small-min-width;
+
+    ul {
+      max-height: $small-max-height;
+    }
+  }
+
+  &.large {
+    min-width: $large-min-width;
+
+    ul {
+      max-height: $large-max-height;
+    }
+  }
 
   .dropdown {
     border-radius: 0.5rem;
     background-color: $secondary;
-
   }
 
   .submit-button {
@@ -25,12 +44,12 @@ $min-width: 5rem;
     transition: all 0.1s ease-in-out;
 
     &:hover {
-        opacity: 0.9;
-        background-color: $green;
+      opacity: 0.9;
+      background-color: $green;
     }
 
     & * {
-        font-weight: 500;
+      font-weight: 500;
     }
   }
 }
@@ -45,12 +64,20 @@ ul {
   padding: 0;
   position: relative;
   overflow-y: auto;
-  max-height: $max-height;
   list-style: none;
+
   li {
     padding: 0.5rem 0.5rem;
     color: black;
     min-height: 1rem;
+
+    &:hover {
+      cursor: pointer;
+
+      &:not(.activeOption) {
+        opacity: 0.7;
+      }
+    }
   }
 }
 

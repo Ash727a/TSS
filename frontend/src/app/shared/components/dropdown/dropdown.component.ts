@@ -15,6 +15,8 @@ export class DropdownComponent implements OnInit {
   protected startingActiveIndex: number = 0;
   protected activeIndex: number = 0;
 
+  @Input('variant') variant: "small" | "large" = "large";
+  @Input('elementType') elementType: "default" | "station" = "default";
   @Input('buttonLabel') buttonLabel: string = 'Select';
   @Input('options') options: { isActive?: boolean; value: string }[] = [];
   @Input('hasNoneSelection') hasNoneSelection: boolean = true;
