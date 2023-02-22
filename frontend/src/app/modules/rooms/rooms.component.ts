@@ -19,22 +19,11 @@ export class RoomsComponent implements OnInit, OnDestroy {
   public rooms: Room[] = [];
   public selectedRoom: Room | null = null;
   protected modalOpen = false;
-  protected dropdownOpen = false;
-  protected stations = [
-    { value: 'UIA', isActive: false },
-    { value: 'GEO', isActive: false },
-    { value: 'ROV', isActive: false },
-  ];
 
   @ViewChild('modal', { read: ViewContainerRef }) private entry!: ViewContainerRef;
   private sub!: Subscription;
 
   @ViewChild('modal') private modalContentRef!: TemplateRef<any>;
-
-  @ViewChild('dropdown', { read: ViewContainerRef }) private dropdownEntry!: ViewContainerRef;
-  private dropdownSub!: Subscription;
-
-  @ViewChild('dropdown') private dropdownContentRef!: TemplateRef<any>;
 
   constructor(
     private modalService: ModalService,
@@ -77,26 +66,22 @@ export class RoomsComponent implements OnInit, OnDestroy {
       });
     });
 
-      // this.rooms = this.rooms.map((room: any) => {
-      //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
-      //   room.stationName = stationName;
-      //   return room;
-      // });
-      // })
-      // this.telemetryService.getAllRoomTelemetry().then((result) => {
-      //   this.rooms = this.rooms.map((room: any) => {
-      //     let isRunning = result.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
-      //     room.status = isRunning ? 'green' : 'gray';
-      //     return room;
-      //   });
-      // });
+    // this.rooms = this.rooms.map((room: any) => {
+    //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
+    //   room.stationName = stationName;
+    //   return room;
+    // });
+    // })
+    // this.telemetryService.getAllRoomTelemetry().then((result) => {
+    //   this.rooms = this.rooms.map((room: any) => {
+    //     let isRunning = result.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
+    //     room.status = isRunning ? 'green' : 'gray';
+    //     return room;
+    //   });
+    // });
   }
 
   protected openModal(room: Room) {
-    console.log('drop', this.dropdownOpen)
-    if (this.dropdownOpen) {
-      return;
-    }
     this.modalOpen = true;
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
@@ -110,92 +95,20 @@ export class RoomsComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  protected openDropdown(room: Room) {
-    if (this.modalOpen) {
-      return;
-    }
-    this.selectedRoom = room;
-    for (const station of this.stations) {
-      station.isActive = station.value === room.stationName;
-    }
-    // Wait a little bit for a HTML to update so the correct data is displayed in the modal
-    setTimeout(() => {
-      this.dropdownOpen = true;
-      this.dropdownSub = this.modalService
-        .openModal(this.dropdownEntry, this.dropdownContentRef, false)
-        .subscribe((v) => {
-          if (v === 'close') {
-            this.selectedRoom = null;
-            this.dropdownOpen = false;
-          }
-        });
-    }, 100);
-  }
-
-  protected closeDropdown(event: any) {
-    const { type, index } = event;
-    if (this.selectedRoom && type === 'close') {
-      const stationName = index !== 0 ? this.stations[index].value : '';
-      this.handleStationSwitch(stationName);
-    }
-    this.selectedRoom = null;
-    this.dropdownOpen = false;
-    this.modalService.closeModal();
-    this.refreshRoomData();
-  }
-
   protected dropdownVisibilityChanged(event: any) {
     const { type } = event;
-    console.log(type)
+    console.log(type);
     if (type === 'close') {
-      this.dropdownOpen = false;
       this.refreshRoomData();
-    } else if (type === 'open') {
-      this.dropdownOpen = true;
     }
   }
-
-  private handleStationSwitch(stationName: string) {
-    if (!this.selectedRoom) {
-      return;
-    }
-    const previousAssignedRoomID = this.rooms.find(
-      (room) => room.stationName === stationName &&
-                room.id !== this.selectedRoom?.id &&
-                room.stationName !== 'None' &&
-                room.stationName !== ''
-      )?.id ;
-    // If the room is already assigned to the station, unassign it
-    if (previousAssignedRoomID !== undefined) {
-      const payload = {
-        id: previousAssignedRoomID,
-        stationName: '',
-      };
-      this.roomsService.updateRoomById(previousAssignedRoomID, payload).then((result) => {
-      });
-    }
-    // Assign the room to the station
-    const payload = {
-      ...this.selectedRoom,
-      stationName,
-    };
-    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {
-    });
-  }
-
 
   ngOnDestroy(): void {
-    if (this.sub || this.dropdownSub) {
+    if (this.sub) {
       this.sub?.unsubscribe();
-      this.dropdownSub?.unsubscribe();
       this.selectedRoom = null;
       this.modalOpen = false;
-      this.dropdownOpen = false;
     }
     clearInterval(this.pollRoomStatusInterval);
-  }
-
-  protected switch() {
-    console.log('switch clicked');
   }
 }

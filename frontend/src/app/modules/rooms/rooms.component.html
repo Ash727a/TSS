@@ -11,7 +11,9 @@
           <h5>Room {{ room.id }}</h5>
         </div>
         <div class="item right">
-          <app-shared-station-tag [station]="room.stationName" [selected]="true">{{ room.stationName }}</app-shared-station-tag>
+          <app-shared-station-tag [station]="room.stationName" [selected]="true">{{
+            room.stationName
+          }}</app-shared-station-tag>
           <app-shared-switch-station-button
             (click)="$event.stopPropagation()"
             [selectedRoom]="selectedRoom"
@@ -19,7 +21,7 @@
             [room]="room"
             (changeEvent)="dropdownVisibilityChanged($event)"
             [disabledDropdown]="modalOpen"
-            />
+          />
         </div>
       </div>
     </div>

@@ -1,18 +1,26 @@
-import { Component, Input, Output, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ViewContainerRef,
+  TemplateRef,
+  EventEmitter,
+} from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 import { Room } from '@core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 
-
 @Component({
   selector: 'app-shared-switch-station-button',
   templateUrl: './switch-station-button.component.html',
-  styleUrls: ['./switch-station-button.component.scss']
+  styleUrls: ['./switch-station-button.component.scss'],
 })
 export class SwitchStationButtonComponent implements OnInit, OnDestroy {
-  protected loaded = false;
   @Input() public rooms: Room[] = [];
   @Input() public room: Room | null = null;
   @Input() public selectedRoom: Room | null = null;
@@ -32,26 +40,19 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
 
   @ViewChild('dropdown') private dropdownContentRef!: TemplateRef<any>;
 
-  constructor(
-    private modalService: ModalService,
-    private roomsService: RoomsService,
-  ) {}
+  constructor(private modalService: ModalService, private roomsService: RoomsService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   protected openDropdown(room: Room | null) {
     if (!room || this.disabledDropdown) return;
-    // if (this.modalOpen) {
-    //   return;
-    // }
     this.selectedRoom = room;
     for (const station of this.stations) {
       station.isActive = station.value === room.stationName;
     }
     const payload = {
-      type: 'open'
-    }
+      type: 'open',
+    };
     this.changeEvent.emit(payload);
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
@@ -63,9 +64,9 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
             this.selectedRoom = null;
             this.dropdownOpen = false;
             const payload = {
-              type: 'close'
-            }
-            this.changeEvent.emit(payload);;
+              type: 'close',
+            };
+            this.changeEvent.emit(payload);
           }
         });
     }, 100);
@@ -81,10 +82,9 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     this.dropdownOpen = false;
     this.modalService.closeModal();
     const payload = {
-      type: 'close'
-    }
+      type: 'close',
+    };
     this.changeEvent.emit(payload);
-    // this.refreshRoomData();
   }
 
   private handleStationSwitch(stationName: string) {
@@ -92,29 +92,27 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
       return;
     }
     const previousAssignedRoomID = this.rooms.find(
-      (room) => room.stationName === stationName &&
-                room.id !== this.selectedRoom?.id &&
-                room.stationName !== 'None' &&
-                room.stationName !== ''
-      )?.id ;
+      (room) =>
+        room.stationName === stationName &&
+        room.id !== this.selectedRoom?.id &&
+        room.stationName !== 'None' &&
+        room.stationName !== ''
+    )?.id;
     // If the room is already assigned to the station, unassign it
     if (previousAssignedRoomID !== undefined) {
       const payload = {
         id: previousAssignedRoomID,
         stationName: '',
       };
-      this.roomsService.updateRoomById(previousAssignedRoomID, payload).then((result) => {
-      });
+      this.roomsService.updateRoomById(previousAssignedRoomID, payload).then((result) => {});
     }
     // Assign the room to the station
     const payload = {
       ...this.selectedRoom,
       stationName,
     };
-    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {
-    });
+    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {});
   }
-
 
   ngOnDestroy(): void {
     if (this.dropdownSub) {
@@ -122,9 +120,5 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
       this.selectedRoom = null;
       this.dropdownOpen = false;
     }
-  }
-
-  protected switch() {
-    console.log('switch clicked');
   }
 }

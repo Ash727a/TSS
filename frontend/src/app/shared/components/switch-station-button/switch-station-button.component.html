@@ -2,10 +2,6 @@
   <app-shared-outlined-button (click)="$event.stopPropagation(); openDropdown(room)">
     SWITCH
   </app-shared-outlined-button>
-  <app-shared-dropdown
-    [options]="stations"
-    *ngIf="dropdownOpen && selectedRoom?.id"
-    (close)="closeDropdown($event)"
-  />
+  <app-shared-dropdown [options]="stations" *ngIf="dropdownOpen && selectedRoom?.id" (close)="closeDropdown($event)" />
 </div>
 <ng-template #dropdown></ng-template>
