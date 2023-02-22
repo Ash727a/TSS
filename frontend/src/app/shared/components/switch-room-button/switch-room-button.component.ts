@@ -70,7 +70,7 @@ export class SwitchRoomButtonComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.rooms.length; i++) {
       const each = this.rooms[i];
       this.roomChoices.push({
-        value: `${each.id} ${each.name}`,
+        value: `${each.id} - ${each.name}`,
         isActive: each.id === this.selectedRoom.id,
       });
     }
