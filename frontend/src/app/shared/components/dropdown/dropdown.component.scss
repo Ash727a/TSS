@@ -8,48 +8,52 @@ $small-min-width: 5rem;
 $large-max-height: 20rem;
 $large-min-width: 10rem;
 
-.dropdown-container {
-  position: absolute;
+.parent-container {
+  position: sticky;
   z-index: 1000;
 
-  &.small {
-    min-width: $small-min-width;
-
-    ul {
-      max-height: $small-max-height;
+  .dropdown-container {
+    position: absolute;
+  
+    &.small {
+      min-width: $small-min-width;
+  
+      ul {
+        max-height: $small-max-height;
+      }
     }
-  }
-
-  &.large {
-    min-width: $large-min-width;
-
-    ul {
-      max-height: $large-max-height;
+  
+    &.large {
+      min-width: $large-min-width;
+  
+      ul {
+        max-height: $large-max-height;
+      }
     }
-  }
 
-  .dropdown {
-    border-radius: 0.5rem;
-    background-color: $secondary;
-  }
-
-  .submit-button {
-    margin-top: 0.2rem;
-    background-color: $green;
-    color: white;
-    border-radius: 0.3rem;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    cursor: pointer;
-    transition: all 0.1s ease-in-out;
-
-    &:hover {
-      opacity: 0.9;
+    .dropdown {
+      border-radius: 0.5rem;
+      background-color: $secondary;
+    }
+  
+    .submit-button {
+      margin-top: 0.2rem;
       background-color: $green;
-    }
-
-    & * {
-      font-weight: 500;
+      color: white;
+      border-radius: 0.3rem;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.1s ease-in-out;
+  
+      &:hover {
+        opacity: 0.9;
+        background-color: $green;
+      }
+  
+      & * {
+        font-weight: 500;
+      }
     }
   }
 }
@@ -62,7 +66,6 @@ $large-min-width: 10rem;
 ul {
   margin: 0;
   padding: 0;
-  position: relative;
   overflow-y: auto;
   list-style: none;
 

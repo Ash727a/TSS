@@ -97,7 +97,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   protected dropdownVisibilityChanged(event: any) {
     const { type } = event;
-    console.log(type);
     if (type === 'close') {
       this.refreshRoomData();
     }

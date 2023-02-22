@@ -24,6 +24,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // console.log('Modal destroyed');
+    console.log('Modal destroyed');
   }
 }

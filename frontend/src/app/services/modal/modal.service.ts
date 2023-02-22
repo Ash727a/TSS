@@ -26,6 +26,7 @@ export class ModalService {
   }
 
   closeModal() {
+    console.log('here, close')
     this.componentSubscriber.next('close');
     this.windowScrolling.enable();
     this.componentSubscriber.complete();
