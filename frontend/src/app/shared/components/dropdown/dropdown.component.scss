@@ -70,6 +70,9 @@ ul {
     padding: 0.5rem 0.5rem;
     color: black;
     min-height: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
       cursor: pointer;

@@ -1,6 +1,5 @@
 @import 'src/styles/styles.scss';
 
-
 .container {
   width: 100%;
   display: flex;
@@ -43,5 +42,8 @@ div {
   .fixed-width {
     width: 6rem;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

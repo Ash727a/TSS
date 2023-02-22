@@ -8,6 +8,10 @@
 
     h5 {
         font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        padding: 0rem 0.5rem;
     }
 }
 
