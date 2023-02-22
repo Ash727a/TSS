@@ -16,8 +16,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
   private static readonly POLL_ROOM_STATUS_INTERVAL: number = 3000; // The rate at which the simulation data is fetched from the backend
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
   protected loaded = false;
-  protected rooms: Room[] = [];
-  protected selectedRoom: Room | null = null;
+  public rooms: Room[] = [];
+  public selectedRoom: Room | null = null;
   protected modalOpen = false;
   protected dropdownOpen = false;
   protected stations = [
@@ -93,6 +93,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   protected openModal(room: Room) {
+    console.log('drop', this.dropdownOpen)
     if (this.dropdownOpen) {
       return;
     }
@@ -141,6 +142,17 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.dropdownOpen = false;
     this.modalService.closeModal();
     this.refreshRoomData();
+  }
+
+  protected dropdownVisibilityChanged(event: any) {
+    const { type } = event;
+    console.log(type)
+    if (type === 'close') {
+      this.dropdownOpen = false;
+      this.refreshRoomData();
+    } else if (type === 'open') {
+      this.dropdownOpen = true;
+    }
   }
 
   private handleStationSwitch(stationName: string) {

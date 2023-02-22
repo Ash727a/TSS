@@ -21,6 +21,7 @@ import { ControllerComponent } from './modules/telemetry/controller/controller.c
 import { StateComponent } from './modules/telemetry/state/state.component';
 import { ModalComponent } from './shared/components/modal/modal.component';
 import { DropdownComponent } from './shared/components/dropdown/dropdown.component';
+import { SwitchStationButtonComponent } from './shared/components/switch-station-button/switch-station-button.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { DropdownComponent } from './shared/components/dropdown/dropdown.compone
     StateComponent,
     ModalComponent,
     DropdownComponent,
+    SwitchStationButtonComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
