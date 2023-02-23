@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
-import { Switch, TelemetryData, Room } from '@app/core/interfaces';
+import { TelemetryData, Room, SimulationError, SimulationErrorKey, SimulationErrorData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
@@ -18,31 +18,31 @@ export class ControllerComponent {
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
   protected connected: boolean | undefined = undefined; // bool for the room's simulation connection status
   private simulationState: 'start' | 'stop' | '' = ''; // Not really used except locally, used as a string for API method
-  protected switches: any; // Array of simulation error switches the CAPCOM can throw in the sim
+  protected switches: SimulationError[]; // Array of simulation error switches the CAPCOM can throw in the sim
   private simInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
   protected telemetryData: TelemetryData = {} as TelemetryData; // Data passed in from the backend of the generated simulation
-  protected simulationErrorData: any;
+  protected simulationErrorData: SimulationErrorData = {} as SimulationErrorData;
 
   constructor(private roomsService: RoomsService, private telemetryService: TelemetryService) {
     this.switches = [
-      { key: 'o2_error', name: 'O2 ERROR', value: false },
-      { key: 'pump_error', name: 'PUMP ERROR', value: false },
-      { key: 'fan_error', name: 'FAN ERROR', value: false },
-      { key: 'power_error', name: 'POWER ERROR', value: false },
+      { key: SimulationErrorKey.O2_ERROR, name: 'O2 ERROR', value: false },
+      { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP ERROR', value: false },
+      { key: SimulationErrorKey.FAN_ERROR, name: 'FAN ERROR', value: false },
+      { key: SimulationErrorKey.POWER_ERROR, name: 'POWER ERROR', value: false },
     ];
   }
 
-  ngOnInit() {
-    let roomID = this.selectedRoom?.id ?? ControllerComponent.DEFAULT_ROOM_ID;
+  ngOnInit(): void {
+    let roomID: number = this.selectedRoom?.id ?? ControllerComponent.DEFAULT_ROOM_ID;
     // If no room is selected, get Room 1 data and default to Room 1
     if (this.selectedRoom === null) {
       // Get the default room
-      this.roomsService.getRoomById(roomID).then((result) => {
+      this.roomsService.getRoomById(roomID).then((result: Room) => {
         this.selectedRoom = result;
       });
     }
     // Get the telemetry data for the room
-    this.telemetryService.getTelemetryByRoomID(roomID).then((result) => {
+    this.telemetryService.getTelemetryByRoomID(roomID).then((result: TelemetryData) => {
       // If the simulation is running, then start fetching and emitting that data from the running simulation
       if (result?.isRunning) {
         this.fetchAndEmitDataOnInterval();
@@ -51,14 +51,14 @@ export class ControllerComponent {
       }
     });
 
-    this.telemetryService.getSimulationErrorsByRoomID(roomID).then((result) => {
+    this.telemetryService.getSimulationErrorsByRoomID(roomID).then((result: SimulationErrorData) => {
       // Set the metadata for the switches
       this.simulationErrorData = result;
       // Set the switch values and remove from the metadata object
       for (let i = 0; i < this.switches.length; i++) {
-        let keyName = this.switches[i].key;
-        this.switches[i].value = result[keyName];
-        delete this.simulationErrorData[keyName];
+        const keyName: SimulationErrorKey = this.switches[i].key;
+        this.switches[i].value = (this.simulationErrorData as any)[keyName];
+        delete (this.simulationErrorData as any)[keyName];
       }
     });
   }
@@ -66,7 +66,7 @@ export class ControllerComponent {
   /**
    * Fetches the simulation data from the backend and emits it to the parent component
    */
-  private fetchAndEmitDataOnInterval() {
+  private fetchAndEmitDataOnInterval(): void {
     // Start the interval of getting the simulation data then emitting it
     this.simInterval = setInterval(() => {
       this.getSimulationData();
@@ -80,7 +80,7 @@ export class ControllerComponent {
    * When the user presses the START button, start a new simulation with the selected room
    * @returns
    */
-  protected startTelemetry() {
+  protected startTelemetry(): void {
     // Check if a room is selected
     if (!this.selectedRoom?.id) {
       return;
@@ -101,7 +101,7 @@ export class ControllerComponent {
   /**
    * Gets the telemetry simulation data from the backend by room ID
    */
-  private getSimulationData() {
+  private getSimulationData(): void {
     if (!this.selectedRoom?.id) {
       return;
     }
@@ -119,7 +119,7 @@ export class ControllerComponent {
    * When the user presses the STOP button, stop the simulation and reset the switches to default
    * @returns
    */
-  protected stopTelemetry() {
+  protected stopTelemetry(): void {
     if (!this.selectedRoom?.id) {
       return;
     }
@@ -133,7 +133,7 @@ export class ControllerComponent {
     });
   }
 
-  protected shouldAnimationStart() {
+  protected shouldAnimationStart(): boolean {
     // Only return true every five seconds
     const date = new Date();
     const seconds = date.getSeconds();
@@ -147,7 +147,7 @@ export class ControllerComponent {
    * Handler for when an error switch is flipped
    * @param event
    */
-  protected handleChange(event: any) {
+  protected handleChange(event: any): void {
     this.switches[event.id].value = event.value;
     this.updateSwitchErrorsData();
   }
@@ -155,9 +155,9 @@ export class ControllerComponent {
   /**
    * Updates the simulation errors data in the backend
    */
-  private updateSwitchErrorsData() {
-    this.switches.forEach((s: any) => {
-      this.simulationErrorData[s.key] = s.value;
+  private updateSwitchErrorsData(): void {
+    this.switches.forEach((s: SimulationError) => {
+      (this.simulationErrorData as any)[s.key] = s.value;
     });
     this.telemetryService
       .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)
@@ -167,16 +167,16 @@ export class ControllerComponent {
   /**
    * Resets the switches to their default values
    */
-  private resetSwitchesToDefault() {
-    this.switches.forEach((s: any) => {
+  private resetSwitchesToDefault(): void {
+    this.switches.forEach((s: SimulationError) => {
       s.value = false;
     });
     this.updateSwitchErrorsData();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     // If the selected room changes, get the new room's telemetry data
-    const newRoom = changes['selectedRoom']?.currentValue;
+    const newRoom: Room = changes['selectedRoom']?.currentValue;
     if (newRoom) {
       this.ngOnInit();
     }

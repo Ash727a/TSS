@@ -54,11 +54,6 @@ export interface ValueSensor {
   value: string | number;
 }
 
-export interface Switch {
-  name: string;
-  value: boolean;
-}
-
 export enum SimulationErrorKey {
   FAN_ERROR = 'fan_error',
   O2_ERROR = 'o2_error',

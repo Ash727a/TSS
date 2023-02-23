@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { TelemetryData, SimulationErrorData } from '@app/core/interfaces';
 
 const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
@@ -12,7 +13,7 @@ export class TelemetryService {
   async simulationControl(roomID: number, command: string): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationcontrol/sim/${roomID}/${command}`))
       .then((result) => {
-        return result;
+        return result as { ok: boolean, event: string };
       })
       .catch((e) => {
         return { ok: false, err: e };
@@ -22,7 +23,7 @@ export class TelemetryService {
   async getTelemetryByRoomID(roomID: number): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate/room/${roomID}`))
       .then((result) => {
-        let res: Object[] = result as Object[];
+        let res: TelemetryData[] = result as TelemetryData[];
         return res[0];
       })
       .catch((e) => {
@@ -33,7 +34,7 @@ export class TelemetryService {
   async getAllRoomTelemetry(): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate`))
       .then((result) => {
-        let res: Object[] = result as Object[];
+        let res: TelemetryData[] = result as TelemetryData[];
         return res;
       })
       .catch((e) => {
@@ -44,7 +45,7 @@ export class TelemetryService {
   async getAllSimulationErrors(): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure`))
       .then((result) => {
-        let res: Object[] = result as Object[];
+        let res: SimulationErrorData[] = result as SimulationErrorData[];
         return res;
       })
       .catch((e) => {
@@ -56,7 +57,7 @@ export class TelemetryService {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure/room/${roomID}`))
       .then((result) => {
         let res: Object[] = result as Object[];
-        return res[0];
+        return res[0] as SimulationErrorData;
       })
       .catch((e) => {
         return { ok: false, err: e };
