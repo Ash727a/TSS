@@ -1,30 +1,3 @@
-export interface Room {
-  id: number;
-  name: string;
-  status: string;
-  station: string;
-  updatedAt: Date;
-  createdAt: Date;
-  users: number;
-  stationName: string;
-  errors: any[];
-}
-
-export interface StatusSensor {
-  name: string;
-  status: boolean;
-}
-
-export interface ValueSensor {
-  name: string;
-  value: string | number;
-}
-
-export interface Switch {
-  name: string;
-  value: boolean;
-}
-
 export interface TelemetryData {
   id: number;
   room: number;
@@ -59,20 +32,36 @@ export interface TelemetryData {
   updatedAt: Date;
 }
 
-export interface UIAData {
-  O2_vent: boolean;
-  createdAt: Date;
-  depress_pump: boolean;
-  emu1: boolean;
-  emu1_O2: boolean;
-  emu2: boolean;
-  emu2_O2: boolean;
-  ev1_supply: boolean;
-  ev1_waste: boolean;
-  ev2_supply: boolean;
-  ev2_waste: boolean;
+export interface SimulationErrorData {
   id: number;
   room: number;
-  started_at: Date;
+  fan_error: boolean;
+  o2_error: boolean;
+  power_error: boolean;
+  pump_error: boolean;
+  createdAt: Date;
   updatedAt: Date;
+}
+
+export interface SimulationError {
+  key: SimulationErrorKey;
+  name: string;
+  value: boolean;
+}
+
+export interface ValueSensor {
+  name: string;
+  value: string | number;
+}
+
+export interface Switch {
+  name: string;
+  value: boolean;
+}
+
+export enum SimulationErrorKey {
+  FAN_ERROR = 'fan_error',
+  O2_ERROR = 'o2_error',
+  POWER_ERROR = 'power_error',
+  PUMP_ERROR = 'pump_error',
 }

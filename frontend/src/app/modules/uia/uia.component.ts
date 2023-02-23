@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Room, StatusSensor, UIAData } from '@core/interfaces';
+import { Room, StatusSensor, UIAData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { UIAService } from '@services/api/uia.service';

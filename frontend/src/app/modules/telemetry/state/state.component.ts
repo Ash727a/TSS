@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { ValueSensor, TelemetryData } from '@core/interfaces';
+import { ValueSensor, TelemetryData } from '@app/core/interfaces';
 
 @Component({
   selector: 'app-telemetry-state',

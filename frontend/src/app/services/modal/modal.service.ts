@@ -3,7 +3,7 @@ import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef, T
 import { Subject } from 'rxjs';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 import { WindowScrollingService } from '@services/window-scrolling/window-scrolling.service';
-
+import { ModalEvent } from '@app/core/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
@@ -26,15 +26,14 @@ export class ModalService {
   }
 
   closeModal() {
-    console.log('here, close')
-    this.componentSubscriber.next('close');
+    this.componentSubscriber.next(ModalEvent.CLOSE);
     this.windowScrolling.enable();
     this.componentSubscriber.complete();
     this.componentRef.destroy();
   }
 
   confirm() {
-    this.componentSubscriber.next('confirm');
+    this.componentSubscriber.next(ModalEvent.CONFIRM);
     this.closeModal();
   }
 }

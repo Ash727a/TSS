@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TelemetryData, Room } from '@core/interfaces';
+import { TelemetryData, Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 

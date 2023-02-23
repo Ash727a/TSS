@@ -1,7 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
-import { Room } from '@core/interfaces';
+import {
+  Room,
+  SimulationError,
+  TelemetryData,
+  SimulationErrorData,
+  ModalEvent,
+  SimulationErrorKey,
+} from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
@@ -15,10 +22,10 @@ import { TelemetryService } from '@services/api/telemetry.service';
 export class RoomsComponent implements OnInit, OnDestroy {
   private static readonly POLL_ROOM_STATUS_INTERVAL: number = 3000; // The rate at which the simulation data is fetched from the backend
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
-  protected loaded = false;
+  protected loaded: boolean = false;
   public rooms: Room[] = [];
   public selectedRoom: Room | null = null;
-  protected modalOpen = false;
+  protected modalOpen: boolean = false;
 
   @ViewChild('modal', { read: ViewContainerRef }) private entry!: ViewContainerRef;
   private sub!: Subscription;
@@ -34,7 +41,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.roomsService
       .getRooms()
-      .then((result) => {
+      .then((result: Room[]) => {
         this.rooms = result;
       })
       .catch((e) => {
@@ -47,32 +54,32 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.startPollRoomStatus();
   }
 
-  private startPollRoomStatus() {
+  private startPollRoomStatus(): void {
     this.pollRoomStatusInterval = setInterval(() => {
       this.refreshRoomData();
     }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
-  private refreshRoomData() {
-    this.roomsService.getRooms().then((roomsResult) => {
-      this.telemetryService.getAllSimulationErrors().then((errorsResult) => {
-        this.telemetryService.getAllRoomTelemetry().then((telemetryResult) => {
+  private refreshRoomData(): void {
+    this.roomsService.getRooms().then((roomsResult: Room[]) => {
+      this.telemetryService.getAllSimulationErrors().then((errorsResult: SimulationErrorData[]): void => {
+        this.telemetryService.getAllRoomTelemetry().then((telemetryResult): void => {
           // Update all the room data with the latest data from the backend
-          this.rooms = this.rooms.map((room: any) => {
-            let stationName = roomsResult.filter((data: any) => data.id === room.id)[0].stationName;
-            let isRunning = telemetryResult.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
-            let errors = [
-              { key: 'o2_error', name: 'O2', value: false },
-              { key: 'pump_error', name: 'PUMP', value: false },
-              { key: 'fan_error', name: 'FAN', value: false },
-              { key: 'power_error', name: 'POWER', value: false },
+          this.rooms = this.rooms.map((room: Room): Room => {
+            let stationName: string = roomsResult.filter((data: Room) => data.id === room.id)[0].stationName;
+            let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.id === room.id)[0].isRunning;
+            let errors: SimulationError[] = [
+              { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
+              { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },
+              { key: SimulationErrorKey.FAN_ERROR, name: 'FAN', value: false },
+              { key: SimulationErrorKey.POWER_ERROR, name: 'POWER', value: false },
             ];
             for (const error of errors) {
-              let errorKey = error.key;
+              let errorKey: SimulationErrorKey = error.key;
               // Subtract by 1 because the room id starts at 1, but the array index starts at 0
-              const roomErrorObject = errorsResult[room.id - 1];
-              if (roomErrorObject.room === room.id && roomErrorObject[errorKey]) {
-                error.value = roomErrorObject[errorKey] ?? false;
+              const roomErrorObject: SimulationErrorData = errorsResult[room.id - 1];
+              if (roomErrorObject.room === room.id && (roomErrorObject as any)[errorKey]) {
+                error.value = (roomErrorObject as any)[errorKey] ?? false;
               }
             }
             room.errors = errors;
@@ -111,13 +118,13 @@ export class RoomsComponent implements OnInit, OnDestroy {
     // });
   }
 
-  protected openModal(room: Room) {
+  protected openModal(room: Room): void {
     this.modalOpen = true;
     this.selectedRoom = room;
     // Wait a little bit for a HTML to update so the correct data is displayed in the modal
     setTimeout(() => {
-      this.sub = this.modalService.openModal(this.entry, this.modalContentRef).subscribe((v) => {
-        if (v === 'close') {
+      this.sub = this.modalService.openModal(this.entry, this.modalContentRef).subscribe((v: string) => {
+        if (v === ModalEvent.CLOSE) {
           this.selectedRoom = null;
           this.modalOpen = false;
         }
@@ -125,9 +132,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  protected dropdownVisibilityChanged(event: any) {
+  protected dropdownVisibilityChanged(event: any): void {
     const { type } = event;
-    if (type === 'close') {
+    if (type === ModalEvent.CLOSE) {
       this.refreshRoomData();
     }
   }

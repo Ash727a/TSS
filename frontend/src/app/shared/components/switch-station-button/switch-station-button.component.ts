@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
-import { Room } from '@core/interfaces';
+import { Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
-import { Switch, TelemetryData, Room } from '@core/interfaces';
+import { Switch, TelemetryData, Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
