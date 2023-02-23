@@ -29,6 +29,15 @@
         flex-direction: row;
         align-items: center;
         gap: 2.5rem;
+
+        .error-label {
+          color: $red;
+          font-weight: 500;
+          font-size: 0.8rem;
+          font-weight: bold;
+          opacity: 0.7;
+          text-align: center;
+        }
       }
     }
   }
@@ -45,5 +54,9 @@ div {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.small {
+      width: 3rem;
+    }
   }
 }

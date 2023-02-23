@@ -7,6 +7,7 @@ export interface Room {
   createdAt: Date;
   users: number;
   stationName: string;
+  errors: any[];
 }
 
 export interface StatusSensor {

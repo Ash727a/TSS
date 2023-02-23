@@ -65,6 +65,10 @@
   }
 }
 
+.disabled {
+  opacity: 0.5;
+}
+
 @keyframes blinking {
   0% {
     opacity: 0;

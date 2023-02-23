@@ -40,4 +40,37 @@ export class TelemetryService {
         return { ok: false, err: e };
       });
   }
+
+  async getAllSimulationErrors(): Promise<any> {
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return res;
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
+
+  async getSimulationErrorsByRoomID(roomID: number): Promise<any> {
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure/room/${roomID}`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return res[0];
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
+
+  async updateSimulationErrorsByID(id: number, errors: any): Promise<any> {
+    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationfailure/${id}`, errors))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return res;
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

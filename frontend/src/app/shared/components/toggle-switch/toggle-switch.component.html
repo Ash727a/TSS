@@ -1,4 +1,4 @@
 <label class="switch">
-  <input type="checkbox" [checked]="isErroring" (change)="onChange($event, id)" />
+  <input type="checkbox" [checked]="isErroring" [disabled]="disabled" (change)="onChange($event, id)" />
   <span class="slider round" [ngClass]="type"></span>
 </label>

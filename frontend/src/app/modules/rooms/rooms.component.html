@@ -9,6 +9,9 @@
             <h5>{{ room.name }}</h5>
           </div>
           <h5>Room {{ room.id }}</h5>
+          <div *ngFor="let error of room.errors" class="fixed-width small">
+            <h5 class="error-label">{{ error.value ? error.name : '' }}</h5>
+          </div>
         </div>
         <div class="item right">
           <app-shared-station-tag [station]="room.stationName" [selected]="true">{{

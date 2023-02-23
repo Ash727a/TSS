@@ -55,13 +55,31 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   private refreshRoomData() {
     this.roomsService.getRooms().then((roomsResult) => {
-      this.telemetryService.getAllRoomTelemetry().then((telemetryResult) => {
-        this.rooms = this.rooms.map((room: any) => {
-          let stationName = roomsResult.filter((data: any) => data.id === room.id)[0].stationName;
-          let isRunning = telemetryResult.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
-          room.status = isRunning ? 'green' : 'gray';
-          room.stationName = stationName;
-          return room;
+      this.telemetryService.getAllSimulationErrors().then((errorsResult) => {
+        this.telemetryService.getAllRoomTelemetry().then((telemetryResult) => {
+          // Update all the room data with the latest data from the backend
+          this.rooms = this.rooms.map((room: any) => {
+            let stationName = roomsResult.filter((data: any) => data.id === room.id)[0].stationName;
+            let isRunning = telemetryResult.filter((data: { id: number }) => data.id === room.id)[0].isRunning;
+            let errors = [
+              { key: 'o2_error', name: 'O2', value: false },
+              { key: 'pump_error', name: 'PUMP', value: false },
+              { key: 'fan_error', name: 'FAN', value: false },
+              { key: 'power_error', name: 'POWER', value: false },
+            ];
+            for (const error of errors) {
+              let errorKey = error.key;
+              // Subtract by 1 because the room id starts at 1, but the array index starts at 0
+              const roomErrorObject = errorsResult[room.id - 1];
+              if (roomErrorObject.room === room.id && roomErrorObject[errorKey]) {
+                error.value = roomErrorObject[errorKey] ?? false;
+              }
+            }
+            room.errors = errors;
+            room.status = isRunning ? 'green' : 'gray';
+            room.stationName = stationName;
+            return room;
+          });
         });
       });
     });
@@ -78,6 +96,18 @@ export class RoomsComponent implements OnInit, OnDestroy {
     //     room.status = isRunning ? 'green' : 'gray';
     //     return room;
     //   });
+    // });
+
+    // TODO: Separate Later
+    // Update the simulator errors
+    // this.telemetryService.getAllSimulationErrors().then((result) => {
+    // console.log('Errors', result);
+    // this.simulationErrorData = result;
+    // this.rooms = this.rooms.map((room: any) => {
+    //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
+    //   room.stationName = stationName;
+    //   return room;
+    // });
     // });
   }
 
