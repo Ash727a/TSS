@@ -102,21 +102,8 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     if (!this.selectedRoom) {
       return;
     }
-    const previousAssignedRoomID = this.rooms.find(
-      (room) =>
-        room.stationName === stationName &&
-        room.id !== this.selectedRoom?.id &&
-        room.stationName !== 'None' &&
-        room.stationName !== ''
-    )?.id;
-    // If the room is already assigned to the station, unassign it
-    if (previousAssignedRoomID !== undefined) {
-      const payload = {
-        id: previousAssignedRoomID,
-        stationName: '',
-      };
-      this.roomsService.updateRoomById(previousAssignedRoomID, payload);
-    }
+    // Prevents multiple rooms being assigned to the same station
+    this.roomsService.unassignPreviouslyAssignedRoom(stationName);
     // Assign the room to the station
     const payload = {
       ...this.selectedRoom,

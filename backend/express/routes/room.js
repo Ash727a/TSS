@@ -21,6 +21,16 @@ async function getById(req, res) {
 	}
 };
 
+async function getRoomByStationName(req, res) {
+	const stationName = req.params.stationName;
+	const room = await models.room.findAll({where: {stationName: stationName}});
+	if (room) {
+		res.status(200).json(room);
+	} else {
+		res.status(404).send('404 - Not found');
+	}
+}
+
 async function create(req, res) {
 	if (req.body.id) {
 		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`)
@@ -60,6 +70,7 @@ module.exports = {
 	getAll,
 	getAllRoomsWithUsers,
 	getById,
+	getRoomByStationName,
 	create,
 	update,
 	remove,

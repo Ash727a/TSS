@@ -113,6 +113,11 @@ for (const [routeName, routeController] of Object.entries(routes)) {
   if (routeController.remove) {
     app.delete(`/api/${routeName}/:id`, makeHandlerAwareOfAsyncErrors(routeController.remove));
   }
+
+  // Room Stuff
+  if (routeController.getRoomByStationName) {
+    app.get(`/api/${routeName}/station/:stationName`, makeHandlerAwareOfAsyncErrors(routeController.getRoomByStationName));
+  }
 }
 
 module.exports = app;

@@ -35,35 +35,14 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO Refactor this into RoomsService after creating an API for getting all rooms that are assigned
-  private unassignPreviouslyAssignedRoom(stationName: string): void {
-    let previousAssignedRoomID;
-    this.roomsService.getRooms().then((rooms) => {
-      previousAssignedRoomID = rooms.find(
-        (room: any) =>
-          room.stationName === stationName &&
-          room.id !== this.selectedRoom?.id &&
-          room.stationName !== 'None' &&
-          room.stationName !== ''
-      )?.id;
-      // If the room is already assigned to the station, unassign it
-      if (previousAssignedRoomID !== undefined) {
-        const payload = {
-          id: previousAssignedRoomID,
-          stationName: '',
-        };
-        this.roomsService.updateRoomById(previousAssignedRoomID, payload);
-      }
-    });
-  }
-
   protected handleStationChange(eventType: 'ASSIGN' | 'UNASSIGN', stationString: 'UIA' | 'GEO' | 'ROV') {
     if (!this.selectedRoom) return;
     let stationName: any = stationString;
     if (eventType === 'UNASSIGN') {
       stationName = '';
     }
-    this.unassignPreviouslyAssignedRoom(stationName);
+    // Prevents multiple rooms being assigned to the same station
+    this.roomsService.unassignPreviouslyAssignedRoom(stationName);
     const payload = {
       ...this.selectedRoom,
       stationName,
