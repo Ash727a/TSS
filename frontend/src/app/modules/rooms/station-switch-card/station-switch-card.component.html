@@ -9,9 +9,11 @@
     ></app-rooms-station-switch-card-status-icon-text-display>
     <h5 [ngClass]="station.status">{{ station.time }}</h5>
     <app-shared-outlined-button ngClass="button" *ngIf="station.status === 'current'"
+    (click)="handleStationChange('UNASSIGN', station.value)"
       >UNASSIGN</app-shared-outlined-button
     >
     <app-shared-outlined-button ngClass="button" *ngIf="station.status === 'incomplete'"
+    (click)="handleStationChange('ASSIGN', station.value)"
       >ASSIGN</app-shared-outlined-button
     >
     <div class="button" *ngIf="station.status === 'completed'"></div>

@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Room } from '@app/core/interfaces';
+// Backend
+import { RoomsService } from '@services/api/rooms.service';
 @Component({
   selector: 'app-rooms-station-switch-card',
   templateUrl: './station-switch-card.component.html',
@@ -8,6 +10,8 @@ import { Room } from '@app/core/interfaces';
 export class StationSwitchCardComponent implements OnInit, OnDestroy {
   @Input() selectedRoom: Room | null = null;
 
+  constructor(private roomsService: RoomsService) {}
+
   protected stations: any = [
     { value: 'UIA', isActive: false },
     { value: 'GEO', isActive: false },
@@ -15,6 +19,10 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
+    this.setStationStatusData();
+  }
+
+  private setStationStatusData(): void {
     for (let i: number = 0; i < this.stations.length; i++) {
       this.stations[i].time = '00:00';
       if (this.selectedRoom?.stationName === this.stations[i].value) {
@@ -25,6 +33,26 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
         this.stations[i].status = 'incomplete';
       }
     }
+  }
+
+  protected handleStationChange(eventType: 'ASSIGN' | 'UNASSIGN', stationString: 'UIA' | 'GEO' | 'ROV') {
+    if (!this.selectedRoom) return;
+    let stationName: any = stationString;
+    if (eventType === 'UNASSIGN') {
+      stationName = '';
+    }
+    const payload = {
+      ...this.selectedRoom,
+      stationName,
+    };
+    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {
+      if (result.ok && this.selectedRoom) {
+        this.roomsService.getRoomById(this.selectedRoom.id).then((room) => {
+          this.selectedRoom = room;
+          this.setStationStatusData();
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {}

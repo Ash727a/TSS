@@ -31,10 +31,10 @@ export class UIAComponent {
     this.uiaService.getUIAStateByRoomID(roomID).then((result) => {
       if (result.ok) {
         this.uiaData = result.data[0];
-        console.log(this.uiaData);
+        // console.log(this.uiaData);
       }
     });
-    console.log(this.uiaData);
+    // console.log(this.uiaData);
     this.sensors1 = [
       { name: 'EMU1', status: this.uiaData?.emu1 ?? undefined },
       { name: 'EV1 SUPPLY', status: this.uiaData?.ev1_supply ?? undefined },

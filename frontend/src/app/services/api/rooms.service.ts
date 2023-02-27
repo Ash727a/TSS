@@ -30,8 +30,9 @@ export class RoomsService {
 
   async updateRoomById(roomID: number, room: any): Promise<any> {
     try {
-      const updatedRoom = await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));
-      return updatedRoom;
+      await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));
+      // PUT returns null on success, so return a custom ok object
+      return { ok: true };
     } catch (e) {
       return { ok: false, err: e };
     }

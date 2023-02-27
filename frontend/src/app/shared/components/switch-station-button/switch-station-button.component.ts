@@ -114,14 +114,14 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
         id: previousAssignedRoomID,
         stationName: '',
       };
-      this.roomsService.updateRoomById(previousAssignedRoomID, payload).then((result) => {});
+      this.roomsService.updateRoomById(previousAssignedRoomID, payload);
     }
     // Assign the room to the station
     const payload = {
       ...this.selectedRoom,
       stationName,
     };
-    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {});
+    this.roomsService.updateRoomById(this.selectedRoom.id, payload);
   }
 
   ngOnDestroy(): void {
