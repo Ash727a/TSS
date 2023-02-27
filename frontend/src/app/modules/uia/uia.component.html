@@ -1,6 +1,7 @@
 <div class="container">
-  <app-shared-card size="small" title="UIA Statistics">
-    <div class="room-display-container">
+  <app-shared-card [size]="variant !== 'small' ? 'small' : ''" [title]="variant !== 'small' ? 'UIA Statistics' : ''" [variant]="variant === 'small' ? 'light' : 'default'">
+    <h3 *ngIf="variant === 'small'">UIA Statistics</h3>
+    <div *ngIf="variant != 'small'" class="room-display-container">
       <h3>Room {{ selectedRoom?.id }}</h3>
       <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
     </div>

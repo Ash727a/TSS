@@ -11,11 +11,12 @@ import { UIAService } from '@services/api/uia.service';
   providers: [RoomsService, UIAService],
 })
 export class UIAComponent {
+  @Input() public variant: 'default' | 'small' = 'default';
+  @Input() selectedRoom: Room | null = null;
+
   protected sensors1: StatusSensor[] = [];
   protected sensors2: StatusSensor[] = [];
   private uiaData: UIAData = {} as UIAData;
-
-  @Input() selectedRoom: Room | null = null;
 
   constructor(private roomsService: RoomsService, private uiaService: UIAService) {}
 

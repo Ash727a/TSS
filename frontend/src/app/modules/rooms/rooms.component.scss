@@ -60,3 +60,19 @@ div {
     }
   }
 }
+
+// Modal Styles
+.modal-container {
+  display: flex;
+  .col {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+
+    .left {
+    }
+
+    .right {
+    }
+  }
+}
