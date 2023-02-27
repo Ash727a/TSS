@@ -9,7 +9,6 @@ import {
   ModalEvent,
   SimulationErrorKey,
 } from '@app/core/interfaces';
-// Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
 
