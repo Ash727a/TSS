@@ -97,6 +97,7 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     this.changeEvent.emit(payload);
   }
 
+  // TODO Refactor this into RoomsService after creating an API for finding the previously assigned room to that station
   private handleStationSwitch(stationName: string) {
     if (!this.selectedRoom) {
       return;
