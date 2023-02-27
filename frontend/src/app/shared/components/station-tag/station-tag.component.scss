@@ -29,5 +29,8 @@
 
 .deselected {
     background-color: $mediumGray;
-    color: $lightGray;
+
+    h5 {
+        color: $lightGray;
+    }
 }

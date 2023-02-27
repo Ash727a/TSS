@@ -1,26 +1,33 @@
 @import 'src/styles/styles.scss';
 
 .station-row {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  .item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
+    align-items: center;
+  }
+}
 
-    .item {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-        align-items: center;
+.current {
+  color: $primary-text;
+}
 
-        .current {
-            color: $primary-text;
-        }
-    
-        .completed {
-            color: $green;
-        }
-    
-        .incomplete {
-            color: $lightGray;
-        }
-    }
+.completed {
+  color: $green;
+}
+
+.incomplete {
+  color: $lightGray;
+}
+
+.button {
+    width: 6rem;
 }

@@ -65,17 +65,28 @@ div {
 .modal-container {
   display: flex;
   gap: 2rem;
+  flex-direction: column;
 
-  .col {
+  .modal-header {
+    margin-bottom: 1rem;
+  }
+
+  .modal-body {
     display: flex;
-    flex-direction: column;
-    width: 50%;
+    flex-direction: row;
+    gap: 2rem;
 
-    &.left {
-    }
-
-    &.right {
-      gap: 2rem;
+    .col {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+  
+      &.left {
+      }
+  
+      &.right {
+        gap: 2rem;
+      }
     }
   }
 }

@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    width: 10rem;
+    width: 8rem;
 
     .Current {
         color: $yellow;
@@ -24,13 +24,13 @@
         border-radius: 1rem;
 
         &.Current {
+            width: 8px;
+            height: 8px;
             border-color: $yellow;
             border: solid 2px;
         }
 
         &.Completed {
-            // border-color: $green;
-            // border: solid 2px;
             content: "\2713";
         }
 

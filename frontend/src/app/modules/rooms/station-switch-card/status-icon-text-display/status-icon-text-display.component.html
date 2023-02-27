@@ -2,5 +2,4 @@
   <h4 *ngIf="statusText !== 'Completed'" class="icon" [ngClass]="statusText"></h4>
   <span *ngIf="statusText === 'Completed'" [ngClass]="statusText">&#10003;</span>
   <h4 [ngClass]="statusText">{{ statusText }}</h4>
-  
 </div>
