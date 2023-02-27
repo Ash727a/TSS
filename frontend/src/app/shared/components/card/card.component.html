@@ -1,7 +1,7 @@
 <div [ngClass]="{ 'card-container': true, 'large': size == 'large', 'medium': size == 'medium', 'small': size == 'small' }">
   <div class="card" [ngClass]="{ 'light': variant === 'light' }">
     <h1 *ngIf="title">{{ title }}</h1>
-    <h3 *ngIf="subtitle">{{ subtitle }}</h3>
+    <h2 *ngIf="subtitle">{{ subtitle }}</h2>
     <ng-content></ng-content>
   </div>
 </div>

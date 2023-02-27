@@ -23,6 +23,8 @@ import { ModalComponent } from './shared/components/modal/modal.component';
 import { DropdownComponent } from './shared/components/dropdown/dropdown.component';
 import { SwitchStationButtonComponent } from './shared/components/switch-station-button/switch-station-button.component';
 import { SwitchRoomButtonComponent } from './shared/components/switch-room-button/switch-room-button.component';
+import { StationSwitchCardComponent } from './modules/rooms/station-switch-card/station-switch-card.component';
+import { StatusIconTextDisplayComponent } from './modules/rooms/station-switch-card/status-icon-text-display/status-icon-text-display.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { SwitchRoomButtonComponent } from './shared/components/switch-room-butto
     DropdownComponent,
     SwitchStationButtonComponent,
     SwitchRoomButtonComponent,
+    StationSwitchCardComponent,
+    StatusIconTextDisplayComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],

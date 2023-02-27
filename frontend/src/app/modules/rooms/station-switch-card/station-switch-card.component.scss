@@ -1,0 +1,26 @@
+@import 'src/styles/styles.scss';
+
+.station-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .item {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: center;
+
+        .current {
+            color: $primary-text;
+        }
+    
+        .completed {
+            color: $green;
+        }
+    
+        .incomplete {
+            color: $lightGray;
+        }
+    }
+}

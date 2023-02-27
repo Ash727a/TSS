@@ -1,0 +1,42 @@
+@import 'src/styles/styles.scss';
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 10rem;
+
+    .Current {
+        color: $yellow;
+    }
+
+    .Completed {
+        color: $green;
+    }
+
+    .Incomplete {
+        color: $lightGray;
+    }
+
+    .icon {
+        width: 10px;
+        height: 10px;
+        border-radius: 1rem;
+
+        &.Current {
+            border-color: $yellow;
+            border: solid 2px;
+        }
+
+        &.Completed {
+            // border-color: $green;
+            // border: solid 2px;
+            content: "\2713";
+        }
+
+        &.Incomplete {
+            background-color: $lightGray;
+            margin: 2px;
+        }
+    }
+}

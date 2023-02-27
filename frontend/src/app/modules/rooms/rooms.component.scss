@@ -64,15 +64,18 @@ div {
 // Modal Styles
 .modal-container {
   display: flex;
+  gap: 2rem;
+
   .col {
     display: flex;
     flex-direction: column;
     width: 50%;
 
-    .left {
+    &.left {
     }
 
-    .right {
+    &.right {
+      gap: 2rem;
     }
   }
 }

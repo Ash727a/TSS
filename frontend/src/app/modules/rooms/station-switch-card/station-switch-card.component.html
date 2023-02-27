@@ -1,0 +1,29 @@
+<app-shared-card variant="light">
+  <h3>Stations</h3>
+  <div class="station-row" *ngFor="let station of stations">
+    <!-- (click)="openModal(room)"> -->
+    <div class="item left">
+      <app-shared-station-tag [station]="station.value" [selected]="station.status != 'incomplete'">{{ station.value }}</app-shared-station-tag>
+      <app-rooms-station-switch-card-status-icon-text-display
+        [status]="station.status"
+      ></app-rooms-station-switch-card-status-icon-text-display>
+      <h4 [ngClass]="station.status">{{ station.time }}</h4>
+    </div>
+    <div class="item right">
+      <!-- <app-shared-switch-station-button
+            (click)="$event.stopPropagation()"
+            [rooms]="rooms"
+            [room]="room"
+            (changeEvent)="dropdownVisibilityChanged($event)"
+            [disabledDropdown]="modalOpen"
+          /> -->
+      <!-- <app-shared-switch-station-button
+            (click)="$event.stopPropagation()"
+            [rooms]="rooms"
+            [room]="room"
+            (changeEvent)="dropdownVisibilityChanged($event)"
+            [disabledDropdown]="modalOpen"
+          /> -->
+    </div>
+  </div>
+</app-shared-card>
