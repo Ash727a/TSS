@@ -1,6 +1,5 @@
 @import 'src/styles/styles.scss';
 
-
 .container {
   width: 100%;
   display: flex;
@@ -16,6 +15,13 @@
     padding-right: 5%;
     width: 100%;
     max-width: 100rem;
+
+    &.small {
+      flex-direction: column;
+      gap: 2rem;
+      padding-left: 0;
+      padding-right: 0;
+    }
 
     .col {
       display: flex;
@@ -43,4 +49,8 @@
       }
     }
   }
+}
+
+h3 {
+  font-weight: bold;
 }

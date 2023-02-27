@@ -8,6 +8,7 @@ import { ValueSensor, TelemetryData } from '@app/core/interfaces';
 })
 export class StateComponent {
   private static readonly EMPTY_TEXT_LABEL = '';
+  @Input() public variant: 'default' | 'small' = 'default';
   @Input() public telemetryData: TelemetryData = {} as TelemetryData;
 
   protected sensors1: ValueSensor[] = [];

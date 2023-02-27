@@ -10,6 +10,7 @@ import { RoomsService } from '@services/api/rooms.service';
   providers: [RoomsService],
 })
 export class TelemetryComponent {
+  @Input() public variant: 'default' | 'small' = 'default';
   @Input() public selectedRoom: Room | null = null;
   protected telemetryData: TelemetryData = {} as TelemetryData;
 

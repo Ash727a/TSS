@@ -1,21 +1,24 @@
 <div class="container">
-  <div class="card-container">
-    <div class="col left">
-      <app-shared-card title="Telemetry Controller">
-        <div class="room-display-container">
+  <div class="card-container" [ngClass]="variant">
+    <div [ngClass]="variant !== 'small' ? 'col left' : ''">
+      <app-shared-card [title]="variant !== 'small' ? 'Telemetry Controller' : ''" [variant]="variant === 'small' ? 'light' : 'default'">
+        <h3 *ngIf="variant === 'small'">Telemetry</h3>
+        <div *ngIf="variant !== 'small'" class="room-display-container">
           <h3>Room {{ selectedRoom?.id }}</h3>
           <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
         </div>
         <app-telemetry-controller
+          [variant]="variant"
           (telemetryDataEmitter)="telemetryData = $event"
           [selectedRoom]="selectedRoom"
         ></app-telemetry-controller>
       </app-shared-card>
     </div>
-    <div class="col right">
+    <div [ngClass]="variant !== 'small' ? 'col right' : ''">
       <div class="divider"></div>
-      <app-shared-card title="Telemetry State">
-        <app-telemetry-state [telemetryData]="telemetryData"></app-telemetry-state>
+      <app-shared-card [title]="variant !== 'small' ? 'Telemetry State' : ''" [variant]="variant === 'small' ? 'light' : 'default'">
+        <h3 *ngIf="variant === 'small'">Telemetry State</h3>
+        <app-telemetry-state [variant]="variant" [telemetryData]="telemetryData"></app-telemetry-state>
       </app-shared-card>
     </div>
   </div>

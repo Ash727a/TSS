@@ -7,6 +7,10 @@
   align-items: center;
   margin-top: 3rem;
 
+  &.small {
+    margin-top: 1rem;
+  }
+
   .column-item {
     position: relative;
     justify-content: center;
@@ -19,6 +23,10 @@
     &.gap {
       gap: 2rem;
       margin-top: 4rem;
+
+      &.small {
+        margin-top: 1.5rem;
+      }
     }
 
     .connection-heartbeat-text {
@@ -26,6 +34,13 @@
       position: absolute;
       transform: translateY(-2rem);
       color: $lightGray;
+
+      &.small {
+        position: relative;
+        color: $white;
+        transform: translateY(0rem);
+        margin-bottom: 1rem;
+      }
     }
   }
 }

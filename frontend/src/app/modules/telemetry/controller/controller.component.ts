@@ -11,6 +11,7 @@ import { TelemetryService } from '@services/api/telemetry.service';
   providers: [RoomsService, TelemetryService],
 })
 export class ControllerComponent {
+  @Input() public variant: 'default' | 'small' = 'default';
   @Input() public selectedRoom: Room | null = null;
   @Output() public telemetryDataEmitter: EventEmitter<any> = new EventEmitter();
 

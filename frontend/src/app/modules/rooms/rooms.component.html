@@ -31,6 +31,6 @@
 </div>
 <!-- Modal Component & Content -->
 <ng-template #modal>
-  <app-telemetry [selectedRoom]="selectedRoom"></app-telemetry>
+  <app-telemetry [variant]="MODAL_VARIANT" [selectedRoom]="selectedRoom"></app-telemetry>
   <app-uia *ngIf="selectedRoom?.stationName == 'UIA'" [selectedRoom]="selectedRoom"></app-uia>
 </ng-template>

@@ -15,10 +15,16 @@ button {
     text-decoration: none;
     text-transform: uppercase;
     transition: all 0.2s ease-in-out;
+    // &.light {
+    //     background-color: $primary;
+    // }
 }
 
 .gray {
     background-color: $secondary;
+    &.light {
+        background-color: $primary;
+    }
 }
 
 .green {
