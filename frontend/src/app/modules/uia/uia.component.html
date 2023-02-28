@@ -5,6 +5,7 @@
       <h3>Room {{ selectedRoom?.id }}</h3>
       <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
     </div>
+    <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">Not connected</h5>
     <div class="table-container">
       <table style="text-align: left">
         <thead>

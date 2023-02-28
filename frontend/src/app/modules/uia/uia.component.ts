@@ -17,6 +17,7 @@ export class UIAComponent {
   protected sensors1: StatusSensor[] = [];
   protected sensors2: StatusSensor[] = [];
   private uiaData: UIAData = {} as UIAData;
+  protected connected: boolean = false;
 
   constructor(private roomsService: RoomsService, private uiaService: UIAService) {}
 
@@ -31,7 +32,7 @@ export class UIAComponent {
     this.uiaService.getUIAStateByRoomID(roomID).then((result) => {
       if (result.ok) {
         this.uiaData = result.data[0];
-        // console.log(this.uiaData);
+        this.connected = !!this.uiaData?.started_at;
       }
     });
     // console.log(this.uiaData);

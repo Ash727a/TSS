@@ -1,3 +1,6 @@
+@import 'src/styles/styles.scss';
+
+
 .container {
   width: 100%;
   display: flex;
@@ -5,6 +8,18 @@
 
   .small {
     width: 100%;
+  }
+
+  .connection-status {
+    transform: translateY(1rem);
+
+    &.green {
+      color: $green;
+    }
+
+    &.gray {
+      color: $lightGray;
+    }
   }
 
   .room-display-container {
