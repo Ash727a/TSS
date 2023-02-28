@@ -12,7 +12,7 @@
     (click)="handleStationChange('UNASSIGN', station.value)"
       >UNASSIGN</app-shared-outlined-button
     >
-    <app-shared-outlined-button ngClass="button" *ngIf="station.status === 'incomplete'"
+    <app-shared-outlined-button *ngIf="station.status === 'incomplete'"
     (click)="handleStationChange('ASSIGN', station.value)"
       >ASSIGN</app-shared-outlined-button
     >
