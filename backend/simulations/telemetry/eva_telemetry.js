@@ -211,22 +211,20 @@ function velocFan(dt, controls, failure, oldSimState){
 
 function pressureOxygen(dt, controls, failure, oldSimState){
 	let p_o2 = Number.parseFloat(oldSimState.p_o2);
-	let p_o2_avg = 0;
-	let oxPressure_max = 780 
-	let oxPressure_min = 770
-	if (failure.o2_error==true && !controls.o2_switch)
-	{
-		oxPressure_max = 775
-		oxPressure_min = 755
+	let oxPressure_max = 780
+	let oxPressure_min = 778
+	if (failure.o2_error === false) { // Regular state
+		p_o2 = Math.random() * (oxPressure_max - oxPressure_min) + oxPressure_min
+	// } else if (failure.o2_error === true && !controls.o2_switch) // For DCU
+	} else if (failure.o2_error === true) { // Gradually decrease if the error is on
+		let random = Math.random() * 10 + 1;
+		p_o2 -= random;
+		// Bottom bound the o2 pressure to 0
+		if (p_o2 < 0) {
+			p_o2 = 0;
+		}
 	}
-	else
-	{
-		oxPressure_max = 780 
-		oxPressure_min = 770 
-	}
-	p_o2 = Math.random() * (oxPressure_max - oxPressure_min) + oxPressure_min
-	p_o2_avg = (p_o2 + oxPressure_max + oxPressure_min ) / 3
-	return p_o2_avg.toFixed(2) 
+	return p_o2.toFixed(2);
 }
 
 function rateOxygen(dt, controls, failure, oldSimState)

@@ -70,12 +70,11 @@ class EVASimulation {
 		this.simState.isRunning = true;
 
 		await models.simulationcontrol.findAll({where: {room: roomid}}).then(data => {
-			console.log(data);
+			// console.log(data);
 			this.simControls = data[0].dataValues;
 		});
 
-		await models.simulationfailure.findAll({where: {room: roomid}}).then(data => {
-			console.log(data);
+		await models.simulationfailure.findAll({where: {room: roomid}}).then(data => {			
 			this.simFailure = data[0].dataValues;
 		});
 
@@ -136,7 +135,7 @@ class EVASimulation {
 		this.seedInstances();
 	}
 
-	async getState () {
+	async getState() {
 		const simState = await models.SimulationState.findByPk(this.simStateID);
 		// await SimulationState.findById(simStateID).exec()
 		return simState
@@ -161,7 +160,7 @@ class EVASimulation {
 		});
 
 		// Update Failure Object
-		await models.simulationfailure.findAll({where: {room: this.room}}).then(data => {
+		await models.simulationfailure.findAll({where: {room: this.room}}).then(data => {			
 			this.simFailure = data[0].dataValues;
 		});
 
@@ -186,20 +185,19 @@ class EVASimulation {
 
 	async step() {
 		console.log(`StateID: ${this.simStateID}, ControlID: ${this.simControlID}, FailureID: ${this.simFailureID}`);
-		console.log(this.simFailure);
 		try{
 			// const simState = await simulationstate.findById(this.simStateID).exec()
 			// const controls = await simulationcontrol.findById(this.controlID).exec()
-			// const failure = await simulationfailure.findById(this.failureID).exec()
-
 			const now = Date.now();
 			const dt = now - this.lastTimestamp;
 			this.lastTimestamp = now;
-
+			// Simulation failure
+			await models.simulationfailure.findAll({where: {room: this.simFailureID}}).then(data => {				
+				this.simFailure = data[0].dataValues;
+			});
 			const newSimState = simulationStep(dt, this.simControls, this.simFailure, this.simState)
+
 			Object.assign(this.simState, newSimState)
-			console.log("SIMSTATE:")
-			console.log(this.simState)
 			// await simState.save()
 			await models.simulationstate.update(this.simState, {
 				where: {
