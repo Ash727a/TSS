@@ -8,31 +8,25 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   sequelize.define('telemetrysessionlog', {
     // Telemetry session ID (PK)
-    id: {
+    session_id: {
       allowNull: false,
-      autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     // Room ID it was assigned to (FK)
     room_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
     },
-    // Time the log was added to the database
-    create_time: {
-      allowNull: false,
-      type: DataTypes.STRING,
-    },
     // Time the telemetry session was started AKA "START" button was pressed
     start_time: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
     },
     // Time the telemetry session was stopped AKA "STOP" button was pressed
     end_time: {
       allowNull: true,
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
     },
   });
 };

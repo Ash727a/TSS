@@ -59,6 +59,7 @@ export class ControllerComponent {
       for (let i = 0; i < this.switches.length; i++) {
         const keyName: SimulationErrorKey = this.switches[i].key;
         this.switches[i].value = (this.simulationErrorData as any)[keyName];
+
         delete (this.simulationErrorData as any)[keyName];
       }
     });
@@ -84,6 +85,7 @@ export class ControllerComponent {
   protected startTelemetry(): void {
     // Check if a room is selected
     if (!this.selectedRoom?.id) {
+      console.log(`Could not find room id`);
       return;
     }
     // Start the simulation
@@ -93,6 +95,10 @@ export class ControllerComponent {
         // Error
         console.log(`An error ocurred starting the sim!`);
       } else {
+        if (!this.selectedRoom?.id) {
+          console.log(`Could not find room id`);
+          return;
+        }
         // If the sim start returns ok, let's get the data on interval
         this.fetchAndEmitDataOnInterval();
       }
@@ -110,6 +116,14 @@ export class ControllerComponent {
       .getTelemetryByRoomID(this.selectedRoom.id)
       .then((res) => {
         this.telemetryData = res;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    this.telemetryService
+      .getAllSessionLogs()
+      .then((res) => {
+        console.log(res);
       })
       .catch((e) => {
         console.log(e);
@@ -150,6 +164,11 @@ export class ControllerComponent {
    */
   protected handleChange(event: any): void {
     this.switches[event.id].value = event.value;
+    // if (event.value) {
+    //   this.switches[event.id].start = new Date();
+    // } else {
+    //   this.switches[event.id].end = new Date();
+    // }
     this.updateSwitchErrorsData();
   }
 
@@ -159,6 +178,8 @@ export class ControllerComponent {
   private updateSwitchErrorsData(): void {
     this.switches.forEach((s: SimulationError) => {
       (this.simulationErrorData as any)[s.key] = s.value;
+      // (this.simulationErrorData as any)[s.key + '_start'] = s.start;
+      // (this.simulationErrorData as any)[s.key + '_end'] = s.end;
     });
     this.telemetryService
       .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)

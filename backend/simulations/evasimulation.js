@@ -15,6 +15,7 @@ class EVASimulation {
 	simFailureID = null;
 	holdID = null;
 	lastTimestamp = null;
+	session_id = null;
 	room;
 
 	// Data Objects
@@ -22,8 +23,9 @@ class EVASimulation {
 	simControls = {};
 	simFailure = {};
 
-	constructor(_room) {
-		this.room = _room;
+	constructor(_room_id, _session_id) {
+		this.room = _room_id;
+		this.session_id = _session_id;
 		this.seedInstances();
 	}
 
@@ -52,11 +54,15 @@ class EVASimulation {
 		return simStateID !== null && controlID !== null && failureID !== null
 	}
 
-	async start(roomid) {
+	async start(roomid, session_id) {
 		console.log('Starting Sim');
 		this.simState = {};
 		this.simControls = {};
 		this.simFailure = {};
+
+		// The sim started. Update the session id for the current room
+		await models.room.update({session_id: session_id}, {where: {id: roomid}});
+		// TODO
 
 		await models.simulationstate.findAll({where: {room: roomid}})
 			.then(data => {
@@ -77,6 +83,8 @@ class EVASimulation {
 		await models.simulationfailure.findAll({where: {room: roomid}}).then(data => {			
 			this.simFailure = data[0].dataValues;
 		});
+
+		await models.telemetrysessionlog.create({ room_id: roomid, session_id, start_time: Date.now() });
 
 		this.simStateID   = this.simState.id;
 		this.simControlID = this.simControls.id;
@@ -124,12 +132,16 @@ class EVASimulation {
 		if (!this.simState.isRunning) {
 			throw new Error('Cannot stop: simulation is not running')
 		}
-		console.log('--------------Simulation Stopped-------------')
 		// this.simStateID = null
 		// this.controlID = null
+		// Update the room's session id to null, since the session has ended
+		await models.room.update({session_id: ''}, {where: {id: this.room}});
+		// Set the session's end time to now
+		await models.telemetrysessionlog.update({end_time: Date.now()}, {where: {session_id: this.session_id}});
 		clearInterval(this.simTimer)
 		this.simTimer = null
 		this.lastTimestamp = null
+		console.log('--------------Simulation Stopped-------------')
 
 		// Reseed here
 		this.seedInstances();

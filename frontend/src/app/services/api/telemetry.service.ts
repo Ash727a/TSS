@@ -13,7 +13,7 @@ export class TelemetryService {
   async simulationControl(roomID: number, command: string): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationcontrol/sim/${roomID}/${command}`))
       .then((result) => {
-        return result as { ok: boolean, event: string };
+        return result as { ok: boolean; event: string };
       })
       .catch((e) => {
         return { ok: false, err: e };
@@ -66,6 +66,18 @@ export class TelemetryService {
 
   async updateSimulationErrorsByID(id: number, errors: any): Promise<any> {
     return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationfailure/${id}`, errors))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return res;
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
+
+  // Logging
+  async getAllSessionLogs() {
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/telemetrysessionlog`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res;

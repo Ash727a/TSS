@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const { models } = require('../../sequelize');
 const { getIdParam } = require('../helpers');
 const evaSimulation = require('../../simulations/evasimulation');
@@ -6,20 +7,18 @@ sims = [];
 
 async function commandSim(req, res) {
 	console.log(`Room: ${req.params.room} Event: ${req.params.event}`);
-
 	if(req.params.event && req.params.room) {
-
 		// Check if the sim already exists
 		let existingSim = sims.find(x => x.room === req.params.room);
 
 		switch(req.params.event) {
 			case "start":
-				console.log(`Sim INstance Count: ${sims.length}`);		
 				let simInst = {};
+				const session_id = uuidv4();
 				if(!existingSim) {
 					simInst = {
 						room: req.params.room,
-						sim: new evaSimulation(req.params.room),
+						sim: new evaSimulation(req.params.room, session_id),
 						controls: {
 							fan_switch: false,
 							suit_power: false,
@@ -32,9 +31,11 @@ async function commandSim(req, res) {
 							pump_error: false,
 							power_error: false,
 							fan_error: false
-						}
+						},
 					}
 				} else {
+					// There is an existing simulation, but the session is different. Set the session_id to the new generated id
+					existingSim.sim.session_id = session_id;
 					simInst = existingSim;
 				}
 
@@ -42,7 +43,7 @@ async function commandSim(req, res) {
 				sims.push(simInst);
 				// Start w/ 1sec delay
 				setTimeout(() => {
-					simInst.sim.start(simInst.room);
+					simInst.sim.start(simInst.room, simInst.sim.session_id);
 				}, 1000);
 				
 				break;

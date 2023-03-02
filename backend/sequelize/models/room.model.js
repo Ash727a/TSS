@@ -10,6 +10,10 @@ module.exports = (sequelize) => {
             allowNull: false,
             type: DataTypes.STRING
         },
+        session_id: {
+            allowNull: true,
+            type: DataTypes.STRING,
+        },
         users: {
             allowNull: false,
             type: DataTypes.INTEGER,
@@ -19,6 +23,6 @@ module.exports = (sequelize) => {
             allowNull: false,
             type: DataTypes.STRING,
             defaultValue: ''
-        }
+        },
 	});
 };

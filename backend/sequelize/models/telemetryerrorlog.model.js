@@ -14,10 +14,20 @@ module.exports = (sequelize) => {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
+    // ID of the telemetry session where the error was thrown (FK)
+    session_id: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+    },
     // ID of the room where the error was thrown (FK)
     room_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
+    },
+    // The type of error that was thrown. One of: ["o2", "fan", "pump", "power"]
+    error_type: {
+        allowNull: false,
+        type: DataTypes.STRING,
     },
     // Time the error log was added to the database
     create_time: {
