@@ -14,7 +14,7 @@ export class ToggleSwitchComponent {
   protected parentSelector: boolean = false;
 
   onChange(event: any, id: number) {
-    const payload = {
+    const payload: { id: number, value: boolean } = {
       id: id,
       value: event.target.checked,
     };
