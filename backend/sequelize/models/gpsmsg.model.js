@@ -18,11 +18,6 @@ module.exports = (sequelize) => {
 			type: DataTypes.STRING,
 			unique: false
 		},
-		device: {
-			allowNull: false,
-			type: DataTypes.STRING,
-			unique: false
-		},
 		mode: {
 			allowNull: false,
 			type: DataTypes.INTEGER,
