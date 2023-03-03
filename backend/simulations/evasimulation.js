@@ -228,6 +228,7 @@ class EVASimulation {
 
 	updateTelemetryErrorLogs() {
 		const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'battery_error'];
+		let updatedErrors = {};
 		// Loop through the keys to check for new error state changes
 		failureKeys.forEach((key) => {
 			// If the error is thrown, but the id is not set, set it.
@@ -258,13 +259,12 @@ class EVASimulation {
 				// Reset the error id
 				this.simFailure[key + '_id'] = null;
 			}
+			// Add the new value to the error object to be updated
+			updatedErrors[key + '_id'] = this.simFailure[key + '_id'];
 		});
-		models.simulationfailure.update({
-			o2_error_id: this.simFailure.o2_error_id ?? undefined,
-			pump_error_id: this.simFailure.pump_error_id ?? undefined,
-			fan_error_id: this.simFailure.fan_error_id ?? undefined,
-			battery_error_id: this.simFailure.battery_error_id ?? undefined,
-		}, {
+		// Update the simulation failure table with the new error ids
+
+		models.simulationfailure.update(updatedErrors, {
 			where: {
 				id: this.room,
 			},
