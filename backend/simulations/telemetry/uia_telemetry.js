@@ -57,7 +57,7 @@ function emu1OnOff(dt, uiaControls, uiaOldSimState) {
 	else {
 		onOff1 = 'OFF'
 	}
-	console.log(onOff1);
+	// console.log(onOff1);
 	return onOff1
 }
 function emu2OnOff(dt, uiaControls, uiaOldSimState) {
@@ -151,7 +151,7 @@ function supplyWaterStatus(dt, uiaControls, uiaOldSimState) {
 	else
 		water2 = 'CLOSE'
 
-	console.log(water2)
+	// console.log(water2)
 	
 	return {water1,water2}
 }

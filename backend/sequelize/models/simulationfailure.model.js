@@ -34,45 +34,61 @@ module.exports = (sequelize) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        o2_error_start: {
-            allowNull: false,
+        o2_error_id: {
+            allowNull: true,
             type: DataTypes.STRING,
-            defaultValue: ''
         },
-        pump_error_start: {
-            allowNull: false,
+        pump_error_id: {
+            allowNull: true,
             type: DataTypes.STRING,
-            defaultValue: ''
         },
-        power_error_start: {
-            allowNull: false,
+        power_error_id: {
+            allowNull: true,
             type: DataTypes.STRING,
-            defaultValue: ''
         },
-        fan_error_start: {
-            allowNull: false,
+        fan_error_id: {
+            allowNull: true,
             type: DataTypes.STRING,
-            defaultValue: ''
         },
-        o2_error_end: {
-            allowNull: false,
-            type: DataTypes.STRING,
-            defaultValue: ''
-        },
-        pump_error_end: {
-            allowNull: false,
-            type: DataTypes.STRING,
-            defaultValue: ''
-        },
-        power_error_end: {
-            allowNull: false,
-            type: DataTypes.STRING,
-            defaultValue: ''
-        },
-        fan_error_end: {
-            allowNull: false,
-            type: DataTypes.STRING,
-            defaultValue: ''
-        }
+        // o2_error_start: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // pump_error_start: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // power_error_start: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // fan_error_start: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // o2_error_end: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // pump_error_end: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // power_error_end: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // },
+        // fan_error_end: {
+        //     allowNull: false,
+        //     type: DataTypes.STRING,
+        //     defaultValue: ''
+        // }
     });
 };

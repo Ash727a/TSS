@@ -39,14 +39,18 @@ export interface SimulationErrorData {
   o2_error: boolean;
   power_error: boolean;
   pump_error: boolean;
-  fan_error_start: string;
-  o2_error_start: string;
-  power_error_start: string;
-  pump_error_start: string;
-  fan_error_end: string;
-  o2_error_end: string;
-  power_error_end: string;
-  pump_error_end: string;
+  fan_error_id: string;
+  o2_error_id: string;
+  power_error_id: string;
+  pump_error_id: string;
+  // fan_error_start: string;
+  // o2_error_start: string;
+  // power_error_start: string;
+  // pump_error_start: string;
+  // fan_error_end: string;
+  // o2_error_end: string;
+  // power_error_end: string;
+  // pump_error_end: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,6 +61,7 @@ export interface SimulationError {
   value: boolean;
   start?: Date;
   end?: Date;
+  error_id?: string;
 }
 
 export interface ValueSensor {

@@ -10,9 +10,8 @@ module.exports = (sequelize) => {
     // Error session ID (PK)
     id: {
       allowNull: false,
-      autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     // ID of the telemetry session where the error was thrown (FK)
     session_id: {
@@ -29,20 +28,15 @@ module.exports = (sequelize) => {
         allowNull: false,
         type: DataTypes.STRING,
     },
-    // Time the error log was added to the database
-    create_time: {
-      allowNull: false,
-      type: DataTypes.STRING,
-    },
     // Time the error was thrown
     start_time: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
     },
     // Time the error stopped (is the time resolved, if it was resolved)
     end_time: {
       allowNull: true,
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
     },
     // True if the error was resolved, false if not
     resolved: {

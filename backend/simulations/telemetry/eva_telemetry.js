@@ -4,11 +4,10 @@ module.exports.simulationStep = function(dt, controls, failure, oldSimState) {
 	const t_battery = batteryStep(dt, controls, oldSimState).t_battery
 	const battery_out = batteryStep(dt, controls, oldSimState).battery_out
 
-	updateErrorThrownDuration(failure, oldSimState);
+	// updateErrorThrownDuration(failure, oldSimState);
 	if (controls.suit_power === false) //determines whether the Suit is on/off
 	// SimulationState.create({
 		return {
-		
 			time: missionTimer(dt, controls, oldSimState).time,
 			timer: missionTimer(dt, controls, oldSimState).timer, 
 			heart_bpm: heartBeat(dt, controls, failure, oldSimState),
@@ -35,27 +34,6 @@ module.exports.simulationStep = function(dt, controls, failure, oldSimState) {
 			t_water: waterLife(dt, controls, oldSimState).t_water
 	
 		}
-}
-
-function updateErrorThrownDuration(failure, oldSimState) {
-	const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'battery_error'];
-	// Loop through the keys to check for new error state changes
-	failureKeys.forEach((key) => {
-		// If the error is thrown, but the start time is not set, set it.
-		if (failure[key] === true && failure[key + '_start'] === '') {
-			failure[key + '_start'] = new Date();
-			failure[key + '_end'] = ''; // Clear the end time, so there's no old data
-		// If the error fixed, set the end time and send the log to the DB
-		} else if (failure[key] === false && failure[key + '_start'] !== '') {
-			failure[key + '_end'] = new Date();
-			// Update simulation error state in DB
-			// Send log to logs table in DB
-
-			// Reset the start and end time
-			failure[key + '_start'] = '';
-			failure[key + '_end'] = '';
-		}
-	});
 }
 
 function padValues(n, width, z = '0') {
@@ -155,7 +133,7 @@ function waterLife(dt, controls, oldSimState){
 function heartBeat(dt, controls, failure, oldSimState){
 	let hr_max = 0
 	let hr_min = 0
-	console.log(failure.fan_error, controls.fan_switch);
+	// console.log(failure.fan_error, controls.fan_switch);
 	if (failure.fan_error === true && !controls.fan_switch ) {
 		hr_max = Number.parseFloat(oldSimState.heart_bpm) + 2;
 		hr_min = Number.parseFloat(oldSimState.heart_bpm);
@@ -188,7 +166,7 @@ function pressureSUB(){
 function pressureSuit(dt, controls, failure, oldSimState){
 	let p_suit_max = 0
 	let p_suit_min = 0
-	console.log("PSUIT " + failure.pump_error + " " + controls.pump);
+	// console.log("PSUIT " + failure.pump_error + " " + controls.pump);
 	if (failure.pump_error && !controls.pump)
 	{
 		p_suit_max = 2.5

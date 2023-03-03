@@ -15,21 +15,21 @@ export class ControllerComponent {
   @Input() public selectedRoom: Room | null = null;
   @Output() public telemetryDataEmitter: EventEmitter<any> = new EventEmitter();
 
-  private static readonly DEFAULT_ROOM_ID: number = 1; // Default room ID if no room is selected
+  private static readonly DEFAULT_ROOM_ID: number = 1;              // Default room ID if no room is selected
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
-  protected connected: boolean | undefined = undefined; // bool for the room's simulation connection status
-  private simulationState: 'start' | 'stop' | '' = ''; // Not really used except locally, used as a string for API method
-  protected switches: SimulationError[]; // Array of simulation error switches the CAPCOM can throw in the sim
-  private simInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
-  protected telemetryData: TelemetryData = {} as TelemetryData; // Data passed in from the backend of the generated simulation
+  protected connected: boolean | undefined = undefined;             // bool for the room's simulation connection status
+  private simulationState: 'start' | 'stop' | '' = '';              // Not really used except locally, used as a string for API method
+  protected switches: SimulationError[];                            // Array of simulation error switches the CAPCOM can throw in the sim
+  private simInterval!: ReturnType<typeof setTimeout>;              // Internal simulation timer
+  protected telemetryData: TelemetryData = {} as TelemetryData;     // Data passed in from the backend of the generated simulation
   protected simulationErrorData: SimulationErrorData = {} as SimulationErrorData;
 
   constructor(private roomsService: RoomsService, private telemetryService: TelemetryService) {
     this.switches = [
-      { key: SimulationErrorKey.O2_ERROR, name: 'O2 ERROR', value: false },
-      { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP ERROR', value: false },
-      { key: SimulationErrorKey.FAN_ERROR, name: 'FAN ERROR', value: false },
-      { key: SimulationErrorKey.POWER_ERROR, name: 'POWER ERROR', value: false },
+      { key: SimulationErrorKey.O2_ERROR, name: 'O2 ERROR', value: false, error_id: '' },
+      { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP ERROR', value: false, error_id: '' },
+      { key: SimulationErrorKey.FAN_ERROR, name: 'FAN ERROR', value: false, error_id: '' },
+      { key: SimulationErrorKey.POWER_ERROR, name: 'POWER ERROR', value: false, error_id: '' },
     ];
   }
 
@@ -59,8 +59,9 @@ export class ControllerComponent {
       for (let i = 0; i < this.switches.length; i++) {
         const keyName: SimulationErrorKey = this.switches[i].key;
         this.switches[i].value = (this.simulationErrorData as any)[keyName];
-
+        this.switches[i].error_id = (this.simulationErrorData as any)[keyName + '_id'];
         delete (this.simulationErrorData as any)[keyName];
+        delete (this.simulationErrorData as any)[keyName + '_id'];
       }
     });
   }
@@ -120,14 +121,14 @@ export class ControllerComponent {
       .catch((e) => {
         console.log(e);
       });
-    this.telemetryService
-      .getAllSessionLogs()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // this.telemetryService
+    //   .getAllSessionLogs()
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   }
 
   /**
@@ -164,11 +165,6 @@ export class ControllerComponent {
    */
   protected handleChange(event: any): void {
     this.switches[event.id].value = event.value;
-    // if (event.value) {
-    //   this.switches[event.id].start = new Date();
-    // } else {
-    //   this.switches[event.id].end = new Date();
-    // }
     this.updateSwitchErrorsData();
   }
 
@@ -178,8 +174,7 @@ export class ControllerComponent {
   private updateSwitchErrorsData(): void {
     this.switches.forEach((s: SimulationError) => {
       (this.simulationErrorData as any)[s.key] = s.value;
-      // (this.simulationErrorData as any)[s.key + '_start'] = s.start;
-      // (this.simulationErrorData as any)[s.key + '_end'] = s.end;
+      // (this.simulationErrorData as any)[s.key + '_id'] = s.error_id;
     });
     this.telemetryService
       .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)
@@ -192,6 +187,7 @@ export class ControllerComponent {
   private resetSwitchesToDefault(): void {
     this.switches.forEach((s: SimulationError) => {
       s.value = false;
+      s.error_id = '';
     });
     this.updateSwitchErrorsData();
   }

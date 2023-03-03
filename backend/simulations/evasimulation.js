@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const { models } = require('../sequelize');
 const { simulationStep } = require('./telemetry/eva_telemetry')
 const simStateSeed = require('./seed/simstate.json');
@@ -32,7 +33,6 @@ class EVASimulation {
 	async seedInstances() {
 
 		// Get the instances for the room
-		console.log(typeof this.room + this.room);
 		let state = await models.simulationstate.findOne({ where: { room: parseInt(this.room) } });
 		let control = await models.simulationcontrol.findOne({ where: { room: parseInt(this.room) } });
 		let failure = await models.simulationfailure.findOne({ where: { room: parseInt(this.room) } });
@@ -203,10 +203,11 @@ class EVASimulation {
 			const now = Date.now();
 			const dt = now - this.lastTimestamp;
 			this.lastTimestamp = now;
-			// Simulation failure
-			await models.simulationfailure.findAll({where: {room: this.simFailureID}}).then(data => {				
-				this.simFailure = data[0].dataValues;
-			});
+			// Get all simulation failures (new data) and udpate the simFailure object
+			const res = await models.simulationfailure.findAll({where: {room: this.simFailureID}});
+			const newSimFailure = res[0].dataValues;
+			this.simFailure = { ...this.simFailure, ...newSimFailure };
+			this.updateTelemetryErrorLogs();
 			const newSimState = simulationStep(dt, this.simControls, this.simFailure, this.simState)
 
 			Object.assign(this.simState, newSimState)
@@ -223,6 +224,51 @@ class EVASimulation {
 			console.error('failed error')
 			console.error(error.toString())
 		}
+	}
+
+	updateTelemetryErrorLogs() {
+		const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'battery_error'];
+		// Loop through the keys to check for new error state changes
+		failureKeys.forEach((key) => {
+			// If the error is thrown, but the id is not set, set it.
+			const error_id = this.simFailure[key + '_id'];
+			if (this.simFailure[key] === true && (error_id === null || error_id === undefined || error_id === '')) {
+				const errorID = uuidv4();
+				// Set the error id for the current simulation
+				this.simFailure[key + '_id'] = errorID;
+				// Create log of the error in the DB (telemetryerrorlog table)
+				models.telemetryerrorlog.create({
+					id: errorID,
+					session_id: this.session_id,
+					room_id: this.room,
+					error_type: key,
+					start_time: new Date(),
+				});
+			// If the error fixed, set the end time and send the log to the DB
+			} else if (this.simFailure[key] === false && (error_id !== null && error_id !== undefined && error_id !== '')) {
+				// Send log to logs table in DB
+				models.telemetryerrorlog.update({
+					end_time: Date.now(),
+					resolved: true,
+				}, {
+					where: {
+						id: this.simFailure[key + '_id'],
+					},
+				});
+				// Reset the error id
+				this.simFailure[key + '_id'] = null;
+			}
+		});
+		models.simulationfailure.update({
+			o2_error_id: this.simFailure.o2_error_id ?? undefined,
+			pump_error_id: this.simFailure.pump_error_id ?? undefined,
+			fan_error_id: this.simFailure.fan_error_id ?? undefined,
+			battery_error_id: this.simFailure.battery_error_id ?? undefined,
+		}, {
+			where: {
+				id: this.room,
+			},
+		})
 	}
 }
 module.exports = EVASimulation;
