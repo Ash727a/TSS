@@ -17,46 +17,37 @@ async function reset() {
     { name: 'kappa' },
     { name: 'lambda' },
     { name: 'mu' },
-    { name: 'nu' },
-    { name: 'xi' },
-    { name: 'omicron' },
-    { name: 'pi' },
-    { name: 'rho' },
-    { name: 'sigma' },
-    { name: 'tau' },
-    { name: 'upsilon' },
-    { name: 'phi' },
-    { name: 'chi' },
-    { name: 'psi' },
-    { name: 'omega' },
+    // { name: 'nu' },
+    // { name: 'xi' },
+    // { name: 'omicron' },
+    // { name: 'pi' },
+    // { name: 'rho' },
+    // { name: 'sigma' },
+    // { name: 'tau' },
+    // { name: 'upsilon' },
+    // { name: 'phi' },
+    // { name: 'chi' },
+    // { name: 'psi' },
+    // { name: 'omega' },
   ];
 
   await sequelize.sync({ force: true });
 
   await sequelize.models.user.bulkCreate([
-    {
-      id: 1,
-      username: 'faiz',
-      room: 10,
-      guid: 'ef0110ad-cd77-413d-af5e-88cd4091f50c',
-    },
-    {
-      id: 2,
-      username: 'faiz2',
-      room: 11,
-      guid: 'a429f7b1-882a-4642-901b-f859687f8292',
-    },
-    // { username: 'jack-sparrow' },
-    // { username: 'white-beard' },
-    // { username: 'black-beard' },
-    // { username: 'brown-beard' },
+
   ]);
 
-  await sequelize.models.lsar.bulkCreate([]);
+  await sequelize.models.lsar.bulkCreate([
 
-  await sequelize.models.imumsg.bulkCreate([]);
+  ]);
 
-  await sequelize.models.gpsmsg.bulkCreate([]);
+  await sequelize.models.imumsg.bulkCreate([
+
+  ]);
+
+  await sequelize.models.gpsmsg.bulkCreate([
+
+  ]);
 
   await sequelize.models.room.bulkCreate(roomList);
 
@@ -68,9 +59,13 @@ async function reset() {
     await sequelize.models.simulationstate.create(simRow);
     await sequelize.models.simulationstateuia.create(simRow);
     await sequelize.models.simulationuia.create(simRow);
+    await sequelize.models.gpsmsg.create(simRow);
+	await sequelize.models.imumsg.create(simRow);
   });
 
-  await sequelize.models.role.bulkCreate([{ role: 'aruser' }, { role: 'lsaruser' }, { role: 'admin' }]);
+  await sequelize.models.role.bulkCreate([
+
+  ]);
 
   console.log('Done!');
 }
