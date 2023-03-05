@@ -24,5 +24,11 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             defaultValue: ''
         },
+        // Station Log ID (FK)
+        station_id: {
+            allowNull: false,
+            type: DataTypes.STRING,
+            defaultValue: ''
+        },
 	});
 };

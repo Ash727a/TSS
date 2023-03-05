@@ -16,6 +16,7 @@ const routes = {
   simulationuia: require('./routes/simulationuia'),
   // telemetryerrorlog: require('./routes/telemetryerrorlog'),
   telemetrysessionlog: require('./routes/telemetrysessionlog'),
+  telemetrystationlog: require('./routes/telemetrystationlog'),
 };
 
 const app = express();

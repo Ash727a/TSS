@@ -40,9 +40,10 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     let stationName: any = stationString;
     if (eventType === 'UNASSIGN') {
       stationName = '';
+    } else {
+      // Prevents multiple rooms being assigned to the same station
+      this.roomsService.unassignPreviouslyAssignedRoom(stationName);
     }
-    // Prevents multiple rooms being assigned to the same station
-    this.roomsService.unassignPreviouslyAssignedRoom(stationName);
     const payload = {
       ...this.selectedRoom,
       stationName,

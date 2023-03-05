@@ -203,13 +203,14 @@ class EVASimulation {
 			const now = Date.now();
 			const dt = now - this.lastTimestamp;
 			this.lastTimestamp = now;
+			console.log('step')
 			// Get all simulation failures (new data) and udpate the simFailure object
-			const res = await models.simulationfailure.findAll({where: {room: this.simFailureID}});
-			const newSimFailure = res[0].dataValues;
+			const failureData = await models.simulationfailure.findAll({where: {room: this.simFailureID}});
+			const newSimFailure = failureData[0].dataValues;
 			this.simFailure = { ...this.simFailure, ...newSimFailure };
 			this.updateTelemetryErrorLogs();
+			this.updateTelemetryStation();
 			const newSimState = simulationStep(dt, this.simControls, this.simFailure, this.simState)
-
 			Object.assign(this.simState, newSimState)
 			// await simState.save()
 			await models.simulationstate.update(this.simState, {
@@ -269,6 +270,59 @@ class EVASimulation {
 				id: this.room,
 			},
 		})
+	}
+
+	async updateTelemetryStation() {
+		// TODO: This will have a bug of the station only being logged when the telemetry simulation is running
+		// TODO: Edge case when one room's TSS stopped, but is still assigned to a room (maybe, or does it auto-unassign)
+		// TODO: Edge case when one room's station is still assigned when the TSS stops -- this will cause the station in logs to never be completed
+		const roomData = await models.room.findOne({where: {id: this.room}});
+		const room = roomData.dataValues;
+		console.log('checking for updates...')
+		console.log(room)
+		// If the room's station name is different than the current station name, it means a new station has been assigned to this room
+		if (this.stationName !== room.stationName) {
+			// If the previous station's id is not null, then we should end the previous station's log
+			if (this.station_id !== null && this.station_id !== undefined && this.station_id !== '') {
+				console.log('updating')
+				// End the previous station's log
+				models.telemetrystationlog.update({
+					end_time: Date.now(),
+					completed: true,
+				}, {
+					where: {
+						id: this.station_id,
+					},
+				});
+			}
+			// If the room was assigned to a new station, we want to create a new station log
+			if (room.stationName !== undefined && room.stationName !== null && room.stationName !== '') {
+				console.log('creating')
+
+				this.station_id = uuidv4();
+				models.telemetrystationlog.create({
+					id: this.station_id,
+					session_id: this.session_id,
+					room_id: this.room,
+					station_name: room.stationName,
+					start_time: Date.now()
+				});
+				// Update the room's station id with the new id
+				models.room.update({
+					station_id: this.station_id,
+				}, {
+					where: {
+						id: this.room,
+					},
+				})
+				console.log('created new station', this.station_id);
+			}
+		}
+		console.log('done');
+		// Update the current instances values
+		this.stationName = room.stationName;
+		this.station_id = room.station_id;
+
 	}
 }
 module.exports = EVASimulation;

@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
     // ID of the telemetry session where the error was thrown (FK)
     session_id: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
     },
     // ID of the room where the error was thrown (FK)
     room_id: {
