@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
+import { ServerService } from '@app/services/api/server.service';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 import {
@@ -23,6 +24,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   private pollRoomStatusInterval!: ReturnType<typeof setTimeout>; // Internal simulation timer
   protected readonly MODAL_VARIANT: 'small' | 'default' = 'small';
   protected loaded: boolean = false;
+  private backendConnected = false;
   public rooms: Room[] = [];
   public selectedRoom: Room | null = null;
   protected modalOpen: boolean = false;
@@ -33,62 +35,92 @@ export class RoomsComponent implements OnInit, OnDestroy {
   @ViewChild('modal') private modalContentRef!: TemplateRef<any>;
 
   constructor(
+    private serverService: ServerService,
     private modalService: ModalService,
     private roomsService: RoomsService,
     private telemetryService: TelemetryService
-  ) {}
+  ) {
+    this.serverService.onConnectionStatusChange.subscribe((status: { current: boolean; previous: boolean }) => {
+      this.backendConnected = status.current;
+      if (this.backendConnected) {
+        this.roomsService
+        .getRooms()
+        .then((res) => {
+          if (res.ok) {
+            this.rooms = res.payload;
+          }
+        })
+        .finally(() => {
+          this.loaded = true;
+        });
+        this.startPollRoomStatus();
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.roomsService
+    if (this.backendConnected) {
+      this.roomsService
       .getRooms()
-      .then((result: Room[]) => {
-        this.rooms = result;
-      })
-      .catch((e) => {
-        console.warn(e);
+      .then((res) => {
+        if (res.ok) {
+          this.rooms = res.payload;
+        }
       })
       .finally(() => {
         this.loaded = true;
       });
+    }
     this.refreshRoomData();
     this.startPollRoomStatus();
   }
 
   private startPollRoomStatus(): void {
     this.pollRoomStatusInterval = setInterval(() => {
-      this.refreshRoomData();
+      if (this.backendConnected) {
+        this.refreshRoomData();
+      }
     }, RoomsComponent.POLL_ROOM_STATUS_INTERVAL);
   }
 
   private refreshRoomData(): void {
-    this.roomsService.getRooms().then((roomsResult: Room[]) => {
-      this.telemetryService.getAllSimulationErrors().then((errorsResult: SimulationErrorData[]): void => {
-        this.telemetryService.getAllRoomTelemetry().then((telemetryResult): void => {
-          // Update all the room data with the latest data from the backend
-          this.rooms = this.rooms.map((room: Room): Room => {
-            let stationName: string = roomsResult.filter((data: Room) => data.id === room.id)[0].stationName;
-            let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.id === room.id)[0].isRunning;
-            let errors: SimulationError[] = [
-              { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
-              { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },
-              { key: SimulationErrorKey.FAN_ERROR, name: 'FAN', value: false },
-              { key: SimulationErrorKey.POWER_ERROR, name: 'POWER', value: false },
-            ];
-            for (const error of errors) {
-              let errorKey: SimulationErrorKey = error.key;
-              // Subtract by 1 because the room id starts at 1, but the array index starts at 0
-              const roomErrorObject: SimulationErrorData = errorsResult[room.id - 1];
-              if (roomErrorObject.room === room.id && (roomErrorObject as any)[errorKey]) {
-                error.value = (roomErrorObject as any)[errorKey] ?? false;
+    this.roomsService.getRooms().then((res) => {
+      let roomsResult: Room[];
+      if (res.ok) {
+        roomsResult = res.payload;
+        // this.backendConnected = true;
+        this.telemetryService.getAllSimulationErrors().then((errorsResult: SimulationErrorData[]): void => {
+          this.telemetryService.getAllRoomTelemetry().then((telemetryResult): void => {
+            // Update all the room data with the latest data from the backend
+            this.rooms = this.rooms.map((room: Room): Room => {
+              let stationName: string = roomsResult.filter((data: Room) => data.id === room.id)[0].stationName;
+              let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.id === room.id)[0]
+                .isRunning;
+              let errors: SimulationError[] = [
+                { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
+                { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },
+                { key: SimulationErrorKey.FAN_ERROR, name: 'FAN', value: false },
+                { key: SimulationErrorKey.POWER_ERROR, name: 'POWER', value: false },
+              ];
+              for (const error of errors) {
+                let errorKey: SimulationErrorKey = error.key;
+                // Subtract by 1 because the room id starts at 1, but the array index starts at 0
+                const roomErrorObject: SimulationErrorData = errorsResult[room.id - 1];
+                if (roomErrorObject.room === room.id && (roomErrorObject as any)[errorKey]) {
+                  error.value = (roomErrorObject as any)[errorKey] ?? false;
+                }
               }
-            }
-            room.errors = errors;
-            room.status = isRunning ? 'green' : 'gray';
-            room.stationName = stationName;
-            return room;
+              room.errors = errors;
+              room.status = isRunning ? 'green' : 'gray';
+              room.stationName = stationName;
+              return room;
+            });
           });
         });
-      });
+      } else {
+        console.log('Not connected to backend');
+        this.backendConnected = false;
+      }
     });
 
     // this.rooms = this.rooms.map((room: any) => {

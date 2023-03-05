@@ -53,7 +53,9 @@ export class SwitchRoomButtonComponent implements OnInit, OnDestroy {
     this.roomsService
       .getRooms()
       .then((result) => {
-        this.rooms = result;
+        if (result.ok) {
+          this.rooms = result.payload;
+        }
       })
       .catch((e) => {
         console.warn(e);

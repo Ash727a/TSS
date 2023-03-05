@@ -13,7 +13,7 @@ export class RoomsService {
   async getRooms(): Promise<any> {
     try {
       const rooms = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms`));
-      return rooms;
+      return { ok: true, payload: rooms };
     } catch (e) {
       return { ok: false, err: e };
     }
