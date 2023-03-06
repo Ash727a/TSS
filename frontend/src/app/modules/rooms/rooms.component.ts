@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
-import { ServerService } from '@app/services/api/server.service';
+import { ServerService } from '@services/api/server.service';
 import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
 import {
@@ -9,7 +9,7 @@ import {
   SimulationErrorData,
   ModalEvent,
   SimulationErrorKey,
-} from '@app/core/interfaces';
+} from '@core/interfaces';
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
 

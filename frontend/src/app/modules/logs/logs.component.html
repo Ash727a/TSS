@@ -4,7 +4,7 @@
       <div class="logs-container">
         <h4 *ngIf="logs && logs.length === 0">No log history</h4>
         <div *ngIf="logs && logs.length > 0" class="log-container">
-          <div *ngFor="let log of logs" class="logs-row">
+          <div *ngFor="let log of logs" class="logs-row" (click)="openModal(log)">
             <div class="item">
                 <h5>{{ log.start_time }}</h5>
                 <h5>Room {{ log.room_id }}</h5>
@@ -16,3 +16,15 @@
     </div>
   </app-shared-card>
 </div>
+<!-- Modal Component & Content -->
+<ng-template #modal>
+    <div class="modal-container">
+      <div class="modal-header">
+        <!-- <h1>{{ selectedLog?.name }} - Room {{ selectedLog?.id }}</h1> -->
+        <h1>Room {{ selectedLog?.room_id }}</h1>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </ng-template>
+  
