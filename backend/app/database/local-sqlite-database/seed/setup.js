@@ -1,10 +1,10 @@
-const sequelize = require('../sequelize');
-// const { pickRandom, randomDate } = require('./helpers/random');
+const sequelize = require('../../index.js');
+// const { pickRandom, randomDate } = require('./utils');
 
 async function reset() {
   console.log('\nPopulating suits.sqlite database...');
 
-  let roomList = [
+  const roomList = [
     { name: 'alpha' },
     { name: 'beta' },
     { name: 'gamma' },
@@ -33,21 +33,13 @@ async function reset() {
 
   await sequelize.sync({ force: true });
 
-  await sequelize.models.user.bulkCreate([
+  await sequelize.models.user.bulkCreate([]);
 
-  ]);
+  await sequelize.models.lsar.bulkCreate([]);
 
-  await sequelize.models.lsar.bulkCreate([
+  await sequelize.models.imumsg.bulkCreate([]);
 
-  ]);
-
-  await sequelize.models.imumsg.bulkCreate([
-
-  ]);
-
-  await sequelize.models.gpsmsg.bulkCreate([
-
-  ]);
+  await sequelize.models.gpsmsg.bulkCreate([]);
 
   await sequelize.models.room.bulkCreate(roomList);
 
@@ -60,12 +52,10 @@ async function reset() {
     await sequelize.models.simulationstateuia.create(simRow);
     await sequelize.models.simulationuia.create(simRow);
     await sequelize.models.gpsmsg.create(simRow);
-	await sequelize.models.imumsg.create(simRow);
+    await sequelize.models.imumsg.create(simRow);
   });
 
-  await sequelize.models.role.bulkCreate([
-
-  ]);
+  await sequelize.models.role.bulkCreate([]);
 
   console.log('Done!');
 }

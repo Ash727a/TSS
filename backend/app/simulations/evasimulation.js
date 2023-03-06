@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { models } = require('../database/sequelize/models');
+const { models } = require('../database');
 const { simulationStep } = require('./telemetry/eva_telemetry')
 const simStateSeed = require('./seed/simstate.json');
 const simControlSeed = require('./seed/simcontrol.json');

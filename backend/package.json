@@ -9,8 +9,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "populate": "node app/database/sqlite-example-database/setup.js",
-    "clear": "[[ -f app/database/sequelize/local-database/suits.sqlite ]] && rm app/database/sequelize/local-database/suits.sqlite || echo 'No database to delete'",
+    "populate": "node app/database/local-sqlite-database/seed/setup.js",
+    "clear": "[[ -f app/database/local-sqlite-database/suits.sqlite ]] && rm app/database/local-sqlite-database/suits.sqlite || echo 'No database to delete'",
     "refresh": "npm run clear && npm run populate"
   },
   "name": "backend",
