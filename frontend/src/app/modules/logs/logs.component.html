@@ -1,7 +1,18 @@
 <div class="container">
-    <app-shared-card title="Logs" size="medium">
-        <div class="card-content">
-            <h4 *ngIf="logs.length === 0">No log history</h4>
+  <app-shared-card title="Logs" size="medium">
+    <div class="card-content">
+      <div class="logs-container">
+        <h4 *ngIf="logs && logs.length === 0">No log history</h4>
+        <div *ngIf="logs && logs.length > 0" class="log-container">
+          <div *ngFor="let log of logs" class="logs-row">
+            <div class="item">
+                <h5>{{ log.start_time }}</h5>
+                <h5>Room {{ log.room_id }}</h5>
+            </div>
+            <h5>{{ log.end_time }}</h5>
+          </div>
         </div>
-    </app-shared-card>
+      </div>
+    </div>
+  </app-shared-card>
 </div>

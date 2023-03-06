@@ -15,7 +15,7 @@ const Model = models.telemetrysessionlog; // Define database model here
  * @returns {TelemetrySessionLog[]}
  */
 async function getAll(req, res) {
-  const results = await Model.findAll();
+  const results = await Model.findAll({ order: [['start_time', 'DESC']]});
   res.status(200).json(results);
 }
 
