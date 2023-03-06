@@ -5,6 +5,19 @@ import { LogsService } from '@services/api/logs.service';
 import { ModalService } from '@services/modal/modal.service';
 import { ModalEvent } from '@core/interfaces';
 
+// TODO
+/**
+ * Required:
+ * - Show team name
+ * - Show errors thrown & resolved status
+ * - Show stations assigned, time spent at each station
+ * - Show marks for completed/not completed
+ * - Visibly show if the status is "in progress" or "completed"
+ * 
+ * Desired:
+ * - Sorting/filtering
+ */
+
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.component.html',
