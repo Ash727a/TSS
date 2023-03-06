@@ -1,4 +1,4 @@
-const { models } = require('../../sequelize');
+const { models } = require('../../../database/sequelize');
 const { getIdParam } = require('../helpers');
 // const crypto = require('node:crypto');
 const { v4: uuidv4 } = require('uuid');

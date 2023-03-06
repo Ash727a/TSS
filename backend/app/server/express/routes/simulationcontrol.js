@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { models } = require('../../sequelize');
+const { models } = require('../../../database/sequelize');
 const { getIdParam } = require('../helpers');
 const evaSimulation = require('../../../simulations/evasimulation');
 

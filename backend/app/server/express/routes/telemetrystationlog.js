@@ -3,7 +3,7 @@
  * - multiple sessions can be created for each room
  * - see telemetrystationlog.model.js for more details
  */
-const { models } = require('../../sequelize');
+const { models } = require('../../../database/sequelize');
 const { getIdParam } = require('../helpers');
 
 const Model = models.telemetrystationlog; // Define database model here
