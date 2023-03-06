@@ -1,5 +1,5 @@
 const sequelize = require('../../index.js');
-// const { pickRandom, randomDate } = require('./utils');
+// const { pickRandom, randomDate } = require('./helpers');
 
 async function reset() {
   console.log('\nPopulating suits.sqlite database...');
