@@ -14,7 +14,7 @@ import { ModalEvent } from '@core/interfaces';
 
 
 export class LogsComponent {
-  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm:ss a';
+  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm:ss A';
 
   logs!: any[];
   protected selectedLog!: any;
@@ -32,8 +32,23 @@ export class LogsComponent {
       if (result.ok) {
         let logData = result.payload;
         for (let log of logData) {
-          log.start_time = moment(log.start_time).format(LogsComponent.TIMESTAMP_FORMAT);
-          log.end_time = log.end_time ? moment(log.end_time).format(LogsComponent.TIMESTAMP_FORMAT) : 'Not yet ended';
+          const _start = log.start_time;
+          const _end = log.end_time;
+          log.start_time = moment(_start).format(LogsComponent.TIMESTAMP_FORMAT);
+          log.end_time = log.end_time ? moment(_end).format(LogsComponent.TIMESTAMP_FORMAT) : 'Not yet ended';
+          // Check if the start and end are on the same day
+          const start_date = moment(_start).format('MMMM Do YYYY');
+          const end_date = moment(_end).format('MMMM Do YYYY');
+          let date = start_date; // Formatted as March 6th, 2023
+          if (start_date !== end_date && end_date != 'Invalid date') {
+            date += ` - ${end_date}`; // Formatted as March 6th, 2023 - March 7th, 2023
+          }
+          log.date = date;
+          // Calculate duration
+          const duration = moment.duration(moment(_end).diff(moment(_start)));
+          if (duration.isValid()) {
+            log.duration = `${duration.hours()}h ${duration.minutes()}m ${duration.seconds()}s`;
+          }
         }
         this.logs = result.payload;
         console.log(this.logs);
