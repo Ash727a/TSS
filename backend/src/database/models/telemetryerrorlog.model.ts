@@ -1,11 +1,10 @@
 /**
  * This model is for storing logs of all telemetry errors thrown in different rooms.
  */
-const { DataTypes } = require('sequelize');
-
+import { DataTypes } from 'sequelize';
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-module.exports = (sequelize) => {
+const telemetryerrorlog = (sequelize: any): void => {
   sequelize.define('telemetryerrorlog', {
     // Error session ID (PK)
     id: {
@@ -15,8 +14,8 @@ module.exports = (sequelize) => {
     },
     // ID of the telemetry session where the error was thrown (FK)
     session_id: {
-        allowNull: false,
-        type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.STRING,
     },
     // ID of the room where the error was thrown (FK)
     room_id: {
@@ -25,8 +24,8 @@ module.exports = (sequelize) => {
     },
     // The type of error that was thrown. One of: ["o2", "fan", "pump", "power"]
     error_type: {
-        allowNull: false,
-        type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.STRING,
     },
     // Time the error was thrown
     start_time: {
@@ -46,3 +45,5 @@ module.exports = (sequelize) => {
     },
   });
 };
+
+export default telemetryerrorlog;

@@ -1,7 +1,9 @@
-const { Sequelize } = require('sequelize');
-const { applyExtraSetup } = require('./extra-setup');
+import path from 'path';
+import { Sequelize } from 'sequelize';
 
-const path = require('path');
+import setup from './extra-setup.js';
+import * as models from './models/index.js';
+
 const appDir = path.resolve(process.cwd());
 console.log('cwd', appDir);
 const dbPath = path.join(appDir, 'src', 'database', 'local-sqlite-database', 'suits.sqlite');
@@ -11,40 +13,36 @@ console.log(`DB Path: ${dbPath}`);
 // But for this example, we will just use a local SQLite database.
 // const sequelize = new Sequelize(process.env.DB_CONNECTION_URL);
 const sequelize = new Sequelize({
-	dialect: 'sqlite',
-	storage: dbPath,
-	logQueryParameters: false,
-	logging: false,
-	benchmark: true
+  dialect: 'sqlite',
+  storage: dbPath,
+  logQueryParameters: false,
+  logging: false,
+  benchmark: true,
 });
 
-const modelDefiners = [
-	require('./models/location.model'),
-	require('./models/lsar.model'),
-	require('./models/role.model.js'),
-	require('./models/room.model'),
-	require('./models/simulationcontrol.model'),
-	require('./models/simulationfailure.model'),
-	require('./models/simulationstate.model'),
-	require('./models/simulationstateUIA.model'),
-	require('./models/simulationUIA.model'),
-	require('./models/telemetryerrorlog.model'),
-	require('./models/telemetrysessionlog.model'),
-	require('./models/telemetrystationlog.model'),
-	require('./models/user.model'),
-	require('./models/imumsg.model'),
-	require('./models/gpsmsg.model'),
-	require('./models/visionkit.model'),
-	require('./models/hmd.model')
-];
+// const modelDefiners = [
+// 	models.location,
+// 	models.lsar,
+// 	models.role,
+// 	models.room,
+// 	models.simulationcontrol,
+// 	models.simulationfailure,
+// 	models.simulationstate,
+// 	models.simulationstateUIA,
+// 	models.simulationUIA,
+// 	models.telemetryerrorlog,
+// 	models.telemetrysessionlog,
+// 	models.telemetrystationlog,
+// };
+const m: any = models;
 
 // We define all models according to their files.
-for (const modelDefiner of modelDefiners) {
-	modelDefiner(sequelize);
+for (const modelDefiner of m) {
+  modelDefiner(sequelize);
 }
 
 // We execute any extra setup after the models are defined, such as adding associations.
-applyExtraSetup(sequelize);
+setup.applyExtraSetup(sequelize);
 
 // We export the sequelize connection instance to be used around our app.
 // module.exports = sequelize;

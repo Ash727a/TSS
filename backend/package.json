@@ -7,8 +7,8 @@
     "sqlite3": "^5.1.4"
   },
   "scripts": {
-    "start": "npx ts-node src/index.ts",
-    "dev": "npx nodemon src/index.ts",
+    "start": "npx ts-node-esm src/index.ts",
+    "dev": "npx ts-node-esm src/index.ts",
     "populate": "node src/database/local-sqlite-database/seed/setup.js",
     "clear": "[[ -f src/database/local-sqlite-database/suits.sqlite ]] && rm src/database/local-sqlite-database/suits.sqlite && echo 'Successfully deleted database!' || echo 'No database to delete'",
     "refresh": "npm run clear && npm run populate"
@@ -17,9 +17,11 @@
   "version": "1.0.0",
   "type": "module",
   "devDependencies": {
+    "@angular-eslint/eslint-plugin-template": "^15.2.1",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/node": "^18.14.6",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",

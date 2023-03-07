@@ -1,6 +1,5 @@
-require('dotenv').config();
-import sequelize from './database';
-import app from './server/express/app';
+import sequelize from './database/index.js';
+import app from './server/express/app.js';
 
 // Environment variables
 const API_URL = process.env.API_URL;
@@ -11,8 +10,8 @@ const SOCKET_PORT = process.env.SOCKET_PORT;
 console.log(`API PORT: ${API_PORT}`);
 console.log(`SOCKET PORT: ${SOCKET_PORT}`);
 
-async function assertDatabaseConnectionOk() {
-  console.log(`Checking database connection...`);
+async function assertDatabaseConnectionOk(): Promise<void> {
+  console.log('Checking database connection...');
   try {
     await sequelize.authenticate();
     console.log('Database connection OK!');
@@ -23,7 +22,7 @@ async function assertDatabaseConnectionOk() {
   }
 }
 
-async function init() {
+async function init(): Promise<void> {
   await assertDatabaseConnectionOk();
 
   console.log(`Starting Sequelize + Express example on port ${API_PORT}...`);

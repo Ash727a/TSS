@@ -1,11 +1,10 @@
 /**
  * This model is for storing logs of all stations assigned in all rooms.
  */
-const { DataTypes } = require('sequelize');
-
+import { DataTypes } from 'sequelize';
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-module.exports = (sequelize) => {
+const telemetrystationlog = (sequelize: any): void => {
   sequelize.define('telemetrystationlog', {
     // Station Assignment ID
     id: {
@@ -46,3 +45,5 @@ module.exports = (sequelize) => {
     },
   });
 };
+
+export default telemetrystationlog;
