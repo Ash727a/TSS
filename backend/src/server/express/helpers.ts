@@ -8,4 +8,4 @@ function getIdParam(req): number {
   throw new TypeError(`Invalid ':id' param: "${id}"`);
 }
 
-export default { getIdParam };
+export { getIdParam };

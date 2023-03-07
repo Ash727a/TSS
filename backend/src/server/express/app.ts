@@ -41,15 +41,6 @@ console.log(__dirname);
 
 app.use('/', express.static(`${__dirname}/public/SUITS`));
 
-// We provide a root route just as an example
-// app.get('/', (req, res) => {
-// 	res.send(`
-// 		<h2>S.U.I.T.S. Telemetry Server 2022</h2>
-// 		<p>Welcome!</p>
-// 		<p>The API is running!</p>
-// 	`);
-// });
-
 app.get('/conntest', (req: any, res: any) => {
   res.status(200).send({ ok: true, time: new Date() });
 });
@@ -125,7 +116,5 @@ for (const [routeName, routeController] of Object.entries(routes)) {
     );
   }
 }
-
-// module.exports = app;
 
 export default app;

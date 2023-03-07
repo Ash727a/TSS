@@ -3,8 +3,10 @@
  * - multiple sessions can be created for each room
  * - see telemetrysessionlog.model.js for more details
  */
-const { models } = require('../../../database');
-const { getIdParam } = require('../helpers');
+import sequelize from '../../../database/index.js';
+import { getIdParam } from '../helpers.js';
+
+const models = sequelize.models;
 
 const Model = models.telemetrysessionlog; // Define database model here
 
@@ -14,8 +16,8 @@ const Model = models.telemetrysessionlog; // Define database model here
  * @param {*} res
  * @returns {TelemetrySessionLog[]}
  */
-async function getAll(req, res) {
-  const results = await Model.findAll({ order: [['start_time', 'DESC']]});
+async function getAll(req, res): Promise<void> {
+  const results = await Model.findAll({ order: [['start_time', 'DESC']] });
   res.status(200).json(results);
 }
 
@@ -26,7 +28,7 @@ async function getAll(req, res) {
  * @returns {TelemetrySessionLog}
  * @throws 404 - Not found
  */
-async function getById(req, res) {
+async function getById(req, res): Promise<void> {
   const id = getIdParam(req);
   const result = await Model.findByPk(id);
   if (result) {
@@ -43,7 +45,7 @@ async function getById(req, res) {
  * @returns {TelemetrySessionLog[]}
  * @throws 404 - Not found
  */
-async function getByRoomId(req, res) {
+async function getByRoomId(req, res): Promise<void> {
   const id = req.params.room;
   const results = await Model.findAll({ where: { room: id } });
   if (results) {
@@ -59,7 +61,7 @@ async function getByRoomId(req, res) {
  * @param {*} res
  * @throws 400 - Bad request
  */
-async function create(req, res) {
+async function create(req, res): Promise<void> {
   if (req.body.id) {
     res
       .status(400)
@@ -75,7 +77,7 @@ async function create(req, res) {
  * @param {*} req
  * @param {*} res
  */
-async function update(req, res) {
+async function update(req, res): Promise<void> {
   const id = getIdParam(req);
   await Model.update(req.body, {
     where: {
@@ -90,7 +92,7 @@ async function update(req, res) {
  * @param {*} req
  * @param {*} res
  */
-async function remove(req, res) {
+async function remove(req, res): Promise<void> {
   const id = getIdParam(req);
   await Model.destroy({
     where: {
@@ -100,7 +102,7 @@ async function remove(req, res) {
   res.status(200).end();
 }
 
-module.exports = {
+export default {
   getAll,
   getById,
   create,

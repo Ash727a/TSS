@@ -1,12 +1,14 @@
-const { models } = require('../../../database');
-const { getIdParam } = require('../helpers');
+import sequelize from '../../../database/index.js';
+import { getIdParam } from '../helpers.js';
 
-async function getAll(req, res) {
+const models = sequelize.models;
+
+async function getAll(req, res): Promise<void> {
   const simulationfailures = await models.simulationfailure.findAll();
   res.status(200).json(simulationfailures);
 }
 
-async function getById(req, res) {
+async function getById(req, res): Promise<void> {
   const id = getIdParam(req);
   const simulationfailure = await models.simulationfailure.findByPk(id);
   if (simulationfailure) {
@@ -16,7 +18,7 @@ async function getById(req, res) {
   }
 }
 
-async function getByRoomId(req, res) {
+async function getByRoomId(req, res): Promise<void> {
   const id = req.params.room;
   const simulationfailure = await models.simulationfailure.findAll({ where: { room: id } });
   if (simulationfailure) {
@@ -26,7 +28,7 @@ async function getByRoomId(req, res) {
   }
 }
 
-async function create(req, res) {
+async function create(req, res): Promise<void> {
   if (req.body.id) {
     res
       .status(400)
@@ -37,7 +39,7 @@ async function create(req, res) {
   }
 }
 
-async function update(req, res) {
+async function update(req, res): Promise<void> {
   const id = getIdParam(req);
   await models.simulationfailure.update(req.body, {
     where: {
@@ -47,7 +49,7 @@ async function update(req, res) {
   res.status(200).end();
 }
 
-async function remove(req, res) {
+async function remove(req, res): Promise<void> {
   const id = getIdParam(req);
   await models.simulationfailure.destroy({
     where: {
@@ -57,7 +59,7 @@ async function remove(req, res) {
   res.status(200).end();
 }
 
-module.exports = {
+export default {
   getAll,
   getById,
   create,
