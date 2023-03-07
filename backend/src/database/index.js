@@ -4,7 +4,7 @@ const { applyExtraSetup } = require('./extra-setup');
 const path = require('path');
 const appDir = path.resolve(process.cwd());
 console.log('cwd', appDir);
-const dbPath = path.join(appDir, 'app', 'database', 'local-sqlite-database', 'suits.sqlite');
+const dbPath = path.join(appDir, 'src', 'database', 'local-sqlite-database', 'suits.sqlite');
 
 console.log(`DB Path: ${dbPath}`);
 // In a real app, you should keep the database connection URL as an environment variable.

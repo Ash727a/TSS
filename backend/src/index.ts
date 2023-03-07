@@ -1,6 +1,6 @@
 require('dotenv').config();
-const sequelize = require('./app/database');
-const app = require('./app/server/express/app');
+const sequelize = require('./database');
+const app = require('./server/express/app');
 
 // Environment variables
 const API_URL = process.env.API_URL;
@@ -16,7 +16,7 @@ async function assertDatabaseConnectionOk() {
   try {
     await sequelize.authenticate();
     console.log('Database connection OK!');
-  } catch (error) {
+  } catch (error: any) {
     console.log('Unable to connect to the database:');
     console.log(error.message);
     process.exit(1);

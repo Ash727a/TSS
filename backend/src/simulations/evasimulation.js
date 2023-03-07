@@ -203,7 +203,6 @@ class EVASimulation {
 			const now = Date.now();
 			const dt = now - this.lastTimestamp;
 			this.lastTimestamp = now;
-			console.log('step')
 			// Get all simulation failures (new data) and udpate the simFailure object
 			const failureData = await models.simulationfailure.findAll({where: {room: this.simFailureID}});
 			const newSimFailure = failureData[0].dataValues;
@@ -318,7 +317,6 @@ class EVASimulation {
 				console.log('created new station', this.station_id);
 			}
 		}
-		console.log('done');
 		// Update the current instances values
 		this.stationName = room.stationName;
 		this.station_id = room.station_id;
