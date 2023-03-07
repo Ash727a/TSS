@@ -1,10 +1,11 @@
+import * as logging from './logging/index.js';
 import room from './room.model.js';
-import simulationcontrol from './simulationcontrol.model';
-import simulationfailure from './simulationfailure.model';
-import simulationstate from './simulationstate.model';
-import simulationstateUIA from './simulationstateUIA.model';
-import simulationuia from './simulationUIA.model';
-import user from './user.model';
+import simulationcontrol from './simulationcontrol.model.js';
+import simulationfailure from './simulationfailure.model.js';
+import simulationstate from './simulationstate.model.js';
+import simulationstateUIA from './simulationstateUIA.model.js';
+import simulationuia from './simulationUIA.model.js';
+import user from './user.model.js';
 
 export default {
   room,
@@ -14,4 +15,5 @@ export default {
   simulationstateUIA,
   simulationuia,
   user,
+  ...logging.default,
 };

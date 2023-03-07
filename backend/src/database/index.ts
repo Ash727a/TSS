@@ -20,30 +20,18 @@ const sequelize = new Sequelize({
   benchmark: true,
 });
 
-// const modelDefiners = [
-// 	models.location,
-// 	models.lsar,
-// 	models.role,
-// 	models.room,
-// 	models.simulationcontrol,
-// 	models.simulationfailure,
-// 	models.simulationstate,
-// 	models.simulationstateUIA,
-// 	models.simulationUIA,
-// 	models.telemetryerrorlog,
-// 	models.telemetrysessionlog,
-// 	models.telemetrystationlog,
-// };
-const m: any = models;
+const modelsModulesObject = models.default as { [key: string]: (sequelize: any) => void };
 
 // We define all models according to their files.
-for (const modelDefiner of m) {
+for (const model in modelsModulesObject) {
+  const modelDefiner = modelsModulesObject[model];
   modelDefiner(sequelize);
 }
 
 // We execute any extra setup after the models are defined, such as adding associations.
 setup.applyExtraSetup(sequelize);
-
+console.log('done');
+console.log(sequelize);
 // We export the sequelize connection instance to be used around our app.
 // module.exports = sequelize;
 export default sequelize;

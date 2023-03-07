@@ -2,10 +2,11 @@
  * This model is for storing logs of all telemetry sessions "START" and "STOP" in all rooms.
  */
 import { DataTypes } from 'sequelize';
+
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-const telemetrysessionlog = (sequelize: any): void => {
-  sequelize.define('telemetrysessionlog', {
+const telemetrySessionLog = (sequelize: any): void => {
+  sequelize.define('telemetrySessionLog', {
     // Telemetry session ID (PK)
     session_id: {
       allowNull: false,
@@ -30,4 +31,4 @@ const telemetrysessionlog = (sequelize: any): void => {
   });
 };
 
-export default telemetrysessionlog;
+export default telemetrySessionLog;

@@ -1,6 +1,6 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
 
 const routes = {
   auth: require('./routes/auth'),
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // We create a wrapper to workaround async errors not being transmitted correctly.
-function makeHandlerAwareOfAsyncErrors(handler: (arg0: any, arg1: any) => any) {
+function makeHandlerAwareOfAsyncErrors(handler: (arg0: any, arg1: any) => any): any {
   return async function (req: any, res: any, next: (arg0: unknown) => void) {
     try {
       await handler(req, res);
@@ -50,7 +50,7 @@ app.use('/', express.static(`${__dirname}/public/SUITS`));
 // 	`);
 // });
 
-app.get('/conntest', (req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: { ok: boolean; time: Date; }): void; new(): any; }; }; }) => {
+app.get('/conntest', (req: any, res: any) => {
   res.status(200).send({ ok: true, time: new Date() });
 });
 
