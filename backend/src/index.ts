@@ -1,6 +1,6 @@
 require('dotenv').config();
-const sequelize = require('./database');
-const app = require('./server/express/app');
+import sequelize from './database';
+import app from './server/express/app';
 
 // Environment variables
 const API_URL = process.env.API_URL;

@@ -27,8 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // We create a wrapper to workaround async errors not being transmitted correctly.
-function makeHandlerAwareOfAsyncErrors(handler) {
-  return async function (req, res, next) {
+function makeHandlerAwareOfAsyncErrors(handler: (arg0: any, arg1: any) => any) {
+  return async function (req: any, res: any, next: (arg0: unknown) => void) {
     try {
       await handler(req, res);
     } catch (error) {
@@ -50,7 +50,7 @@ app.use('/', express.static(`${__dirname}/public/SUITS`));
 // 	`);
 // });
 
-app.get('/conntest', (req, res) => {
+app.get('/conntest', (req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: { ok: boolean; time: Date; }): void; new(): any; }; }; }) => {
   res.status(200).send({ ok: true, time: new Date() });
 });
 
@@ -126,4 +126,6 @@ for (const [routeName, routeController] of Object.entries(routes)) {
   }
 }
 
-module.exports = app;
+// module.exports = app;
+
+export default app;
