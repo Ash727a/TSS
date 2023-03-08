@@ -1,12 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import sequelize from '../database';
-import simControlSeed from './seed/simcontrol.json';
-import simFailureSeed from './seed/simfailure.json';
-import simStateSeed from './seed/simstate.json';
+import sequelize from '../database/index.js';
+import simControlSeed from './seed/simcontrol.js';
+import simFailureSeed from './seed/simfailure.js';
+import simStateSeed from './seed/simstate.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
 
 const models = sequelize.models;
+
+// const { default: simControlSeed } = await import('./seed/simcontrol.json', {
+//   assert: {
+//     type: 'json',
+//   },
+// });
 
 class EVASimulation {
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -94,7 +100,7 @@ class EVASimulation {
     this.lastTimestamp = Date.now();
     this.simTimer = setInterval(() => {
       this.step();
-    }, process.env.SIM_STEP_TIME);
+    }, process.env.SIM_STEP_TIME as number | undefined);
   }
 
   isPaused(): boolean {
@@ -128,7 +134,7 @@ class EVASimulation {
     this.lastTimestamp = Date.now();
     this.simTimer = setInterval(() => {
       this.step();
-    }, process.env.SIM_STEP_TIME);
+    }, process.env.SIM_STEP_TIME as number | undefined);
 
     await models.simulationstate.update(
       { isPaused: false },

@@ -1,3 +1,4 @@
+import { Model, Optional } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import sequelize from '../../../database/index.js';
@@ -8,7 +9,16 @@ const models = sequelize.models;
 
 const sims: any = [];
 
-async function commandSim(req, res): Promise<void> {
+async function commandSim(
+  req: { params: { room: any; event: any } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { ok: boolean; err?: string; event?: any }): void; new (): any };
+    };
+  }
+): Promise<void> {
   console.log(`Room: ${req.params.room} Event: ${req.params.event}`);
   if (req.params.event && req.params.room) {
     // Check if the sim already exists
@@ -80,12 +90,22 @@ async function commandSim(req, res): Promise<void> {
   res.status(200).json({ ok: true, event: req.params.event });
 }
 
-async function controlSim(req, res): Promise<void> {
+async function controlSim(
+  req: { params: { room: any; control: any } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { ok: boolean; err: string }): void; new (): any };
+      send: { (arg0: { ok: boolean; controls: any }): void; new (): any };
+    };
+  }
+): Promise<void> {
   const simInst = sims.find((x: any) => x.room === req.params.room);
 
   if (!simInst) {
     res.status(400).json({ ok: false, err: 'No sim found to command. Have you started the simulation?' });
-    console.warn(`CTRL No Sim Found of ${this.sims.length} sims`);
+    console.warn(`CTRL No Sim Found of ${sims.length} sims`);
   }
 
   switch (req.params.control) {
@@ -114,12 +134,22 @@ async function controlSim(req, res): Promise<void> {
   res.status(200).send({ ok: true, controls: simInst.controls });
 }
 
-async function failureSim(req, res): Promise<void> {
+async function failureSim(
+  req: { params: { room: any; failure: any } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { ok: boolean; err: string }): void; new (): any };
+      send: { (arg0: { ok: boolean; failures: any }): void; new (): any };
+    };
+  }
+): Promise<void> {
   const simInst = sims.find((x: any) => x.room === req.params.room);
 
   if (!simInst) {
     res.status(400).json({ ok: false, err: 'No sim found to apply failures. Have you started the simulation?' });
-    console.warn(`CTLFAILURE No Sim Found of ${this.sims.length} sims`);
+    console.warn(`CTLFAILURE No Sim Found of ${sims.length} sims`);
   }
 
   switch (req.params.failure) {
@@ -141,12 +171,25 @@ async function failureSim(req, res): Promise<void> {
   res.status(200).send({ ok: true, failures: simInst.failure });
 }
 
-async function getAll(req, res): Promise<void> {
+async function getAll(
+  req: any,
+  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
+): Promise<void> {
   const simulationcontrols = await models.simulationcontrol.findAll();
   res.status(200).json(simulationcontrols);
 }
 
-async function getById(req, res): Promise<void> {
+async function getById(
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: Model<any, any>): void; new (): any };
+      send: { (arg0: string): void; new (): any };
+    };
+  }
+): Promise<void> {
   const id = getIdParam(req);
   const simulationcontrol = await models.simulationcontrol.findByPk(id);
   if (simulationcontrol) {
@@ -156,7 +199,17 @@ async function getById(req, res): Promise<void> {
   }
 }
 
-async function getByRoomId(req, res): Promise<void> {
+async function getByRoomId(
+  req: { params: { room: any } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: Model<any, any>[]): void; new (): any };
+      send: { (arg0: string): void; new (): any };
+    };
+  }
+): Promise<void> {
   const id = req.params.room;
   const simulationcontrol = await models.simulationcontrol.findAll({ where: { room: id } });
   if (simulationcontrol) {
@@ -166,8 +219,18 @@ async function getByRoomId(req, res): Promise<void> {
   }
 }
 
-async function create(req, res): Promise<void> {
-  if (req.body.id) {
+async function create(
+  req: { body: Optional<any, string> | undefined },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      send: { (arg0: string): void; new (): any };
+      end: { (): void; new (): any };
+    };
+  }
+): Promise<void> {
+  if (req?.body?.id) {
     res
       .status(400)
       .send('Bad request: ID should not be provided, since it is determined automatically by the database.');
@@ -177,7 +240,10 @@ async function create(req, res): Promise<void> {
   }
 }
 
-async function update(req, res): Promise<void> {
+async function update(
+  req: { body: { [x: string]: any } },
+  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+): Promise<void> {
   const id = getIdParam(req);
   await models.simulationcontrol.update(req.body, {
     where: {
@@ -187,7 +253,10 @@ async function update(req, res): Promise<void> {
   res.status(200).end();
 }
 
-async function remove(req, res): Promise<void> {
+async function remove(
+  req: any,
+  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+): Promise<void> {
   const id = getIdParam(req);
   await models.simulationcontrol.destroy({
     where: {

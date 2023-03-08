@@ -35,12 +35,12 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
     };
 }
 
-function padValues(n, width, z = '0'): string {
+function padValues(n: string | number | any[], width: number, z = '0'): string {
   n = n.toString();
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-function secondsToHms(dt): string {
+function secondsToHms(dt: number): string {
   dt = Number(dt);
   const h = Math.floor(dt / 3600);
   const m = Math.floor((dt % 3600) / 60);
@@ -50,13 +50,13 @@ function secondsToHms(dt): string {
   return time;
 }
 
-function missionTimer(dt, controls, oldSimState): any {
+function missionTimer(dt: number, controls: { suit_power: boolean }, oldSimState: { time: number }): any {
   const time = oldSimState.time + dt / 1000;
   const timer = secondsToHms(time);
   return { timer, time };
 }
 
-function batteryStep(dt, controls, oldSimState): any {
+function batteryStep(dt: number, controls: { suit_power: any }, oldSimState: { batteryPercent: string }): any {
   const drainRate = 100 / (4 * 60 * 60); // 4 hours of life (%/s)
   let batteryPercent = Number.parseFloat(oldSimState.batteryPercent);
   const amountDrained = drainRate * (dt / 1000); // %
@@ -68,7 +68,7 @@ function batteryStep(dt, controls, oldSimState): any {
   return { batteryPercent, t_battery, battery_out };
 }
 
-function capacityBattery(dt, control, fail, oldSimState): string {
+function capacityBattery(dt: any, control: { suit_power: any }, fail: { power_error: any }, oldSimState: any): string {
   let batt_max = 0;
   let batt_min = 0;
 
@@ -83,7 +83,11 @@ function capacityBattery(dt, control, fail, oldSimState): string {
   return cap_battery.toFixed(0);
 }
 
-function oxygenLife(dt, controls, oldSimState): any {
+function oxygenLife(
+  dt: number,
+  controls: { suit_power?: boolean; O2_switch?: any },
+  oldSimState: { t_oxygenPrimary: any; t_oxygenSec: any }
+): any {
   const ox_drainRate = 100 / (3 * 60 * 60); // 3 hours of life (%/s)
 
   const amountDrained = ox_drainRate * (dt / 1000); // %
@@ -115,7 +119,7 @@ function oxygenLife(dt, controls, oldSimState): any {
   };
 }
 
-function waterLife(dt, controls, oldSimState): any {
+function waterLife(dt: number, controls: { suit_power: boolean }, oldSimState: { cap_water: string }): any {
   const drainRate = 100 / (5.5 * 60 * 60); // 5.5 hours of life (%/s)
   let cap_water = Number.parseFloat(oldSimState.cap_water);
   const amountDrained = drainRate * (dt / 1000); // %
@@ -125,7 +129,12 @@ function waterLife(dt, controls, oldSimState): any {
   return { cap_water, t_water };
 }
 
-function heartBeat(dt, controls, failure, oldSimState): any {
+function heartBeat(
+  dt: any,
+  controls: { suit_power?: boolean; fan_switch?: any },
+  failure: { fan_error: boolean },
+  oldSimState: { heart_bpm: string }
+): any {
   let hr_max = 0;
   let hr_min = 0;
   // console.log(failure.fan_error, controls.fan_switch);
@@ -156,7 +165,12 @@ function pressureSUB(): string {
   return p_sub.toFixed(2);
 }
 
-function pressureSuit(dt, controls, failure, oldSimState): any {
+function pressureSuit(
+  dt: any,
+  controls: { suit_power?: boolean; pump?: any },
+  failure: { pump_error: any },
+  oldSimState: any
+): any {
   let p_suit_max = 0;
   let p_suit_min = 0;
   // console.log("PSUIT " + failure.pump_error + " " + controls.pump);
@@ -179,7 +193,12 @@ function tempSub(): string {
   return t_sub_avg.toFixed(1);
 }
 
-function velocFan(dt, controls, failure, oldSimState): any {
+function velocFan(
+  dt: any,
+  controls: { suit_power?: boolean; fan_switch?: any },
+  failure: { fan_error: boolean },
+  oldSimState: { v_fan: string }
+): any {
   let v_fan = Number.parseFloat(oldSimState.v_fan);
   let fan_max = 0;
   let fan_min = 0;
@@ -198,7 +217,12 @@ function velocFan(dt, controls, failure, oldSimState): any {
   return v_fan.toFixed(0);
 }
 
-function pressureOxygen(dt, controls, failure, oldSimState): any {
+function pressureOxygen(
+  dt: any,
+  controls: { suit_power: boolean },
+  failure: { o2_error: boolean },
+  oldSimState: { p_o2: string }
+): any {
   let p_o2 = Number.parseFloat(oldSimState.p_o2);
   const oxPressure_max = 780;
   const oxPressure_min = 778;
@@ -218,7 +242,12 @@ function pressureOxygen(dt, controls, failure, oldSimState): any {
   return p_o2.toFixed(2);
 }
 
-function rateOxygen(dt, controls, failure, oldSimState): any {
+function rateOxygen(
+  dt: any,
+  controls: { suit_power?: boolean; o2_switch?: any },
+  failure: { o2_error: boolean },
+  oldSimState: any
+): any {
   let oxRate_max = 0;
   let oxRate_min = 0;
   if (failure.o2_error == true && !controls.o2_switch) {

@@ -1,4 +1,4 @@
-function simulationStepUIA(dt, uiaControls, uiaOldSimState): any {
+function simulationStepUIA(dt: any, uiaControls: { depress_pump?: any; O2_vent?: any }, uiaOldSimState: any): any {
   // const cap_battery = batteryStep(dt, controls, oldSimState).cap_battery
   // const t_battery = batteryStep(dt, controls, oldSimState).t_battery
   // const battery_out = batteryStep(dt, controls, oldSimState).battery_out
@@ -45,7 +45,7 @@ function emuOnOff(dt, uiaControls, uiaOldSimState) {
   return {onOff1, onOff2}
 }
 */
-function emu1OnOff(dt, uiaControls, uiaOldSimState): any {
+function emu1OnOff(dt: any, uiaControls: any, uiaOldSimState: { onOff1: any }): any {
   const emu1 = uiaControls.emu1;
   let onOff1 = uiaOldSimState.onOff1;
 
@@ -57,7 +57,7 @@ function emu1OnOff(dt, uiaControls, uiaOldSimState): any {
   // console.log(onOff1);
   return onOff1;
 }
-function emu2OnOff(dt, uiaControls, uiaOldSimState): any {
+function emu2OnOff(dt: any, uiaControls: any, uiaOldSimState: { onOff2: any }): any {
   const emu2 = uiaControls.emu2;
   let onOff2 = uiaOldSimState.onOff2;
 
@@ -68,7 +68,11 @@ function emu2OnOff(dt, uiaControls, uiaOldSimState): any {
   }
   return onOff2;
 }
-function o2SupplyPressure(dt, uiaControls, uiaOldSimState): any {
+function o2SupplyPressure(
+  dt: number,
+  uiaControls: any,
+  uiaOldSimState: { o2_supply_pressure1: any; o2_supply_pressure2: any }
+): any {
   const oxygen_fillRate = 3500 / (0.5 * 60); //(oz/s)
   const amountFilled = oxygen_fillRate * (dt / 1000);
   const max_o2_psi = 3500;
@@ -124,7 +128,7 @@ function o2SupplyPressure(dt, uiaControls, uiaOldSimState): any {
 // }
 //********************************************************************************
 
-function supplyWaterStatus(dt, uiaControls, uiaOldSimState): any {
+function supplyWaterStatus(dt: any, uiaControls: any, uiaOldSimState: { ev1_supply: any; ev2_supply: any }): any {
   let water1 = uiaOldSimState.ev1_supply;
   let water2 = uiaOldSimState.ev2_supply;
   const status1 = uiaControls.ev1_supply;
@@ -142,7 +146,7 @@ function supplyWaterStatus(dt, uiaControls, uiaOldSimState): any {
   return { water1, water2 };
 }
 
-function wasteWater(dt, uiaControls, uiaOldSimState): any {
+function wasteWater(dt: any, uiaControls: any, uiaOldSimState: { ev1_waste: any; ev2_waste: any }): any {
   let waste_water1 = uiaOldSimState.ev1_waste;
   let waste_water2 = uiaOldSimState.ev2_waste;
   const waste1 = uiaControls.ev1_waste;
@@ -158,7 +162,7 @@ function wasteWater(dt, uiaControls, uiaOldSimState): any {
   return { waste_water1, waste_water2 };
 }
 
-function oxygen(dt, uiaControls, uiaOldSimState): any {
+function oxygen(dt: any, uiaControls: any, uiaOldSimState: { emu1_O2: any; emu2_O2: any }): any {
   let oxygen_status1 = uiaOldSimState.emu1_O2;
   let oxygen_status2 = uiaOldSimState.emu2_O2;
   const o2_1 = uiaControls.emu1_O2;
@@ -172,14 +176,14 @@ function oxygen(dt, uiaControls, uiaOldSimState): any {
 
   return { oxygen_status1, oxygen_status2 };
 }
-function dPump(dt, { depress_pump }, uiaOldSimState): any {
+function dPump(dt: any, { depress_pump }: any, uiaOldSimState: { depress_pump: any }): any {
   let pumpState = uiaOldSimState.depress_pump;
   if (depress_pump) pumpState = 'ENABLE';
   else pumpState = 'FAULT';
   return pumpState;
 }
 
-function o2Vent(dt, { O2_vent }, uiaOldSimState): any {
+function o2Vent(dt: any, { O2_vent }: any, uiaOldSimState: { O2_vent: any }): any {
   let vent = uiaOldSimState.O2_vent;
   if (O2_vent) vent = 'VENT';
   else vent = 'CLOSE';

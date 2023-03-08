@@ -1,10 +1,13 @@
+import dotenv from 'dotenv';
+
 import sequelize from './database/index.js';
 import app from './server/express/app.js';
 
 // Environment variables
-const API_URL = process.env.API_URL;
-const API_PORT = process.env.API_PORT;
-const SOCKET_PORT = process.env.SOCKET_PORT;
+dotenv.config();
+const API_URL = process.env.API_URL as string | undefined;
+const API_PORT = process.env.API_PORT as number | undefined;
+const SOCKET_PORT = process.env.SOCKET_PORT as number | undefined;
 
 // Log the environment variables
 console.log(`API PORT: ${API_PORT}`);

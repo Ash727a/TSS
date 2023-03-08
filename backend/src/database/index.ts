@@ -31,7 +31,6 @@ for (const model in modelsModulesObject) {
 // We execute any extra setup after the models are defined, such as adding associations.
 setup.applyExtraSetup(sequelize);
 console.log('done');
-console.log(sequelize);
 // We export the sequelize connection instance to be used around our app.
 // module.exports = sequelize;
 export default sequelize;

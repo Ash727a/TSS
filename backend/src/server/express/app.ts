@@ -1,22 +1,26 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const routes = {
-  auth: require('./routes/auth'),
-  locations: require('./routes/location'),
-  lsar: require('./routes/lsar'),
-  roles: require('./routes/role'),
-  rooms: require('./routes/room'),
-  users: require('./routes/users'),
-  simulationcontrol: require('./routes/simulationcontrol'),
-  simulationstate: require('./routes/simulationstate'),
-  simulationfailure: require('./routes/simulationfailure'),
-  simulationstateuia: require('./routes/simulationstateuia'),
-  simulationuia: require('./routes/simulationuia'),
-  // telemetryerrorlog: require('./routes/telemetryerrorlog'),
-  telemetrysessionlog: require('./routes/telemetrysessionlog'),
-  telemetrystationlog: require('./routes/telemetrystationlog'),
+import * as routes from './routes/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const routeDictionary = {
+  auth: routes.auth,
+  roles: routes.role,
+  rooms: routes.room,
+  users: routes.users,
+  simulationcontrol: routes.simulationcontrol,
+  simulationstate: routes.simulationstate,
+  simulationfailure: routes.simulationfailure,
+  simulationstateuia: routes.simulationstateuia,
+  simulationuia: routes.simulationuia,
+  telemetrysessionlog: routes.telemetrysessionlog,
+  telemetrystationlog: routes.telemetrystationlog,
 };
 
 const app = express();
@@ -46,70 +50,70 @@ app.get('/conntest', (req: any, res: any) => {
 });
 
 // We define the standard REST APIs for each route (if they exist).
-for (const [routeName, routeController] of Object.entries(routes)) {
+for (const [routeName, routeController] of Object.entries(routeDictionary)) {
   // Auth Stuff
-  if (routeController.registerUser) {
+  if ('registerUser' in routeController) {
     app.post(`/api/${routeName}/register`, makeHandlerAwareOfAsyncErrors(routeController.registerUser));
   }
 
-  if (routeController.findUser) {
+  if ('findUser' in routeController) {
     app.post(`/api/${routeName}/finduser`, makeHandlerAwareOfAsyncErrors(routeController.findUser));
   }
-  if (routeController.assignmentLookup) {
+  if ('assignmentLookup' in routeController) {
     app.post(`/api/${routeName}/assignment`, makeHandlerAwareOfAsyncErrors(routeController.assignmentLookup));
   }
-  if (routeController.assignmentRelease) {
+  if ('assignmentRelease' in routeController) {
     app.post(`/api/${routeName}/assignmentrelease`, makeHandlerAwareOfAsyncErrors(routeController.assignmentRelease));
   }
 
   // Simulation Stuff
-  if (routeController.commandSim) {
+  if ('commandSim' in routeController) {
     app.get(`/api/${routeName}/sim/:room/:event`, makeHandlerAwareOfAsyncErrors(routeController.commandSim));
   }
 
-  if (routeController.controlSim) {
+  if ('controlSim' in routeController) {
     app.get(`/api/${routeName}/simctl/:room/:control`, makeHandlerAwareOfAsyncErrors(routeController.controlSim));
   }
 
-  if (routeController.failureSim) {
+  if ('failureSim' in routeController) {
     app.get(`/api/${routeName}/simfail/:room/:failure`, makeHandlerAwareOfAsyncErrors(routeController.failureSim));
   }
 
   // Commander Stuff
-  if (routeController.getAllRoomsWithUsers) {
-    app.get(`/api/${routeName}/cmdr/getusers`, makeHandlerAwareOfAsyncErrors(routeController.getAllRoomsWithUsers));
-  }
+  // if ('getAllRoomsWithUsers' in routeController) {
+  //   app.get(`/api/${routeName}/cmdr/getusers`, makeHandlerAwareOfAsyncErrors(routeController.getAllRoomsWithUsers));
+  // }
   // End Commander Stuff
 
-  if (routeController.getAll) {
+  if ('getAll' in routeController) {
     app.get(`/api/${routeName}`, makeHandlerAwareOfAsyncErrors(routeController.getAll));
   }
-  if (routeController.getById) {
+  if ('getById' in routeController) {
     app.get(`/api/${routeName}/:id`, makeHandlerAwareOfAsyncErrors(routeController.getById));
   }
-  if (routeController.getByName) {
+  if ('getByName' in routeController) {
     app.get(`/api/${routeName}/user/:username`, makeHandlerAwareOfAsyncErrors(routeController.getByName));
   }
 
-  if (routeController.getByRoomId) {
+  if ('getByRoomId' in routeController) {
     app.get(`/api/${routeName}/room/:room`, makeHandlerAwareOfAsyncErrors(routeController.getByRoomId));
   }
 
-  if (routeController.getByUserId) {
-    app.get(`/api/${routeName}/user/:user`, makeHandlerAwareOfAsyncErrors(routeController.getByUserId));
-  }
-  if (routeController.create) {
+  // if ('getByUserId' in routeController) {
+  //   app.get(`/api/${routeName}/user/:user`, makeHandlerAwareOfAsyncErrors(routeController.getByUserId));
+  // }
+  if ('create' in routeController) {
     app.post(`/api/${routeName}`, makeHandlerAwareOfAsyncErrors(routeController.create));
   }
-  if (routeController.update) {
+  if ('update' in routeController) {
     app.put(`/api/${routeName}/:id`, makeHandlerAwareOfAsyncErrors(routeController.update));
   }
-  if (routeController.remove) {
+  if ('remove' in routeController) {
     app.delete(`/api/${routeName}/:id`, makeHandlerAwareOfAsyncErrors(routeController.remove));
   }
 
   // Room Stuff
-  if (routeController.getRoomByStationName) {
+  if ('getRoomByStationName' in routeController) {
     app.get(
       `/api/${routeName}/station/:stationName`,
       makeHandlerAwareOfAsyncErrors(routeController.getRoomByStationName)

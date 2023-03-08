@@ -1,9 +1,21 @@
+import { Model, Optional } from 'sequelize';
+
 import sequelize from '../../../database/index.js';
 import { getIdParam } from '../helpers.js';
 
 const models = sequelize.models;
 
-async function getAll(req, res): Promise<void> {
+async function getAll(
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: Model<any, any>[]): void; new (): any };
+      send: { (arg0: string): void; new (): any };
+    };
+  }
+): Promise<void> {
   const simulationstate = await models.simulationstate.findAll();
   if (simulationstate) {
     res.status(200).json(simulationstate);
@@ -12,7 +24,17 @@ async function getAll(req, res): Promise<void> {
   }
 }
 
-async function getById(req, res): Promise<void> {
+async function getById(
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: Model<any, any>): void; new (): any };
+      send: { (arg0: string): void; new (): any };
+    };
+  }
+): Promise<void> {
   const id = getIdParam(req);
   const simulationstate = await models.simulationstate.findByPk(id);
   if (simulationstate) {
@@ -22,7 +44,17 @@ async function getById(req, res): Promise<void> {
   }
 }
 
-async function getByRoomId(req, res): Promise<void> {
+async function getByRoomId(
+  req: { params: { room: any } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: Model<any, any>[]): void; new (): any };
+      send: { (arg0: string): void; new (): any };
+    };
+  }
+): Promise<void> {
   const id = req.params.room;
   const simulationstate = await models.simulationstate.findAll({ where: { room: id } });
   if (simulationstate) {
@@ -32,8 +64,18 @@ async function getByRoomId(req, res): Promise<void> {
   }
 }
 
-async function create(req, res): Promise<void> {
-  if (req.body.id) {
+async function create(
+  req: { body: Optional<any, string> | undefined },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      send: { (arg0: string): void; new (): any };
+      end: { (): void; new (): any };
+    };
+  }
+): Promise<void> {
+  if (req?.body?.id) {
     res
       .status(400)
       .send('Bad request: ID should not be provided, since it is determined automatically by the database.');
@@ -43,7 +85,10 @@ async function create(req, res): Promise<void> {
   }
 }
 
-async function update(req, res): Promise<void> {
+async function update(
+  req: { body: { [x: string]: any } },
+  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+): Promise<void> {
   const id = getIdParam(req);
   await models.simulationstate.update(req.body, {
     where: {
@@ -53,7 +98,10 @@ async function update(req, res): Promise<void> {
   res.status(200).end();
 }
 
-async function remove(req, res): Promise<void> {
+async function remove(
+  req: any,
+  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+): Promise<void> {
   const id = getIdParam(req);
   await models.simulationstate.destroy({
     where: {
