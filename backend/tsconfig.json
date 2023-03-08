@@ -103,6 +103,7 @@
   "include": [
     "src/**/*",
     "/**/*.ts",
+    "*.d.ts",
     "package.json"
   ],
   "exclude": [
