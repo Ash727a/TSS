@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+import WebSocket from 'ws';
 
 const socketUrl = 'ws://localhost:3001';
 const teamName = 'TestTeam1';
@@ -10,18 +10,18 @@ const roomId = '1';
 const ws = new WebSocket(socketUrl);
 
 ws.on('open', () => {
-    console.log(teamName);
-    const data = {
-        MSGTYPE: 'DATA',
-        BLOB: {
-            DATATYPE: 'CREWMEMBER',
-            DATA: {
-                username: teamName,
-                room_id: roomId,
-                client_id: clientId
-            }
-        }
-    };
+  console.log(teamName);
+  const data = {
+    MSGTYPE: 'DATA',
+    BLOB: {
+      DATATYPE: 'CREWMEMBER',
+      DATA: {
+        username: teamName,
+        room_id: roomId,
+        client_id: clientId,
+      },
+    },
+  };
 
   ws.send(JSON.stringify(data));
 });

@@ -1,7 +1,7 @@
 /**
  * Telemetry Station Logs
  * - multiple sessions can be created for each room
- * - see telemetrystationlog.model.js for more details
+ * - see telemetryStationLog.model.js for more details
  */
 import { Model, Optional } from 'sequelize';
 
@@ -10,24 +10,24 @@ import { getIdParam } from '../helpers.js';
 
 const models = sequelize.models;
 
-const model = models.telemetrystationlog; // Define database model here
+const model = models.telemetryStationLog; // Define database model here
 
 /**
- * GET ALL /api/telemetrystationlog
+ * GET ALL /api/telemetryStationLog
  * @param {*} req
  * @param {*} res
  * @returns {TelemetryStationLog[]}
  */
 async function getAll(
   req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
 ): Promise<void> {
   const results = await model.findAll();
   res.status(200).json(results);
 }
 
 /**
- * GET SINGLE by id /api/telemetrystationlog/:id
+ * GET SINGLE by id /api/telemetryStationLog/:id
  * @param {*} req
  * @param {*} res
  * @returns {TelemetryStationLog}
@@ -38,9 +38,9 @@ async function getById(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>): void; new (): any };
-      send: { (arg0: string): void; new (): any };
+      (): any;
+      json: { (arg0: Model<any, any>): void; (): any };
+      send: { (arg0: string): void; (): any };
     };
   }
 ): Promise<void> {
@@ -54,7 +54,7 @@ async function getById(
 }
 
 /**
- * GET MULTIPLE by room id /api/telemetrystationlog/room/:room
+ * GET MULTIPLE by room id /api/telemetryStationLog/room/:room
  * @param {*} req
  * @param {*} res
  * @returns {TelemetryStationLog[]}
@@ -65,9 +65,9 @@ async function getByRoomId(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>[]): void; new (): any };
-      send: { (arg0: string): void; new (): any };
+      (): any;
+      json: { (arg0: Model<any, any>[]): void; (): any };
+      send: { (arg0: string): void; (): any };
     };
   }
 ): Promise<void> {
@@ -81,7 +81,7 @@ async function getByRoomId(
 }
 
 /**
- * POST SINGLE /api/telemetrystationlog
+ * POST SINGLE /api/telemetryStationLog
  * @param {*} req
  * @param {*} res
  * @throws 400 - Bad request
@@ -91,9 +91,9 @@ async function create(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      send: { (arg0: string): void; new (): any };
-      end: { (): void; new (): any };
+      (): any;
+      send: { (arg0: string): void; (): any };
+      end: { (): void; (): any };
     };
   }
 ): Promise<void> {
@@ -108,13 +108,13 @@ async function create(
 }
 
 /**
- * PUT SINGLE /api/telemetrystationlog/:id
+ * PUT SINGLE /api/telemetryStationLog/:id
  * @param {*} req
  * @param {*} res
  */
 async function update(
   req: { body: { [x: string]: any } },
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
   await model.update(req.body, {
@@ -126,13 +126,13 @@ async function update(
 }
 
 /**
- * DELETE SINGLE by id /api/telemetrystationlog/:id
+ * DELETE SINGLE by id /api/telemetryStationLog/:id
  * @param {*} req
  * @param {*} res
  */
 async function remove(
   req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
   await model.destroy({

@@ -19,8 +19,8 @@ const routeDictionary = {
   simulationfailure: routes.simulationfailure,
   simulationstateuia: routes.simulationstateuia,
   simulationuia: routes.simulationuia,
-  telemetrysessionlog: routes.telemetrysessionlog,
-  telemetrystationlog: routes.telemetrystationlog,
+  telemetrySessionLog: routes.telemetrySessionLog,
+  telemetryStationLog: routes.telemetryStationLog,
 };
 
 const app = express();

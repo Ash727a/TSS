@@ -46,13 +46,13 @@ class EVASimulation {
 
     // Seed the states on start
     await models.simulationstate.update(simStateSeed, {
-      where: { where: { room: parseInt(this.room) } },
+      where: { room: parseInt(this.room) },
     });
     await models.simulationcontrol.update(simControlSeed, {
-      where: { where: { room: parseInt(this.room) } },
+      where: { room: parseInt(this.room) },
     });
     await models.simulationfailure.update(simFailureSeed, {
-      where: { where: { room: parseInt(this.room) } },
+      where: { room: parseInt(this.room) },
     });
     console.log('Seed Completed');
   }
@@ -90,7 +90,7 @@ class EVASimulation {
       this.simFailure = data[0].dataValues;
     });
 
-    await models.telemetrysessionlog.create({ room_id: roomid, session_id, start_time: Date.now() });
+    await models.telemetrySessionLog.create({ room_id: roomid, session_id, start_time: Date.now() });
 
     this.simStateID = this.simState.id;
     this.simControlID = this.simControls.id;
@@ -153,7 +153,7 @@ class EVASimulation {
     // Update the room's session id to null, since the session has ended
     await models.room.update({ session_id: '' }, { where: { id: this.room } });
     // Set the session's end time to now
-    await models.telemetrysessionlog.update({ end_time: Date.now() }, { where: { session_id: this.session_id } });
+    await models.telemetrySessionLog.update({ end_time: Date.now() }, { where: { session_id: this.session_id } });
     clearInterval(this.simTimer);
     this.simTimer = undefined;
     this.lastTimestamp = null;
@@ -254,8 +254,8 @@ class EVASimulation {
         const errorID = uuidv4();
         // Set the error id for the current simulation
         this.simFailure[key + '_id'] = errorID;
-        // Create log of the error in the DB (telemetryerrorlog table)
-        models.telemetryerrorlog.create({
+        // Create log of the error in the DB (telemetryErrorLog table)
+        models.telemetryErrorLog.create({
           id: errorID,
           session_id: this.session_id,
           room_id: this.room,
@@ -265,7 +265,7 @@ class EVASimulation {
         // If the error fixed, set the end time and send the log to the DB
       } else if (this.simFailure[key] === false && error_id !== null && error_id !== undefined && error_id !== '') {
         // Send log to logs table in DB
-        models.telemetryerrorlog.update(
+        models.telemetryErrorLog.update(
           {
             end_time: Date.now(),
             resolved: true,
@@ -302,7 +302,7 @@ class EVASimulation {
       // If the previous station's id is not null, then we should end the previous station's log
       if (this.station_id !== null && this.station_id !== undefined && this.station_id !== '') {
         // End the previous station's log
-        models.telemetrystationlog.update(
+        models.telemetryStationLog.update(
           {
             end_time: Date.now(),
             completed: true,
@@ -317,7 +317,7 @@ class EVASimulation {
       // If the room was assigned to a new station, we want to create a new station log
       if (room.stationName !== undefined && room.stationName !== null && room.stationName !== '') {
         this.station_id = uuidv4();
-        models.telemetrystationlog.create({
+        models.telemetryStationLog.create({
           id: this.station_id,
           session_id: this.session_id,
           room_id: this.room,

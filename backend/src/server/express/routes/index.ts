@@ -6,8 +6,8 @@ import simulationfailure from './simulationfailure.js';
 import simulationstate from './simulationstate.js';
 import simulationstateuia from './simulationstateuia.js';
 import simulationuia from './simulationuia.js';
-import telemetrysessionlog from './telemetrysessionlog.js';
-import telemetrystationlog from './telemetrystationlog.js';
+import telemetrySessionLog from './telemetrySessionLog.js';
+import telemetryStationLog from './telemetryStationLog.js';
 import users from './users.js';
 
 export {
@@ -19,7 +19,7 @@ export {
   simulationstate,
   simulationstateuia,
   simulationuia,
-  telemetrysessionlog,
-  telemetrystationlog,
+  telemetrySessionLog,
+  telemetryStationLog,
   users,
 };

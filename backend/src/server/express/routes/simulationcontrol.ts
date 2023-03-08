@@ -53,11 +53,11 @@ async function commandSim(
             existingSim.sim.session_id = session_id;
             simInst = existingSim;
           }
-
           // Attempt to start the sim.
           sims.push(simInst);
           // Start w/ 1sec delay
           setTimeout(() => {
+            console.log(simInst.room, simInst.sim.session_id);
             simInst.sim.start(simInst.room, simInst.sim.session_id);
           }, 1000);
         }
