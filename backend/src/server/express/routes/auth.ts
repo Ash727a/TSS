@@ -1,3 +1,4 @@
+import { Model, Optional } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import sequelize from '../../../database/index.js';
@@ -31,7 +32,7 @@ function getUnassignedVKs(vks: any): any {
   return unassigned;
 }
 
-async function registerUser(req, res): Promise<any> {
+async function registerUser(req: { body: Optional<any, string> | undefined; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: Model<any, any>): void; new(): any; }; }; }): Promise<any> {
   //Debug console.log(req.body);
 
   //////////// User Checks
@@ -122,7 +123,7 @@ async function registerUser(req, res): Promise<any> {
   res.status(200).json(user);
 }
 
-async function assignmentLookup(req, res): Promise<any> {
+async function assignmentLookup(req: { body: { hmd: undefined; vk: undefined; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { ok: boolean; err?: string; data?: any; }): void; new(): any; }; }; }): Promise<any> {
   if (req.body.hmd === undefined && req.body.vk === undefined) {
     res.status(400).json({ ok: false, err: 'HMD or VK not specified' });
     return;
@@ -168,7 +169,7 @@ async function assignmentLookup(req, res): Promise<any> {
   return;
 }
 
-async function assignmentRelease(req, res): Promise<any> {
+async function assignmentRelease(req: { body: { hmd: undefined; vk: undefined; secret: string; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { ok: boolean; err?: string; data?: any; }): void; new(): any; }; }; }): Promise<any> {
   if (req.body.hmd === undefined && req.body.vk === undefined) {
     res.status(400).json({ ok: false, err: 'HMD or VK not specified' });
     return;
@@ -259,7 +260,7 @@ async function assignmentRelease(req, res): Promise<any> {
   return;
 }
 
-async function findUser(req, res): Promise<any> {
+async function findUser(req: { body: { username: string | undefined; guid: string | undefined; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { ok: boolean; err?: string; user?: any; }): void; new(): any; }; }; }): Promise<any> {
   if (
     (req.body.username === undefined || req.body.username === '') &&
     (req.body.guid === undefined || req.body.guid === '')
@@ -292,7 +293,7 @@ async function findUser(req, res): Promise<any> {
   res.status(400).json({ ok: false, err: 'Could not find User' });
 }
 
-async function update(req, res): Promise<any> {
+async function update(req: { body: { [x: string]: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; end: { (): void; new(): any; }; }; }): Promise<any> {
   await models.user.update(req.body, {
     where: {
       id: req.body.id,

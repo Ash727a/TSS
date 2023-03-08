@@ -1,7 +1,8 @@
-const sequelize = require('../../index.js');
-// const { pickRandom, randomDate } = require('./helpers');
+import sequelize from '../../index.js';
 
-async function reset() {
+// import { pickRandom, randomDate } from './helpers.js';
+
+async function reset(): Promise<void> {
   console.log('\nPopulating suits.sqlite database...');
 
   const roomList = [
@@ -45,7 +46,7 @@ async function reset() {
 
   // Create a new data set for each room
   await roomList.forEach(async (room, idx) => {
-    let simRow = { room: idx + 1 };
+    const simRow = { room: idx + 1 };
     await sequelize.models.simulationcontrol.create(simRow);
     await sequelize.models.simulationfailure.create(simRow);
     await sequelize.models.simulationstate.create(simRow);
