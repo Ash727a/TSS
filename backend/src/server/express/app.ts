@@ -14,7 +14,7 @@ const routeDictionary = {
   roles: routes.role,
   rooms: routes.room,
   users: routes.users,
-  simulationcontrol: routes.simulationcontrol,
+  simulationControl: routes.simulationControl,
   simulationstate: routes.simulationstate,
   simulationfailure: routes.simulationfailure,
   simulationstateuia: routes.simulationstateuia,
@@ -71,13 +71,13 @@ for (const [routeName, routeController] of Object.entries(routeDictionary)) {
     app.get(`/api/${routeName}/sim/:room/:event`, makeHandlerAwareOfAsyncErrors(routeController.commandSim));
   }
 
-  if ('controlSim' in routeController) {
-    app.get(`/api/${routeName}/simctl/:room/:control`, makeHandlerAwareOfAsyncErrors(routeController.controlSim));
-  }
+  // if ('controlSim' in routeController) {
+  //   app.get(`/api/${routeName}/simctl/:room/:control`, makeHandlerAwareOfAsyncErrors(routeController.controlSim));
+  // }
 
-  if ('failureSim' in routeController) {
-    app.get(`/api/${routeName}/simfail/:room/:failure`, makeHandlerAwareOfAsyncErrors(routeController.failureSim));
-  }
+  // if ('failureSim' in routeController) {
+  //   app.get(`/api/${routeName}/simfail/:room/:failure`, makeHandlerAwareOfAsyncErrors(routeController.failureSim));
+  // }
 
   // Commander Stuff
   // if ('getAllRoomsWithUsers' in routeController) {

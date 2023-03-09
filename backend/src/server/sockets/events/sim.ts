@@ -145,17 +145,17 @@ class Simulation {
 
   async getByRoomId(room: any): Promise<void | any> {
     const id = room;
-    const simulationstates = await models.simulationstate.findAll({ where: { room: id } });
-    const simulationcontrols = await models.simulationcontrol.findAll({ where: { room: id } });
+    const simulationstates = await models.simulationstate.findAll({ where: { id: id } });
+    // const simulationControls = await models.simulationControl.findAll({ where: { room: id } });
     const simulationfailures = await models.simulationfailure.findAll({ where: { room: id } });
     const simulationuias = await models.simulationuia.findAll({ where: { room: id } });
     const simulationstateuias = await models.simulationstateuia.findAll({ where: { room: id } });
-    const data = { simulationstates, simulationcontrols, simulationfailures, simulationuias, simulationstateuias };
+    const data = { simulationstates, simulationfailures, simulationuias, simulationstateuias };
     return { ok: true, all: data };
   }
 
   async getAllState(): Promise<void | any> {
-    const simulationcontrols = await models.simulationcontrol.findAll();
+    // const simulationControls = await models.simulationControl.findAll();
     const simulationstates = await models.simulationstate.findAll();
     const simulationfailures = await models.simulationfailure.findAll();
     const simulationuias = await models.simulationuia.findAll();
@@ -164,7 +164,7 @@ class Simulation {
       ok: true,
       simuias: simulationuias,
       simstateuias: simulationstateuias,
-      simcontl: simulationcontrols,
+      // simcontl: simulationControls,
       simfails: simulationfailures,
       simstates: simulationstates,
     };

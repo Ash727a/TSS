@@ -1,7 +1,7 @@
 import auth from './auth.js';
 import role from './role.js';
 import room from './room.js';
-import simulationcontrol from './simulationcontrol.js';
+import simulationControl from './simulationControl.js';
 import simulationfailure from './simulationfailure.js';
 import simulationstate from './simulationstate.js';
 import simulationstateuia from './simulationstateuia.js';
@@ -14,7 +14,7 @@ export {
   auth,
   role,
   room,
-  simulationcontrol,
+  simulationControl,
   simulationfailure,
   simulationstate,
   simulationstateuia,

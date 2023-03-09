@@ -1,6 +1,6 @@
 const simState = {
-  isRunning: false,
-  isPaused: false,
+  is_running: false,
+  is_paused: false,
   time: 0,
   timer: '00:00:00',
   started_at: '00:00:00',
@@ -11,7 +11,7 @@ const simState = {
   v_fan: 0,
   p_o2: 0,
   rate_o2: 0,
-  batteryPercent: 100,
+  battery_percent: 100,
   battery_out: 100,
   cap_battery: 0,
   t_battery: '00:00:00',

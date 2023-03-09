@@ -18,7 +18,7 @@ const SOCKET_PORT = process.env.SOCKET_PORT;
 const API_URL = `${process.env.API_URL as string}:${process.env.API_PORT as number | undefined}`;
 const server = http.createServer();
 const wss = new WebSocket.Server({ server });
-const STOP_SIM_URL = `${API_URL}/api/simulationcontrol/sim/`;
+const STOP_SIM_URL = `${API_URL}/api/simulationControl/sim/`;
 const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 
 const parser = new Parser();
@@ -81,23 +81,23 @@ wss.on('connection', (ws: any, req) => {
   async function sendData(): Promise<void> {
     try {
       const room_id = ws.roomId;
-      const sim_state_res = await models.simulationstate.findOne({ where: { room: room_id } });
+      const sim_state_res = await models.simulationstate.findOne({ where: { id: room_id } });
       const sim_state = sim_state_res?.get({ plain: true });
       //let gps_val  = await models.gpsmsg.findAll({ where: { room_id: room_id }});
       //let imu_val  = await models.imumsg.findAll({ where: { room_id: room_id }});
-      const telem_val = await models.simulationstate.findAll({ where: { room: room_id } });
+      const telem_val = await models.simulationstate.findAll({ where: { id: room_id } });
 
       const data = {
         //gpsmsgs: gps_val,
         //imumsgs: imu_val,
         simulationstates: telem_val,
         /*
-					add spectrometer data
-					add rover data 
-				*/
+          add spectrometer data
+          add rover data 
+        */
       };
 
-      if (sim_state?.isRunning) {
+      if (sim_state?.is_running) {
         ws.send(JSON.stringify(data));
       }
     } catch (err) {

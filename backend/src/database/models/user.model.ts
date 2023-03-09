@@ -1,38 +1,40 @@
-import { DataTypes } from 'sequelize';
+import {
+  AllowNull,
+  AutoIncrement,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-const user = (sequelize: any): void => {
-  sequelize.define('user', {
-    // The following specification of the 'id' attribute could be omitted
-    // since it is the default.
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER,
-    },
-    username: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      unique: true,
-      validate: {
-        // We require usernames to have length of at least 3, and
-        // only use letters, numbers and underscores.
-        is: /^\w{3,}$/,
-      },
-    },
-    room: {
-      allowNull: true,
-      type: DataTypes.INTEGER,
-    },
-    guid: {
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      unique: true,
-    },
-  });
-};
+@Table({ tableName: 'user', underscored: true })
+export default class user extends Model {
+  // User ID (PK)
+  @PrimaryKey
+  @AllowNull(false)
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  public declare id: number;
 
-export default user;
+  // User name
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  public name!: string;
+
+  // Room ID (FK)
+  // @ForeignKey(() => Room)
+  @AllowNull(true)
+  @Column(DataType.INTEGER)
+  public room!: number;
+
+  // User GUID
+  @AllowNull(false)
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUIDV4)
+  public guid!: string;
+}

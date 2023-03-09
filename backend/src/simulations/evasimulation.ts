@@ -40,26 +40,26 @@ class EVASimulation {
 
   async seedInstances(): Promise<void> {
     // Get the instances for the room
-    const state = await models.simulationstate.findOne({ where: { room: parseInt(this.room) } });
-    const control = await models.simulationcontrol.findOne({ where: { room: parseInt(this.room) } });
+    const state = await models.simulationstate.findOne({ where: { id: parseInt(this.room) } });
+    // const control = await models.simulationControl.findOne({ where: { room: parseInt(this.room) } });
     const failure = await models.simulationfailure.findOne({ where: { room: parseInt(this.room) } });
 
     // Seed the states on start
     await models.simulationstate.update(simStateSeed, {
-      where: { room: parseInt(this.room) },
+      where: { id: parseInt(this.room) },
     });
-    await models.simulationcontrol.update(simControlSeed, {
-      where: { room: parseInt(this.room) },
-    });
+    // await models.simulationControl.update(simControlSeed, {
+    //   where: { room: parseInt(this.room) },
+    // });
     await models.simulationfailure.update(simFailureSeed, {
-      where: { room: parseInt(this.room) },
+      where: { id: parseInt(this.room) },
     });
     console.log('Seed Completed');
   }
 
-  isRunning(): boolean {
-    return this.simStateID !== null && this.simControlID !== null && this.simFailureID !== null;
-  }
+  // is_running(): boolean {
+  //   return this.simStateID !== null && this.simControlID !== null && this.simFailureID !== null;
+  // }
 
   async start(roomid: any, session_id: any): Promise<void | boolean> {
     console.log('Starting Sim');
@@ -71,20 +71,20 @@ class EVASimulation {
     await models.room.update({ session_id: session_id }, { where: { id: roomid } });
     // TODO
 
-    await models.simulationstate.findAll({ where: { room: roomid } }).then((data) => {
+    await models.simulationstate.findAll({ where: { id: roomid } }).then((data) => {
       this.simState = data[0].dataValues;
     });
 
-    if (this.simState.isRunning) {
+    if (this.simState.is_running) {
       return false;
     }
-    // Update isRunning
-    this.simState.isRunning = true;
+    // Update is_running
+    this.simState.is_running = true;
 
-    await models.simulationcontrol.findAll({ where: { room: roomid } }).then((data) => {
-      // console.log(data);
-      this.simControls = data[0].dataValues;
-    });
+    // await models.simulationControl.findAll({ where: { room: roomid } }).then((data) => {
+    //   // console.log(data);
+    //   this.simControls = data[0].dataValues;
+    // });
 
     await models.simulationfailure.findAll({ where: { room: roomid } }).then((data) => {
       this.simFailure = data[0].dataValues;
@@ -93,7 +93,7 @@ class EVASimulation {
     await models.telemetrySessionLog.create({ room_id: roomid, session_id, start_time: Date.now() });
 
     this.simStateID = this.simState.id;
-    this.simControlID = this.simControls.id;
+    // this.simControlID = this.simControls.id;
     this.simFailureID = this.simFailure.id;
 
     console.log('--------------Simulation Starting--------------');
@@ -108,7 +108,7 @@ class EVASimulation {
   }
 
   async pause(): Promise<void> {
-    if (!this.simState.isRunning) {
+    if (!this.simState.is_running) {
       throw new Error('Cannot pause: simulation is not running or it is running and is already paused');
     }
     console.log('--------------Simulation Paused-------------');
@@ -118,7 +118,7 @@ class EVASimulation {
     this.lastTimestamp = null;
 
     await models.simulationstate.update(
-      { isPaused: true },
+      { is_paused: true },
       {
         where: { id: this.simStateID },
       }
@@ -126,7 +126,7 @@ class EVASimulation {
   }
 
   async unpause(): Promise<void> {
-    if (!this.simState.isRunning) {
+    if (!this.simState.is_running) {
       throw new Error('Cannot unpause: simulation is not running or it is running and is not paused');
     }
 
@@ -137,7 +137,7 @@ class EVASimulation {
     }, process.env.SIM_STEP_TIME as number | undefined);
 
     await models.simulationstate.update(
-      { isPaused: false },
+      { is_paused: false },
       {
         where: { id: this.simStateID },
       }
@@ -145,7 +145,7 @@ class EVASimulation {
   }
 
   async stop(): Promise<void> {
-    if (!this.simState.isRunning) {
+    if (!this.simState.is_running) {
       throw new Error('Cannot stop: simulation is not running');
     }
     // this.simStateID = null
@@ -197,16 +197,16 @@ class EVASimulation {
 
   async setControls(newControls: any): Promise<any> {
     // const controls = await SimulationControl.findByIdAndUpdate(controlID, newControls, {new: true}).exec()
-    const controls = await models.simulationcontrol.update(newControls, {
+    const controls = await models.simulationControl.update(newControls, {
       where: {
         id: this.simControlID,
       },
     });
 
     // Update Controls Object
-    await models.simulationcontrol.findAll({ where: { room: this.room } }).then((data) => {
-      this.simControls = data[0].dataValues;
-    });
+    // await models.simulationControl.findAll({ where: { room: this.room } }).then((data) => {
+    //   this.simControls = data[0].dataValues;
+    // });
 
     return controls;
   }
@@ -215,16 +215,18 @@ class EVASimulation {
     console.log(`StateID: ${this.simStateID}, ControlID: ${this.simControlID}, FailureID: ${this.simFailureID}`);
     try {
       // const simState = await simulationstate.findById(this.simStateID).exec()
-      // const controls = await simulationcontrol.findById(this.controlID).exec()
+      // const controls = await simulationControl.findById(this.controlID).exec()
       const now = Date.now();
       const dt = now - (this.lastTimestamp || 0);
       this.lastTimestamp = now;
       // Get all simulation failures (new data) and udpate the simFailure object
+      this.simStateID = this.simFailureID;
+
       const failureData = await models.simulationfailure.findAll({ where: { room: this.simFailureID } });
       const newSimFailure = failureData[0].dataValues;
       this.simFailure = { ...this.simFailure, ...newSimFailure };
-      this.updateTelemetryErrorLogs();
-      this.updateTelemetryStation();
+      // this.updateTelemetryErrorLogs();
+      // this.updateTelemetryStation();
       const newSimState = evaTelemetry.simulationStep(dt, this.simControls, this.simFailure, this.simState);
       Object.assign(this.simState, newSimState);
       // await simState.save()
@@ -238,7 +240,7 @@ class EVASimulation {
           console.log('Updated');
         });
     } catch (error: any) {
-      console.error('failed error');
+      console.error('Caught failed error');
       console.error(error.toString());
     }
   }

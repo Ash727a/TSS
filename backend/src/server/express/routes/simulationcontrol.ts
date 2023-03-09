@@ -14,8 +14,8 @@ async function commandSim(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: { ok: boolean; err?: string; event?: any }): void; new (): any };
+      (): any;
+      json: { (arg0: { ok: boolean; err?: string; event?: any }): void; (): any };
     };
   }
 ): Promise<void> {
@@ -95,9 +95,9 @@ async function controlSim(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: { ok: boolean; err: string }): void; new (): any };
-      send: { (arg0: { ok: boolean; controls: any }): void; new (): any };
+      (): any;
+      json: { (arg0: { ok: boolean; err: string }): void; (): any };
+      send: { (arg0: { ok: boolean; controls: any }): void; (): any };
     };
   }
 ): Promise<void> {
@@ -139,9 +139,9 @@ async function failureSim(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: { ok: boolean; err: string }): void; new (): any };
-      send: { (arg0: { ok: boolean; failures: any }): void; new (): any };
+      (): any;
+      json: { (arg0: { ok: boolean; err: string }): void; (): any };
+      send: { (arg0: { ok: boolean; failures: any }): void; (): any };
     };
   }
 ): Promise<void> {
@@ -171,62 +171,62 @@ async function failureSim(
   res.status(200).send({ ok: true, failures: simInst.failure });
 }
 
-async function getAll(
-  req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
-): Promise<void> {
-  const simulationcontrols = await models.simulationcontrol.findAll();
-  res.status(200).json(simulationcontrols);
-}
+// async function getAll(
+//   req: any,
+//   res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
+// ): Promise<void> {
+//   const simulationControls = await models.simulationControl.findAll();
+//   res.status(200).json(simulationControls);
+// }
 
 async function getById(
   req: any,
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>): void; new (): any };
-      send: { (arg0: string): void; new (): any };
+      (): any;
+      json: { (arg0: Model<any, any>): void; (): any };
+      send: { (arg0: string): void; (): any };
     };
   }
 ): Promise<void> {
   const id = getIdParam(req);
-  const simulationcontrol = await models.simulationcontrol.findByPk(id);
-  if (simulationcontrol) {
-    res.status(200).json(simulationcontrol);
+  const simulationControl = await models.simulationControl.findByPk(id);
+  if (simulationControl) {
+    res.status(200).json(simulationControl);
   } else {
     res.status(404).send('404 - Not found');
   }
 }
 
-async function getByRoomId(
-  req: { params: { room: any } },
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>[]): void; new (): any };
-      send: { (arg0: string): void; new (): any };
-    };
-  }
-): Promise<void> {
-  const id = req.params.room;
-  const simulationcontrol = await models.simulationcontrol.findAll({ where: { room: id } });
-  if (simulationcontrol) {
-    res.status(200).json(simulationcontrol);
-  } else {
-    res.status(404).send('404 - Not found');
-  }
-}
+// async function getByRoomId(
+//   req: { params: { room: any } },
+//   res: {
+//     status: (arg0: number) => {
+//       (): any;
+//       (): any;
+//       json: { (arg0: Model<any, any>[]): void; (): any };
+//       send: { (arg0: string): void; (): any };
+//     };
+//   }
+// ): Promise<void> {
+//   const id = req.params.room;
+//   const simulationControl = await models.simulationControl.findAll({ where: { room: id } });
+//   if (simulationControl) {
+//     res.status(200).json(simulationControl);
+//   } else {
+//     res.status(404).send('404 - Not found');
+//   }
+// }
 
 async function create(
   req: { body: Optional<any, string> | undefined },
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      send: { (arg0: string): void; new (): any };
-      end: { (): void; new (): any };
+      (): any;
+      send: { (arg0: string): void; (): any };
+      end: { (): void; (): any };
     };
   }
 ): Promise<void> {
@@ -235,17 +235,17 @@ async function create(
       .status(400)
       .send('Bad request: ID should not be provided, since it is determined automatically by the database.');
   } else {
-    await models.simulationcontrol.create(req.body);
+    await models.simulationControl.create(req.body);
     res.status(201).end();
   }
 }
 
 async function update(
   req: { body: { [x: string]: any } },
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationcontrol.update(req.body, {
+  await models.simulationControl.update(req.body, {
     where: {
       id: id,
     },
@@ -255,10 +255,10 @@ async function update(
 
 async function remove(
   req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationcontrol.destroy({
+  await models.simulationControl.destroy({
     where: {
       id: id,
     },
@@ -270,9 +270,9 @@ export default {
   commandSim,
   controlSim,
   failureSim,
-  getAll,
+  // getAll,
   getById,
-  getByRoomId,
+  // getByRoomId,
   create,
   update,
   remove,

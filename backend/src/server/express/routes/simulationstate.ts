@@ -56,7 +56,7 @@ async function getByRoomId(
   }
 ): Promise<void> {
   const id = req.params.room;
-  const simulationstate = await models.simulationstate.findAll({ where: { room: id } });
+  const simulationstate = await models.simulationstate.findAll({ where: { id: id } });
   if (simulationstate) {
     res.status(200).json(simulationstate);
   } else {

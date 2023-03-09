@@ -2,6 +2,7 @@
  * This model is for storing logs of all telemetry errors thrown in different rooms.
  */
 import { DataTypes } from 'sequelize';
+import { Column, HasMany, Model, Table } from 'sequelize-typescript';
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.

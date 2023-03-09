@@ -12,7 +12,7 @@ export class TelemetryService {
   constructor(private http: HttpClient) { }
 
   async simulationControl(roomID: number, command: string): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationcontrol/sim/${roomID}/${command}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationControl/sim/${roomID}/${command}`))
       .then((result) => {
         return result as { ok: boolean; event: string };
       })

@@ -1,17 +1,18 @@
-import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, TemplateRef } from '@angular/core';
-import { ServerService } from '@services/api/server.service';
-import { ModalService } from '@services/modal/modal.service';
 import { Subscription } from 'rxjs';
+
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import {
+  ModalEvent,
   Room,
   SimulationError,
-  TelemetryData,
   SimulationErrorData,
-  ModalEvent,
   SimulationErrorKey,
+  TelemetryData,
 } from '@core/interfaces';
 import { RoomsService } from '@services/api/rooms.service';
+import { ServerService } from '@services/api/server.service';
 import { TelemetryService } from '@services/api/telemetry.service';
+import { ModalService } from '@services/modal/modal.service';
 
 @Component({
   selector: 'app-rooms',
@@ -44,6 +45,23 @@ export class RoomsComponent implements OnInit, OnDestroy {
       this.backendConnected = status.current;
       if (this.backendConnected) {
         this.roomsService
+          .getRooms()
+          .then((res) => {
+            if (res.ok) {
+              this.rooms = res.payload;
+            }
+          })
+          .finally(() => {
+            this.loaded = true;
+          });
+        this.startPollRoomStatus();
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    if (this.backendConnected) {
+      this.roomsService
         .getRooms()
         .then((res) => {
           if (res.ok) {
@@ -53,23 +71,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
         .finally(() => {
           this.loaded = true;
         });
-        this.startPollRoomStatus();
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    if (this.backendConnected) {
-      this.roomsService
-      .getRooms()
-      .then((res) => {
-        if (res.ok) {
-          this.rooms = res.payload;
-        }
-      })
-      .finally(() => {
-        this.loaded = true;
-      });
     }
     this.refreshRoomData();
     this.startPollRoomStatus();
@@ -94,8 +95,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
             // Update all the room data with the latest data from the backend
             this.rooms = this.rooms.map((room: Room): Room => {
               let stationName: string = roomsResult.filter((data: Room) => data.id === room.id)[0].stationName;
-              let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.id === room.id)[0]
-                .isRunning;
+              console.log(telemetryResult[0].is_running)
+              let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.room === room.id)[0].is_running;
               let errors: SimulationError[] = [
                 { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
                 { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },

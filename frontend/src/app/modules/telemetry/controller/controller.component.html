@@ -24,7 +24,7 @@
       >
       <app-shared-control-button
         type="stop"
-        [disabled]="!connected || !telemetryData.isRunning"
+        [disabled]="!connected || !telemetryData.is_running"
         (click)="stopTelemetry()"
         [variant]="variant === 'small' ? 'light' : 'default'"
         >Stop</app-shared-control-button
@@ -37,7 +37,7 @@
       Connected for... {{ telemetryData.timer }}
     </h5>
     <div class="column-item gap" [ngClass]="variant">
-      <div class="row" [ngClass]="{ disabled: !connected || !telemetryData.isRunning }">
+      <div class="row" [ngClass]="{ disabled: !connected || !telemetryData.is_running }">
         <!-- <div class="column" *ngFor="let switch of switches; let index = index;" >
               <div class="switch-item">
                 <h4 class="switch-label">{{ switch.name }}</h4>
@@ -61,7 +61,7 @@
               [id]="0"
               [isErroring]="switches[0].value"
               (checked)="handleChange($event)"
-              [disabled]="!connected || !telemetryData.isRunning"
+              [disabled]="!connected || !telemetryData.is_running"
             ></app-shared-toggle-switch>
           </div>
           <div class="switch-item">
@@ -76,7 +76,7 @@
               [id]="1"
               [isErroring]="switches[1].value"
               (checked)="handleChange($event)"
-              [disabled]="!connected || !telemetryData.isRunning"
+              [disabled]="!connected || !telemetryData.is_running"
             ></app-shared-toggle-switch>
           </div>
         </div>
@@ -93,7 +93,7 @@
               [id]="2"
               [isErroring]="switches[2].value"
               (checked)="handleChange($event)"
-              [disabled]="!connected || !telemetryData.isRunning"
+              [disabled]="!connected || !telemetryData.is_running"
             ></app-shared-toggle-switch>
           </div>
           <div class="switch-item">
@@ -108,7 +108,7 @@
               [id]="3"
               [isErroring]="switches[3].value"
               (checked)="handleChange($event)"
-              [disabled]="!connected || !telemetryData.isRunning"
+              [disabled]="!connected || !telemetryData.is_running"
             ></app-shared-toggle-switch>
           </div>
         </div>

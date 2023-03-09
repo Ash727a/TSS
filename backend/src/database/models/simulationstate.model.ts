@@ -1,150 +1,188 @@
-import { DataTypes } from 'sequelize';
+/**
+ * This model is for storing the current telemetry state and data of all rooms
+ */
+import {
+  AllowNull,
+  AutoIncrement,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
+
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-const simulationstate = (sequelize: any): void => {
-  sequelize.define('simulationstate', {
-    // The following specification of the 'id' attribute could be omitted
-    // since it is the default.
-    room: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
-    isRunning: {
-      allowNull: false,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    isPaused: {
-      allowNull: false,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    time: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    timer: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      defaultValue: '00:00:00',
-    },
-    started_at: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      defaultValue: '00:00:00',
-    },
-    heart_bpm: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    p_sub: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    p_suit: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    t_sub: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    v_fan: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    p_o2: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    rate_o2: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    batteryPercent: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    cap_battery: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    battery_out: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    p_h2o_g: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    p_h2o_l: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    p_sop: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    rate_sop: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 0,
-    },
-    t_battery: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      defaultValue: '00:00:00',
-    },
-    t_oxygenPrimary: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    t_oxygenSec: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    ox_primary: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    ox_secondary: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    t_oxygen: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      defaultValue: '00:00:00',
-    },
-    cap_water: {
-      allowNull: false,
-      type: DataTypes.NUMBER,
-      defaultValue: 100,
-    },
-    t_water: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      defaultValue: '00:00:00',
-    },
-  });
-};
+@Table({ tableName: 'simulationstate', underscored: true })
+export default class simulationstate extends Model {
+  // Room ID (PK)
+  @PrimaryKey
+  @AllowNull(false)
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  declare id: number;
 
-export default simulationstate;
+  // Is the simulation running?
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare is_running: boolean;
+
+  // Is the simulation paused?
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare is_paused: boolean;
+
+  // Current simulation time
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare time: number;
+
+  // Current simulation timer
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare timer: string;
+
+  // Current simulation start time
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare started_at: string;
+
+  // Current heart BPM
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare heart_bpm: number;
+
+  // Current pressure in suit
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_sub: number;
+
+  // Current pressure in suit
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_suit: number;
+
+  // Current temperature in suit
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare t_sub: number;
+
+  // Current fan speed
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare v_fan: number;
+
+  // Current O2 pressure
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_o2: number;
+
+  // Current O2 rate
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare rate_o2: number;
+
+  // Current battery percentage
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare battery_percent: number;
+
+  // Current battery capacity
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare cap_battery: number;
+
+  // Current battery output
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare battery_out: number;
+
+  // Current H2O pressure in gas tank
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_h2o_g: number;
+
+  // Current H2O pressure in liquid tank
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_h2o_l: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare p_sop: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare rate_sop: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare t_battery: string;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare t_oxygenPrimary: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare t_oxygenSec: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare ox_primary: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare ox_secondary: number;
+
+  // placeholder
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare t_oxygen: string;
+
+  // placeholder
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare cap_water: string;
+
+  // placeholder
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare t_water: string;
+}

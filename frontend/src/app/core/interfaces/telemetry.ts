@@ -1,8 +1,8 @@
 export interface TelemetryData {
   id: number;
   room: number;
-  isRunning: boolean;
-  isPaused: boolean;
+  is_running: boolean;
+  is_paused: boolean;
   time: number;
   timer: string;
   started_at: string;
@@ -13,7 +13,7 @@ export interface TelemetryData {
   v_fan: string;
   p_o2: string;
   rate_o2: string;
-  batteryPercent: number;
+  battery_percent: number;
   cap_battery: string;
   battery_out: number;
   p_h2o_g: string;
