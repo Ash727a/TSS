@@ -114,7 +114,7 @@ for (const [routeName, routeController] of Object.entries(routeDictionary)) {
   // Room Stuff
   if ('getRoomByStationName' in routeController) {
     app.get(
-      `/api/${routeName}/station/:stationName`,
+      `/api/${routeName}/station/:station_name`,
       makeHandlerAwareOfAsyncErrors(routeController.getRoomByStationName)
     );
   }

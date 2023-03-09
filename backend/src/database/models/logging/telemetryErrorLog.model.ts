@@ -1,9 +1,20 @@
 import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
+/** MODEL: telemetryErrorLog
+ * This model is for storing a log history of errors thrown in all telemetry sessions.
+ * @column id Error session ID (PK)
+ * @column session_id ID of the telemetry session where the error was thrown (FK)
+ * @column room_id ID of the room where the error was thrown (FK)
+ * @column error_type The type of error that was thrown. One of: ["o2", "fan", "pump", "power"]
+ * @column start_time Time the error was thrown
+ * @column end_time Time the error was resolved
+ * @column resolved Whether the error was resolved or not
+ */
+
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table({ tableName: 'telemetryerrorlog', underscored: true })
-export default class telemetryerrorlog extends Model {
+@Table({ tableName: 'telemetryErrorLog', underscored: true })
+export default class telemetryErrorLog extends Model {
   // Error session ID (PK)
   @PrimaryKey
   @AllowNull(false)

@@ -14,8 +14,8 @@
           </div>
         </div>
         <div class="item right">
-          <app-shared-station-tag [station]="room.stationName" [selected]="true">{{
-            room.stationName
+          <app-shared-station-tag [station]="room.station_name" [selected]="true">{{
+            room.station_name
           }}</app-shared-station-tag>
           <app-shared-switch-station-button
             (click)="$event.stopPropagation()"

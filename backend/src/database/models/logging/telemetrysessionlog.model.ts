@@ -1,7 +1,11 @@
 import { AllowNull, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-/**
- * This model is for storing logs of all telemetry sessions "START" and "STOP" in all rooms.
+/** MODEL: telemetrySessionLog
+ * This model is for storing a log history of all telemetry sessions "START" and "STOP" in all rooms.
+ * @column session_id Telemetry session ID (PK)
+ * @column room_id Room ID it was assigned to (FK)
+ * @column start_time Time the telemetry session was started AKA "START" button was pressed
+ * @column end_time Time the telemetry session was stopped AKA "STOP" button was pressed
  */
 
 // We export a function that defines the model.

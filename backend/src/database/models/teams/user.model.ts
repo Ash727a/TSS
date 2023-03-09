@@ -10,6 +10,14 @@ import {
   Table,
 } from 'sequelize-typescript';
 
+/** MODEL: user
+ * This is the model for the users.
+ * @column id: User ID (PK)
+ * @column name: User name
+ * @column room: Room ID (FK)
+ * @column guid: User GUID
+ */
+
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'user', underscored: true })

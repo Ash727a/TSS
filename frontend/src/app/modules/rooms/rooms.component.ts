@@ -94,7 +94,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
           this.telemetryService.getAllRoomTelemetry().then((telemetryResult): void => {
             // Update all the room data with the latest data from the backend
             this.rooms = this.rooms.map((room: Room): Room => {
-              let stationName: string = roomsResult.filter((data: Room) => data.id === room.id)[0].stationName;
+              let station_name: string = roomsResult.filter((data: Room) => data.id === room.id)[0].station_name;
               console.log(telemetryResult[0].is_running)
               let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.room === room.id)[0].is_running;
               let errors: SimulationError[] = [
@@ -113,7 +113,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
               }
               room.errors = errors;
               room.status = isRunning ? 'green' : 'gray';
-              room.stationName = stationName;
+              room.station_name = station_name;
               return room;
             });
           });
@@ -125,8 +125,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
     });
 
     // this.rooms = this.rooms.map((room: any) => {
-    //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
-    //   room.stationName = stationName;
+    //   let station_name = result.filter((data: any) => data.id === room.id)[0].station_name;
+    //   room.station_name = station_name;
     //   return room;
     // });
     // })
@@ -144,8 +144,8 @@ export class RoomsComponent implements OnInit, OnDestroy {
     // console.log('Errors', result);
     // this.simulationErrorData = result;
     // this.rooms = this.rooms.map((room: any) => {
-    //   let stationName = result.filter((data: any) => data.id === room.id)[0].stationName;
-    //   room.stationName = stationName;
+    //   let station_name = result.filter((data: any) => data.id === room.id)[0].station_name;
+    //   room.station_name = station_name;
     //   return room;
     // });
     // });

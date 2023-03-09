@@ -39,7 +39,7 @@ async function getById(
 }
 
 async function getRoomByStationName(
-  req: { params: { stationName: any } },
+  req: { params: { station_name: any } },
   res: {
     status: (arg0: number) => {
       (): any;
@@ -49,8 +49,8 @@ async function getRoomByStationName(
     };
   }
 ): Promise<void> {
-  const stationName = req.params.stationName;
-  const room = await models.room.findAll({ where: { stationName: stationName } });
+  const station_name = req.params.station_name;
+  const room = await models.room.findAll({ where: { station_name: station_name } });
   if (room) {
     res.status(200).json(room);
   } else {

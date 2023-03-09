@@ -1,6 +1,3 @@
-/**
- * This model is for storing the current telemetry state and data of all rooms
- */
 import {
   AllowNull,
   AutoIncrement,
@@ -12,6 +9,23 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+
+/** MODEL: uia
+ * This model is for holding live UIA states and data for all rooms.
+ * @column room Room ID (PK)
+ * @column started_at Current simulation start time
+ * @column emu1 EMU1
+ * @column ev1_supply EV1 Supply
+ * @column ev1_waste EV1 Waste
+ * @column ev2_supply EV2 Supply
+ * @column ev2_waste EV2 Waste
+ * @column emu1_O2 EMU1 O2
+ * @column emu2 EMU2
+ * @column emu2_O2 EMU2 O2
+ * @column O2_vent O2 Vent
+ * @column depress_pump Depress Pump
+ * @column depress_valve Depress Valve
+ */
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.

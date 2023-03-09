@@ -1,5 +1,14 @@
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
+/** MODEL: hmd
+ * This model is for the head mounted display data.
+ * @column id: HMD ID (PK)
+ * @column name: HMD name
+ * @column description: HMD description
+ * @column assignment: HMD assignment
+ * @column mac_address: HMD MAC address
+ */
+
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'hmd', underscored: true })

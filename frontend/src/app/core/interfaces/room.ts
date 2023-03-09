@@ -9,6 +9,6 @@ export interface Room {
   updatedAt: Date;
   createdAt: Date;
   users: number;
-  stationName: string;
+  station_name: string;
   errors: SimulationError[];
 }

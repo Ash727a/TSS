@@ -1,7 +1,15 @@
-/**
- * This model is for storing logs of all stations assigned in all rooms.
- */
 import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
+/** MODEL: telemetryStationLog
+ * This model is for storing logs of all stations assigned in all rooms.
+ * @column id Station Assignment ID
+ * @column session_id Telemetry Session ID (FK)
+ * @column room_id Room ID it was assigned to (FK)
+ * @column station_name The name of the station that was assigned
+ * @column start_time Time the station was assigned to the room
+ * @column end_time Time the station was unassigned from the room (is the time completed, if it was completed)
+ * @column completed True if the station was completed AKA considered "Passed", if false, it means the task was "Failed"
+ */
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.

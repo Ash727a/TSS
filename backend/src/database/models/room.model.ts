@@ -10,7 +10,18 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-// We export a class that defines the model, a table in the database
+/** MODEL: room
+ * This is the model for the rooms.
+ * @column id: Room ID (PK)
+ * @column name: Room name
+ * @column session_id: Telemetry session ID (FK)
+ * @column users: Number of users in the room
+ * @column station_name: Station name
+ * @column station_id: Station Log ID (FK)
+ */
+
+// We export a function that defines the model.
+// This function will automatically receive as parameter the Sequelize connection object.@Table({ tableName: 'room', underscored: true })
 @Table({ tableName: 'room', underscored: true })
 export default class room extends Model {
   // Room ID (PK)
@@ -41,7 +52,7 @@ export default class room extends Model {
   @AllowNull(false)
   @Default('')
   @Column(DataType.STRING)
-  declare stationName: string;
+  declare station_name: string;
 
   // Station Log ID (FK)
   // @ForeignKey(() => StationLog)
