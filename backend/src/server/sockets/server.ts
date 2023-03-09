@@ -81,16 +81,16 @@ wss.on('connection', (ws: any, req) => {
   async function sendData(): Promise<void> {
     try {
       const room_id = ws.roomId;
-      const sim_state_res = await models.simulationstate.findOne({ where: { id: room_id } });
+      const sim_state_res = await models.simulationState.findOne({ where: { id: room_id } });
       const sim_state = sim_state_res?.get({ plain: true });
-      //let gps_val  = await models.gpsmsg.findAll({ where: { room_id: room_id }});
-      //let imu_val  = await models.imumsg.findAll({ where: { room_id: room_id }});
-      const telem_val = await models.simulationstate.findAll({ where: { id: room_id } });
+      //let gps_val  = await models.gpsMsg.findAll({ where: { room_id: room_id }});
+      //let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
+      const telem_val = await models.simulationState.findAll({ where: { id: room_id } });
 
       const data = {
-        //gpsmsgs: gps_val,
-        //imumsgs: imu_val,
-        simulationstates: telem_val,
+        //gpsMsg: gps_val,
+        //imuMsg: imu_val,
+        simulationStates: telem_val,
         /*
           add spectrometer data
           add rover data 

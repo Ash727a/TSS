@@ -10,7 +10,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-/** MODEL: simulationfailure
+/** MODEL: simulationFailure
  * This is the model for the simulation failure.
  * @column id: ID (PK)
  * @column room: Room ID
@@ -28,7 +28,7 @@ import {
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table
-export default class simulationfailure extends Model {
+export default class simulationFailure extends Model {
   // ID (PK) // edit later
   @PrimaryKey
   @AllowNull(false)

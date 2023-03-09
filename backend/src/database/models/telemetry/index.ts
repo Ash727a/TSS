@@ -1,5 +1,5 @@
-import simulationfailure from './simulationfailure.model.js';
-import simulationstate from './simulationstate.model.js';
+import simulationFailure from './simulationFailure.model.js';
+import simulationState from './simulationState.model.js';
 
 /** EXPORT MODULE: telemetry
  * @fileoverview Exports all models in the telemetry directory.
@@ -9,6 +9,6 @@ import simulationstate from './simulationstate.model.js';
  */
 
 export default {
-  simulationfailure,
-  simulationstate,
+  simulationFailure,
+  simulationState,
 };

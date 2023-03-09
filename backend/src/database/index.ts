@@ -1,7 +1,7 @@
 import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
 
-import setup from './extra-setup.js';
+import setup from './extraSetup.js';
 import * as models from './models/index.js';
 
 const appDir = path.resolve(process.cwd());

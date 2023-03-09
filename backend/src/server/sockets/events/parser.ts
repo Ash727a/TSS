@@ -14,44 +14,44 @@ class Parser {
     return cb(null, obj);
   }
 
-  async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imumsg?: any }): Promise<void> {
-    const imumsg = await models.imumsg;
+  async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
+    const imuMsg = await models.imuMsg;
 
     for (const elem in obj)
       if (elem === 'id') delete obj[elem];
       else obj[elem] = parseFloat(obj[elem]);
 
     try {
-      if ((await models.imumsg.count()) === 0) {
-        imumsg.create(obj);
+      if ((await models.imuMsg.count()) === 0) {
+        imuMsg.create(obj);
       } else {
-        imumsg.update(obj, {
+        imuMsg.update(obj, {
           where: { id: 1 },
         });
       }
-      return imumsg;
+      return imuMsg;
     } catch (e) {
       console.log(e);
     }
   }
 
-  async parseMessageGPS(obj: { [x: string]: any }, models: { [x: string]: any; gpsmsg?: any }): Promise<void> {
-    const gpsmsg = await models.gpsmsg;
+  async parseMessageGPS(obj: { [x: string]: any }, models: { [x: string]: any; gpsMsg?: any }): Promise<void> {
+    const gpsMsg = await models.gpsMsg;
 
     for (const elem in obj)
       if (elem === 'class') delete obj[elem];
       else obj[elem] = parseFloat(obj[elem]);
 
     try {
-      if ((await models.gpsmsg.count()) == 0) {
+      if ((await models.gpsMsg.count()) == 0) {
         console.log('GPS TABLE CREATED');
-        gpsmsg.create(obj);
+        gpsMsg.create(obj);
       } else {
-        gpsmsg.update(obj, {
+        gpsMsg.update(obj, {
           where: { id: 1 },
         });
       }
-      return gpsmsg;
+      return gpsMsg;
     } catch (e) {
       console.log(e);
     }

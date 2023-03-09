@@ -16,9 +16,9 @@ async function getAll(
     };
   }
 ): Promise<void> {
-  const simulationstate = await models.simulationstate.findAll();
-  if (simulationstate) {
-    res.status(200).json(simulationstate);
+  const simulationState = await models.simulationState.findAll();
+  if (simulationState) {
+    res.status(200).json(simulationState);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -36,9 +36,9 @@ async function getById(
   }
 ): Promise<void> {
   const id = getIdParam(req);
-  const simulationstate = await models.simulationstate.findByPk(id);
-  if (simulationstate) {
-    res.status(200).json(simulationstate);
+  const simulationState = await models.simulationState.findByPk(id);
+  if (simulationState) {
+    res.status(200).json(simulationState);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -56,9 +56,9 @@ async function getByRoomId(
   }
 ): Promise<void> {
   const id = req.params.room;
-  const simulationstate = await models.simulationstate.findAll({ where: { id: id } });
-  if (simulationstate) {
-    res.status(200).json(simulationstate);
+  const simulationState = await models.simulationState.findAll({ where: { id: id } });
+  if (simulationState) {
+    res.status(200).json(simulationState);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -80,7 +80,7 @@ async function create(
       .status(400)
       .send('Bad request: ID should not be provided, since it is determined automatically by the database.');
   } else {
-    await models.simulationstate.create(req.body);
+    await models.simulationState.create(req.body);
     res.status(201).end();
   }
 }
@@ -90,7 +90,7 @@ async function update(
   res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationstate.update(req.body, {
+  await models.simulationState.update(req.body, {
     where: {
       id: id,
     },
@@ -103,7 +103,7 @@ async function remove(
   res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationstate.destroy({
+  await models.simulationState.destroy({
     where: {
       id: id,
     },

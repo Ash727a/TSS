@@ -14,7 +14,7 @@ async function getUsers(): Promise<any> {
   return userData;
 }
 async function getVKs(): Promise<any> {
-  const vkData = await models.visionkit.findAll();
+  const vkData = await models.visionKit.findAll();
   return vkData;
 }
 async function getHMDs(): Promise<any> {
@@ -88,7 +88,7 @@ async function registerUser(
     return;
   } else {
     next_vk = unassigned_vks[0];
-    req.body.visionkit = next_vk.name;
+    req.body.visionKit = next_vk.name;
   }
 
   //////////// HMD Assignment
@@ -261,7 +261,7 @@ async function assignmentRelease(
 
         for (const userRecord of users) {
           if (vkrecord.assignment === userRecord.guid) {
-            userRecord.visionkit = null;
+            userRecord.visionKit = null;
             userRecord.save();
           }
         }

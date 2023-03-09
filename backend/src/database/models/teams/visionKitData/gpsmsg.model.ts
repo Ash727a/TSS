@@ -1,6 +1,6 @@
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-/** MODEL: gpsmsg
+/** MODEL: gpsMsg
  * This model is for the GPS messages received from the Vision Kit.
  * @column id: GPS message ID (PK)
  * @column device: Device ID
@@ -18,8 +18,8 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table({ tableName: 'gpsmsg', underscored: true })
-export default class gpsmsg extends Model {
+@Table({ tableName: 'gpsMsg', underscored: true })
+export default class gpsMsg extends Model {
   // GPS message ID (PK)
   @PrimaryKey
   @AllowNull(false)

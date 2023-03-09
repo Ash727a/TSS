@@ -1,6 +1,6 @@
-import gpsmsg from './gpsmsg.model.js';
-import imumsg from './imumsg.model.js';
-import visionkit from './visionkit.model.js';
+import gpsMsg from './gpsMsg.model.js';
+import imuMsg from './imuMsg.model.js';
+import visionKit from './visionKit.model.js';
 
 /** EXPORT MODULE: visionKitData
  * @fileoverview Exports all models in the visionKitData directory.
@@ -10,4 +10,4 @@ import visionkit from './visionkit.model.js';
  * @subsubcategory visionKitData
  */
 
-export default { gpsmsg, imumsg, visionkit };
+export default { gpsMsg, imuMsg, visionKit };

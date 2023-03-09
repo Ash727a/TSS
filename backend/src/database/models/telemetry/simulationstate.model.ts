@@ -10,7 +10,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-/** MODEL: simulationstate
+/** MODEL: simulationState
  * This is the model for the simulation state.
  * @column id: ID (PK)
  * @column is_running: Is the simulation running?
@@ -44,8 +44,8 @@ import {
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table({ tableName: 'simulationstate', underscored: true })
-export default class simulationstate extends Model {
+@Table({ tableName: 'simulationState', underscored: true })
+export default class simulationState extends Model {
   // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)

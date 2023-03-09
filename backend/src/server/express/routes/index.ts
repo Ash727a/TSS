@@ -2,8 +2,8 @@ import auth from './auth.js';
 import role from './role.js';
 import room from './room.js';
 import simulationControl from './simulationControl.js';
-import simulationfailure from './simulationfailure.js';
-import simulationstate from './simulationstate.js';
+import simulationFailure from './simulationFailure.js';
+import simulationState from './simulationState.js';
 import telemetrySessionLog from './telemetrySessionLog.js';
 import telemetryStationLog from './telemetryStationLog.js';
 import uia from './uia.js';
@@ -14,8 +14,8 @@ export {
   role,
   room,
   simulationControl,
-  simulationfailure,
-  simulationstate,
+  simulationFailure,
+  simulationState,
   uia,
   telemetrySessionLog,
   telemetryStationLog,

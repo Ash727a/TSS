@@ -7,10 +7,10 @@ const models = sequelize.models;
 
 async function getAll(
   req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: Model<any, any>[]): void; new(): any } } }
 ): Promise<void> {
-  const simulationfailures = await models.simulationfailure.findAll();
-  res.status(200).json(simulationfailures);
+  const simulationFailures = await models.simulationFailure.findAll();
+  res.status(200).json(simulationFailures);
 }
 
 async function getById(
@@ -18,16 +18,16 @@ async function getById(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>): void; new (): any };
-      send: { (arg0: string): void; new (): any };
+      new(): any;
+      json: { (arg0: Model<any, any>): void; new(): any };
+      send: { (arg0: string): void; new(): any };
     };
   }
 ): Promise<void> {
   const id = getIdParam(req);
-  const simulationfailure = await models.simulationfailure.findByPk(id);
-  if (simulationfailure) {
-    res.status(200).json(simulationfailure);
+  const simulationFailure = await models.simulationFailure.findByPk(id);
+  if (simulationFailure) {
+    res.status(200).json(simulationFailure);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -38,16 +38,16 @@ async function getByRoomId(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      json: { (arg0: Model<any, any>[]): void; new (): any };
-      send: { (arg0: string): void; new (): any };
+      new(): any;
+      json: { (arg0: Model<any, any>[]): void; new(): any };
+      send: { (arg0: string): void; new(): any };
     };
   }
 ): Promise<void> {
   const id = req.params.room;
-  const simulationfailure = await models.simulationfailure.findAll({ where: { room: id } });
-  if (simulationfailure) {
-    res.status(200).json(simulationfailure);
+  const simulationFailure = await models.simulationFailure.findAll({ where: { room: id } });
+  if (simulationFailure) {
+    res.status(200).json(simulationFailure);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -58,9 +58,9 @@ async function create(
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      send: { (arg0: string): void; new (): any };
-      end: { (): void; new (): any };
+      new(): any;
+      send: { (arg0: string): void; new(): any };
+      end: { (): void; new(): any };
     };
   }
 ): Promise<void> {
@@ -69,17 +69,17 @@ async function create(
       .status(400)
       .send(`Bad request: ID should not be provided, since it is determined automatically by the database.`);
   } else {
-    await models.simulationfailure.create(req.body);
+    await models.simulationFailure.create(req.body);
     res.status(201).end();
   }
 }
 
 async function update(
   req: { body: { [x: string]: any } },
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; new(): any; end: { (): void; new(): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationfailure.update(req.body, {
+  await models.simulationFailure.update(req.body, {
     where: {
       id: id,
     },
@@ -89,10 +89,10 @@ async function update(
 
 async function remove(
   req: any,
-  res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+  res: { status: (arg0: number) => { (): any; new(): any; end: { (): void; new(): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationfailure.destroy({
+  await models.simulationFailure.destroy({
     where: {
       id: id,
     },

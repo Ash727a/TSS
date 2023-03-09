@@ -22,7 +22,7 @@ export class TelemetryService {
   }
 
   async getTelemetryByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState/room/${roomID}`))
       .then((result) => {
         let res: TelemetryData[] = result as TelemetryData[];
         return res[0];
@@ -33,7 +33,7 @@ export class TelemetryService {
   }
 
   async getAllRoomTelemetry(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState`))
       .then((result) => {
         let res: TelemetryData[] = result as TelemetryData[];
         return res;
@@ -44,7 +44,7 @@ export class TelemetryService {
   }
 
   async getAllSimulationErrors(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure`))
       .then((result) => {
         let res: SimulationErrorData[] = result as SimulationErrorData[];
         return res;
@@ -55,7 +55,7 @@ export class TelemetryService {
   }
 
   async getSimulationErrorsByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure/room/${roomID}`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res[0] as SimulationErrorData;
@@ -66,7 +66,7 @@ export class TelemetryService {
   }
 
   async updateSimulationErrorsByID(id: number, errors: any): Promise<any> {
-    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationfailure/${id}`, errors))
+    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationFailure/${id}`, errors))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res;

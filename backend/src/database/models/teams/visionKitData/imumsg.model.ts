@@ -1,6 +1,6 @@
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-/** MODEL: imumsg
+/** MODEL: imuMsg
  * This model is for the IMU messages received from the Vision Kit.
  * @column id: IMU message ID (PK)
  * @column heading: IMU message heading
@@ -17,8 +17,8 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table({ tableName: 'imumsg', underscored: true })
-export default class imumsg extends Model {
+@Table({ tableName: 'imuMsg', underscored: true })
+export default class imuMsg extends Model {
   // IMU message ID (PK)
   @PrimaryKey
   @AllowNull(false)
