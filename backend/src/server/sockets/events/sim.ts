@@ -149,8 +149,7 @@ class Simulation {
     // const simulationControls = await models.simulationControl.findAll({ where: { room: id } });
     const simulationfailures = await models.simulationfailure.findAll({ where: { room: id } });
     const simulationuias = await models.simulationuia.findAll({ where: { room: id } });
-    const simulationstateuias = await models.simulationstateuia.findAll({ where: { room: id } });
-    const data = { simulationstates, simulationfailures, simulationuias, simulationstateuias };
+    const data = { simulationstates, simulationfailures, simulationuias };
     return { ok: true, all: data };
   }
 
@@ -158,13 +157,8 @@ class Simulation {
     // const simulationControls = await models.simulationControl.findAll();
     const simulationstates = await models.simulationstate.findAll();
     const simulationfailures = await models.simulationfailure.findAll();
-    const simulationuias = await models.simulationuia.findAll();
-    const simulationstateuias = await models.simulationstateuia.findAll();
     return {
       ok: true,
-      simuias: simulationuias,
-      simstateuias: simulationstateuias,
-      // simcontl: simulationControls,
       simfails: simulationfailures,
       simstates: simulationstates,
     };

@@ -40,10 +40,8 @@ async function reset(): Promise<void> {
   // Create a new data set for each room
   roomList.forEach(async (room, idx) => {
     const simRow = { room: idx + 1 };
-    // await sequelize.models.simulationControl.create(simRow);
     await sequelize.models.simulationfailure.create(simRow);
     await sequelize.models.simulationstate.create(simRow);
-    // await sequelize.models.simulationstateuia.create(simRow);
     // await sequelize.models.simulationuia.create(simRow);
     // await sequelize.models.gpsmsg.create(simRow);
     // await sequelize.models.imumsg.create(simRow);
