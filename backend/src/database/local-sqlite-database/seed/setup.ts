@@ -35,16 +35,18 @@ async function reset(): Promise<void> {
   // await sequelize.models.lsar.bulkCreate([]);
   // await sequelize.models.imumsg.bulkCreate([]);
   // await sequelize.models.gpsmsg.bulkCreate([]);
+
+  // Create the rooms
   await sequelize.models.room.bulkCreate(roomList);
 
-  // Create a new data set for each room
+  // Create a new row of data for each room in each model's table
   roomList.forEach(async (room, idx) => {
     const simRow = { room: idx + 1 };
     await sequelize.models.simulationfailure.create(simRow);
     await sequelize.models.simulationstate.create(simRow);
-    // await sequelize.models.simulationuia.create(simRow);
-    // await sequelize.models.gpsmsg.create(simRow);
-    // await sequelize.models.imumsg.create(simRow);
+    await sequelize.models.uia.create(simRow);
+    await sequelize.models.gpsmsg.create(simRow);
+    await sequelize.models.imumsg.create(simRow);
   });
   // await sequelize.models.role.bulkCreate([]);
 

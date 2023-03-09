@@ -19,22 +19,22 @@ export default class user extends Model {
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  public declare id: number;
+  declare id: number;
 
   // User name
   @AllowNull(false)
   @Column(DataType.STRING)
-  public name!: string;
+  declare name: string;
 
   // Room ID (FK)
   // @ForeignKey(() => Room)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  public room!: number;
+  declare room: number;
 
   // User GUID
   @AllowNull(false)
   @Default(DataType.UUIDV4)
   @Column(DataType.UUIDV4)
-  public guid!: string;
+  declare guid: string;
 }

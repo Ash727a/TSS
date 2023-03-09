@@ -24,6 +24,8 @@ const sequelize = new Sequelize({
 // We define all models according to their files.
 const modelsArray: [] = Object.values(models.default as any) as [];
 
+console.log(modelsArray);
+
 sequelize.addModels(modelsArray);
 await sequelize.sync(); // Update database schema to match models
 

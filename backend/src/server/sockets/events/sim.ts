@@ -148,8 +148,8 @@ class Simulation {
     const simulationstates = await models.simulationstate.findAll({ where: { id: id } });
     // const simulationControls = await models.simulationControl.findAll({ where: { room: id } });
     const simulationfailures = await models.simulationfailure.findAll({ where: { room: id } });
-    const simulationuias = await models.simulationuia.findAll({ where: { room: id } });
-    const data = { simulationstates, simulationfailures, simulationuias };
+    const uias = await models.uia.findAll({ where: { room: id } });
+    const data = { simulationstates, simulationfailures, uias };
     return { ok: true, all: data };
   }
 

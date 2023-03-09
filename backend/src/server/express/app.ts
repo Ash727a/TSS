@@ -17,7 +17,7 @@ const routeDictionary = {
   simulationControl: routes.simulationControl,
   simulationstate: routes.simulationstate,
   simulationfailure: routes.simulationfailure,
-  simulationuia: routes.simulationuia,
+  uia: routes.uia,
   telemetrySessionLog: routes.telemetrySessionLog,
   telemetryStationLog: routes.telemetryStationLog,
 };

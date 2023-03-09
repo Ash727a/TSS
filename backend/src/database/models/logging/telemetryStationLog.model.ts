@@ -1,50 +1,46 @@
 /**
  * This model is for storing logs of all stations assigned in all rooms.
  */
-import { DataTypes } from 'sequelize';
+import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-const telemetryStationLog = (sequelize: any): void => {
-  sequelize.define('telemetryStationLog', {
-    // Station Assignment ID
-    id: {
-      allowNull: false,
-      primaryKey: true,
-      type: DataTypes.STRING,
-    },
-    // Telemetry Session ID (FK)
-    session_id: {
-      allowNull: false,
-      type: DataTypes.STRING,
-    },
-    // Room ID it was assigned to (FK)
-    room_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
-    // The name of the station that was assigned
-    station_name: {
-      allowNull: false,
-      type: DataTypes.STRING,
-    },
-    // Time the station was assigned to the room
-    start_time: {
-      allowNull: false,
-      type: DataTypes.DATE,
-    },
-    // Time the station was unassigned from the room (is the time completed, if it was completed)
-    end_time: {
-      allowNull: true,
-      type: DataTypes.DATE,
-    },
-    // True if the station was completed AKA considered "Passed", if false, it means the task was "Failed"
-    completed: {
-      allowNull: false,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-  });
-};
+@Table({ tableName: 'telemetryStationLog', underscored: true })
+export default class telemetryStationLog extends Model {
+  // Station Assignment ID
+  @PrimaryKey
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare id: string;
 
-export default telemetryStationLog;
+  // Telemetry Session ID (FK)
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare session_id: string;
+
+  // Room ID it was assigned to (FK)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare room_id: number;
+
+  // The name of the station that was assigned
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare station_name: string;
+
+  // Time the station was assigned to the room
+  @AllowNull(false)
+  @Column(DataType.DATE)
+  declare start_time: Date;
+
+  // Time the station was unassigned from the room (is the time completed, if it was completed)
+  @AllowNull(true)
+  @Column(DataType.DATE)
+  declare end_time: Date;
+
+  // True if the station was completed AKA considered "Passed", if false, it means the task was "Failed"
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare completed: boolean;
+}

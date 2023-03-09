@@ -1,7 +1,8 @@
+import { AllowNull, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
 /**
  * This model is for storing logs of all telemetry sessions "START" and "STOP" in all rooms.
  */
-import { AllowNull, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.

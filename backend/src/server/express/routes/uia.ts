@@ -9,8 +9,8 @@ async function getAll(
   req: any,
   res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
 ): Promise<void> {
-  const simulationuias = await models.simulationuia.findAll();
-  res.status(200).json(simulationuias);
+  const uias = await models.uia.findAll();
+  res.status(200).json(uias);
 }
 
 async function getById(
@@ -25,9 +25,9 @@ async function getById(
   }
 ): Promise<void> {
   const id = getIdParam(req);
-  const simulationuia = await models.simulationuia.findByPk(id);
-  if (simulationuia) {
-    res.status(200).json(simulationuia);
+  const uia = await models.uia.findByPk(id);
+  if (uia) {
+    res.status(200).json(uia);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -45,9 +45,9 @@ async function getByRoomId(
   }
 ): Promise<void> {
   const id = req.params.room;
-  const simulationuia = await models.simulationuia.findAll({ where: { room: id } });
-  if (simulationuia) {
-    res.status(200).json(simulationuia);
+  const uia = await models.uia.findAll({ where: { room: id } });
+  if (uia) {
+    res.status(200).json(uia);
   } else {
     res.status(404).send('404 - Not found');
   }
@@ -69,7 +69,7 @@ async function create(
       .status(400)
       .send(`Bad request: ID should not be provided, since it is determined automatically by the database.`);
   } else {
-    await models.simulationuia.create(req.body);
+    await models.uia.create(req.body);
     res.status(201).end();
   }
 }
@@ -79,7 +79,7 @@ async function update(
   res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationuia.update(req.body, {
+  await models.uia.update(req.body, {
     where: {
       id: id,
     },
@@ -92,7 +92,7 @@ async function remove(
   res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
-  await models.simulationuia.destroy({
+  await models.uia.destroy({
     where: {
       id: id,
     },
