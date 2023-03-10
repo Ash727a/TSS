@@ -120,4 +120,6 @@ for (const [routeName, routeController] of Object.entries(routeDictionary)) {
   }
 }
 
+app.put('/api/updateuia', makeHandlerAwareOfAsyncErrors(routes.uia.updateUIA));
+
 export default app;
