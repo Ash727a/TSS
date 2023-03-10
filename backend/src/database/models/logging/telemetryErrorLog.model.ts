@@ -2,8 +2,8 @@ import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from '
 
 /** MODEL: telemetryErrorLog
  * This model is for storing a log history of errors thrown in all telemetry sessions.
- * @column id Error session ID (PK)
- * @column session_id ID of the telemetry session where the error was thrown (FK)
+ * @column error_log_id Error ID (PK)
+ * @column session_log_id ID of the telemetry session where the error was thrown (FK)
  * @column room_id ID of the room where the error was thrown (FK)
  * @column error_type The type of error that was thrown. One of: ["o2", "fan", "pump", "power"]
  * @column start_time Time the error was thrown
@@ -15,16 +15,16 @@ import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from '
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'telemetryErrorLog', underscored: true })
 export default class telemetryErrorLog extends Model {
-  // Error session ID (PK)
+  // Error ID (PK)
   @PrimaryKey
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare id: string;
+  declare error_log_id: string;
 
   // ID of the telemetry session where the error was thrown (FK)
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare session_id: string;
+  declare session_log_id: string;
 
   // ID of the room where the error was thrown (FK)
   @AllowNull(false)

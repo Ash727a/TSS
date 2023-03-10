@@ -26,7 +26,7 @@ class Simulation {
             if (!existingSim) {
               simInst = {
                 room: room,
-                sim: new EVASimulation(room, null), // TODO, 2nd param (session_id) shouldn't be nul;
+                sim: new EVASimulation(room, null), // TODO, 2nd param (session_log_id) shouldn't be null;
                 controls: {
                   fan_switch: false,
                   suit_power: false,

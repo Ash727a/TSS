@@ -2,7 +2,7 @@ import { SimulationError } from './telemetry';
 
 export interface Room {
   id: number;
-  session_id: string,
+  session_log_id: string,
   name: string;
   status: string;
   station: string;

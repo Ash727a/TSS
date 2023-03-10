@@ -2,8 +2,8 @@ import { AllowNull, Column, DataType, Default, Model, PrimaryKey, Table } from '
 
 /** MODEL: telemetryStationLog
  * This model is for storing logs of all stations assigned in all rooms.
- * @column id Station Assignment ID
- * @column session_id Telemetry Session ID (FK)
+ * @column station_log_id Station Assignment ID
+ * @column session_log_id Telemetry Session ID (FK)
  * @column room_id Room ID it was assigned to (FK)
  * @column station_name The name of the station that was assigned
  * @column start_time Time the station was assigned to the room
@@ -19,12 +19,12 @@ export default class telemetryStationLog extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare id: string;
+  declare station_log_id: string;
 
   // Telemetry Session ID (FK)
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare session_id: string;
+  declare session_log_id: string;
 
   // Room ID it was assigned to (FK)
   @AllowNull(false)

@@ -28,11 +28,11 @@ async function commandSim(
       case 'start':
         {
           let simInst: any = {};
-          const session_id = uuidv4();
+          const session_log_id = uuidv4();
           if (!existingSim) {
             simInst = {
               room: req.params.room,
-              sim: new EVASimulation(req.params.room, session_id),
+              sim: new EVASimulation(req.params.room, session_log_id),
               controls: {
                 fan_switch: false,
                 suit_power: false,
@@ -50,15 +50,15 @@ async function commandSim(
             };
           } else {
             // There is an existing simulation, but the session is different. Set the session_id to the new generated id
-            existingSim.sim.session_id = session_id;
+            existingSim.sim.session_log_id = session_log_id;
             simInst = existingSim;
           }
           // Attempt to start the sim.
           sims.push(simInst);
           // Start w/ 1sec delay
           setTimeout(() => {
-            console.log(simInst.room, simInst.sim.session_id);
-            simInst.sim.start(simInst.room, simInst.sim.session_id);
+            console.log(simInst.room, simInst.sim.session_log_id);
+            simInst.sim.start(simInst.room, simInst.sim.session_log_id);
           }, 1000);
         }
         break;

@@ -95,8 +95,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
             // Update all the room data with the latest data from the backend
             this.rooms = this.rooms.map((room: Room): Room => {
               let station_name: string = roomsResult.filter((data: Room) => data.id === room.id)[0].station_name;
-              console.log(telemetryResult[0].is_running)
-              let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.room === room.id)[0].is_running;
+              let isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.room === room.id).is_running;
               let errors: SimulationError[] = [
                 { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
                 { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },

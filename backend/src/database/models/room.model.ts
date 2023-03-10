@@ -14,7 +14,7 @@ import {
  * This is the model for the rooms.
  * @column id: Room ID (PK)
  * @column name: Room name
- * @column session_id: Telemetry session ID (FK)
+ * @column session_log_id: Telemetry session ID (FK)
  * @column users: Number of users in the room
  * @column station_name: Station name
  * @column station_id: Station Log ID (FK)
@@ -37,10 +37,10 @@ export default class room extends Model {
   declare name: string;
 
   // Telemetry session ID (FK)
-  // @ForeignKey(() => TelemetrySessionLog)
+  // @ForeignKey(() => TelemetrySessionLog.session_log_id)
   @AllowNull(true)
   @Column(DataType.STRING)
-  declare session_id: string;
+  declare session_log_id: string;
 
   // Number of users in the room
   @AllowNull(false)

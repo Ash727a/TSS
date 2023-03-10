@@ -40,7 +40,7 @@ export class RoomsService {
   }
 
   async updateRoomById(roomID: number, room: any): Promise<any> {
-    room.session_id = undefined;
+    room.session_log_id = undefined;
 
     try {
       await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));

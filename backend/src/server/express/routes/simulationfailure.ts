@@ -7,7 +7,7 @@ const models = sequelize.models;
 
 async function getAll(
   req: any,
-  res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: Model<any, any>[]): void; new(): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
 ): Promise<void> {
   const simulationFailures = await models.simulationFailure.findAll();
   res.status(200).json(simulationFailures);
@@ -18,9 +18,9 @@ async function getById(
   res: {
     status: (arg0: number) => {
       (): any;
-      new(): any;
-      json: { (arg0: Model<any, any>): void; new(): any };
-      send: { (arg0: string): void; new(): any };
+      (): any;
+      json: { (arg0: Model<any, any>): void; (): any };
+      send: { (arg0: string): void; (): any };
     };
   }
 ): Promise<void> {
@@ -38,9 +38,9 @@ async function getByRoomId(
   res: {
     status: (arg0: number) => {
       (): any;
-      new(): any;
-      json: { (arg0: Model<any, any>[]): void; new(): any };
-      send: { (arg0: string): void; new(): any };
+      (): any;
+      json: { (arg0: Model<any, any>[]): void; (): any };
+      send: { (arg0: string): void; (): any };
     };
   }
 ): Promise<void> {
@@ -58,9 +58,9 @@ async function create(
   res: {
     status: (arg0: number) => {
       (): any;
-      new(): any;
-      send: { (arg0: string): void; new(): any };
-      end: { (): void; new(): any };
+      (): any;
+      send: { (arg0: string): void; (): any };
+      end: { (): void; (): any };
     };
   }
 ): Promise<void> {
@@ -76,7 +76,7 @@ async function create(
 
 async function update(
   req: { body: { [x: string]: any } },
-  res: { status: (arg0: number) => { (): any; new(): any; end: { (): void; new(): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
   await models.simulationFailure.update(req.body, {
@@ -89,7 +89,7 @@ async function update(
 
 async function remove(
   req: any,
-  res: { status: (arg0: number) => { (): any; new(): any; end: { (): void; new(): any } } }
+  res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
 ): Promise<void> {
   const id = getIdParam(req);
   await models.simulationFailure.destroy({

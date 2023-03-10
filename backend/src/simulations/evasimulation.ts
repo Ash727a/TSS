@@ -21,7 +21,7 @@ class EVASimulation {
   simFailureID: any = null;
   holdID = null;
   lastTimestamp: number | null = null;
-  session_id: string | null = null;
+  session_log_id: string | null = null;
   room;
 
   // Data Objects
@@ -32,9 +32,9 @@ class EVASimulation {
   station_id: string | null | undefined;
   station_name: any;
 
-  constructor(_room_id: any, _session_id: string | null) {
+  constructor(_room_id: any, _session_log_id: string | null) {
     this.room = _room_id;
-    this.session_id = _session_id;
+    this.session_log_id = _session_log_id;
     this.seedInstances();
   }
 
@@ -61,14 +61,14 @@ class EVASimulation {
   //   return this.simStateID !== null && this.simControlID !== null && this.simFailureID !== null;
   // }
 
-  async start(roomid: any, session_id: any): Promise<void | boolean> {
+  async start(roomid: any, sessionLogID: any): Promise<void | boolean> {
     console.log('Starting Sim');
     this.simState = {};
     this.simControls = {};
     this.simFailure = {};
 
     // The sim started. Update the session id for the current room
-    await models.room.update({ session_id: session_id }, { where: { id: roomid } });
+    await models.room.update({ session_log_id: sessionLogID }, { where: { id: roomid } });
     // TODO
 
     await models.simulationState.findAll({ where: { id: roomid } }).then((data) => {
@@ -90,7 +90,7 @@ class EVASimulation {
       this.simFailure = data[0].dataValues;
     });
 
-    await models.telemetrySessionLog.create({ room_id: roomid, session_id, start_time: Date.now() });
+    await models.telemetrySessionLog.create({ session_log_id: sessionLogID, room_id: roomid, start_time: Date.now() });
 
     this.simStateID = this.simState.id;
     // this.simControlID = this.simControls.id;
@@ -151,9 +151,12 @@ class EVASimulation {
     // this.simStateID = null
     // this.controlID = null
     // Update the room's session id to null, since the session has ended
-    await models.room.update({ session_id: '' }, { where: { id: this.room } });
+    await models.room.update({ session_log_id: '' }, { where: { id: this.room } });
     // Set the session's end time to now
-    await models.telemetrySessionLog.update({ end_time: Date.now() }, { where: { session_id: this.session_id } });
+    await models.telemetrySessionLog.update(
+      { end_time: Date.now() },
+      { where: { session_log_id: this.session_log_id } }
+    );
     clearInterval(this.simTimer);
     this.simTimer = undefined;
     this.lastTimestamp = null;
@@ -258,8 +261,8 @@ class EVASimulation {
         this.simFailure[key + '_id'] = errorID;
         // Create log of the error in the DB (telemetryErrorLog table)
         models.telemetryErrorLog.create({
-          id: errorID,
-          session_id: this.session_id,
+          error_log_id: errorID,
+          session_log_id: this.session_log_id,
           room_id: this.room,
           error_type: key,
           start_time: new Date(),
@@ -274,7 +277,7 @@ class EVASimulation {
           },
           {
             where: {
-              id: this.simFailure[key + '_id'],
+              error_log_id: this.simFailure[key + '_id'],
             },
           }
         );
@@ -311,7 +314,7 @@ class EVASimulation {
           },
           {
             where: {
-              id: this.station_id,
+              station_log_id: this.station_id,
             },
           }
         );
@@ -321,7 +324,7 @@ class EVASimulation {
         this.station_id = uuidv4();
         models.telemetryStationLog.create({
           id: this.station_id,
-          session_id: this.session_id,
+          session_log_id: this.session_log_id,
           room_id: this.room,
           station_name: room.station_name,
           start_time: Date.now(),
@@ -333,7 +336,7 @@ class EVASimulation {
           },
           {
             where: {
-              id: this.room,
+              station_log_id: this.room,
             },
           }
         );

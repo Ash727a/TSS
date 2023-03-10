@@ -31,12 +31,12 @@ import {
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'uia', underscored: true })
 export default class uia extends Model {
-  // Room ID (PK)
+  // Room ID (PK => Room.id)
   @PrimaryKey
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  declare room: number;
+  declare room_id: number;
 
   // Current simulation start time
   @AllowNull(true)
