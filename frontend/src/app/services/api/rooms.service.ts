@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Room } from '@app/core/interfaces';
 
 const BACKEND_URL: string = 'http://localhost:8080';
@@ -28,9 +29,9 @@ export class RoomsService {
     }
   }
 
-  async getRoomByStationName(stationName: string): Promise<any> {
+  async getRoomByStationName(station_name: string): Promise<any> {
     try {
-      const result = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms/station/${stationName}`));
+      const result = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms/station/${station_name}`));
       let res: Object[] = result as Object[];
       return res[0];
     } catch (e) {
@@ -39,7 +40,7 @@ export class RoomsService {
   }
 
   async updateRoomById(roomID: number, room: any): Promise<any> {
-    room.session_id = undefined;
+    room.session_log_id = undefined;
 
     try {
       await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));
@@ -50,13 +51,13 @@ export class RoomsService {
     }
   }
 
-  public unassignPreviouslyAssignedRoom(stationName: string): void {
-    this.getRoomByStationName(stationName).then((room: Room) => {
+  public unassignPreviouslyAssignedRoom(station_name: string): void {
+    this.getRoomByStationName(station_name).then((room: Room) => {
       const id = room?.id;
       if (id !== undefined) {
         const payload = {
           id,
-          stationName: '',
+          station_name: '',
         };
         this.updateRoomById(id, payload);
       }

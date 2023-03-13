@@ -1,23 +1,28 @@
 {
-    "[javascript]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-      "editor.formatOnSave": false
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
     },
-    "[typescript]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-      "editor.formatOnSave": false
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
     },
-    "[json]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-      "editor.formatOnSave": false
-    }
+    "editor.formatOnSave": false
+  },
+  "[json]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": false
+  },
+  "editor.codeActionsOnSave": {
+    "importSorter.generalConfiguration.sortOnBeforeSave": true,
+    "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
+    "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 80
   }
+}

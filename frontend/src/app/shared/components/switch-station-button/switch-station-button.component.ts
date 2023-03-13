@@ -1,19 +1,22 @@
+import { Subscription } from 'rxjs';
+
 import {
   Component,
+  EventEmitter,
   Input,
-  Output,
-  OnInit,
   OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
   ViewChild,
   ViewContainerRef,
-  TemplateRef,
-  EventEmitter,
 } from '@angular/core';
-import { ModalService } from '@services/modal/modal.service';
-import { Subscription } from 'rxjs';
 import { Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
+import { ModalService } from '@services/modal/modal.service';
+
+
 
 /** | EXAMPLE USAGE |
   <app-shared-switch-station-button
@@ -58,7 +61,7 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     if (!room || this.disabledDropdown) return;
     this.selectedRoom = room;
     for (const station of this.stations) {
-      station.isActive = station.value === room.stationName;
+      station.isActive = station.value === room.station_name;
     }
     const payload = {
       type: 'open',
@@ -85,8 +88,8 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
   protected closeDropdown(event: any) {
     const { type, index } = event;
     if (this.selectedRoom && type === 'close') {
-      const stationName = index !== 0 ? this.stations[index].value : '';
-      this.handleStationSwitch(stationName);
+      const station_name = index !== 0 ? this.stations[index].value : '';
+      this.handleStationSwitch(station_name);
     }
     this.selectedRoom = null;
     this.dropdownOpen = false;
@@ -98,16 +101,16 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
   }
 
   // TODO Refactor this into RoomsService after creating an API for finding the previously assigned room to that station
-  private handleStationSwitch(stationName: string) {
+  private handleStationSwitch(station_name: string) {
     if (!this.selectedRoom) {
       return;
     }
     // Prevents multiple rooms being assigned to the same station
-    this.roomsService.unassignPreviouslyAssignedRoom(stationName);
+    this.roomsService.unassignPreviouslyAssignedRoom(station_name);
     // Assign the room to the station
     const payload = {
       ...this.selectedRoom,
-      stationName,
+      station_name,
     };
     this.roomsService.updateRoomById(this.selectedRoom.id, payload);
   }

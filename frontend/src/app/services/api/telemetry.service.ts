@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { TelemetryData, SimulationErrorData } from '@app/core/interfaces';
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { SimulationErrorData, TelemetryData } from '@app/core/interfaces';
 
 const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()
 export class TelemetryService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   async simulationControl(roomID: number, command: string): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationcontrol/sim/${roomID}/${command}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationControl/sim/${roomID}/${command}`))
       .then((result) => {
         return result as { ok: boolean; event: string };
       })
@@ -21,7 +22,7 @@ export class TelemetryService {
   }
 
   async getTelemetryByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState/room/${roomID}`))
       .then((result) => {
         let res: TelemetryData[] = result as TelemetryData[];
         return res[0];
@@ -32,7 +33,7 @@ export class TelemetryService {
   }
 
   async getAllRoomTelemetry(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationstate`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState`))
       .then((result) => {
         let res: TelemetryData[] = result as TelemetryData[];
         return res;
@@ -43,7 +44,7 @@ export class TelemetryService {
   }
 
   async getAllSimulationErrors(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure`))
       .then((result) => {
         let res: SimulationErrorData[] = result as SimulationErrorData[];
         return res;
@@ -54,7 +55,7 @@ export class TelemetryService {
   }
 
   async getSimulationErrorsByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationfailure/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure/room/${roomID}`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res[0] as SimulationErrorData;
@@ -65,7 +66,7 @@ export class TelemetryService {
   }
 
   async updateSimulationErrorsByID(id: number, errors: any): Promise<any> {
-    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationfailure/${id}`, errors))
+    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationFailure/${id}`, errors))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res;
@@ -77,7 +78,7 @@ export class TelemetryService {
 
   // Logging
   async getAllSessionLogs() {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/telemetrysessionlog`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/telemetrySessionLog`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res;

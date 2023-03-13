@@ -1,5 +1,5 @@
-import { Component, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
-import { TelemetryData, Room, SimulationError, SimulationErrorKey, SimulationErrorData } from '@app/core/interfaces';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Room, SimulationError, SimulationErrorData, SimulationErrorKey, TelemetryData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { TelemetryService } from '@services/api/telemetry.service';
@@ -45,7 +45,7 @@ export class ControllerComponent {
     // Get the telemetry data for the room
     this.telemetryService.getTelemetryByRoomID(roomID).then((result: TelemetryData) => {
       // If the simulation is running, then start fetching and emitting that data from the running simulation
-      if (result?.isRunning) {
+      if (result?.is_running) {
         this.fetchAndEmitDataOnInterval();
       } else {
         this.connected = false;
@@ -178,7 +178,7 @@ export class ControllerComponent {
     });
     this.telemetryService
       .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)
-      .then((res) => {});
+      .then((res) => { });
   }
 
   /**
