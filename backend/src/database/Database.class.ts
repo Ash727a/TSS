@@ -3,13 +3,11 @@ import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
 
 /** CLASS: Database
  * @initialize_with await Database.build(<filename>, <modelsArray>, <sequelizeConfig>);
+ * @description This class is a wrapper around the Sequelize class. It is used to create a new Sequelize instance with a specific database file.
+ * @extends Sequelize
  */
 
-class Database {
-  private fileName: string;
-  private dbPath: string;
-  public sequelize: Sequelize;
-
+class Database extends Sequelize {
   private static readonly DEFAULT_CONFIG: object = {
     dialect: 'sqlite',
     logQueryParameters: false,
@@ -18,17 +16,17 @@ class Database {
   };
   private constructor(_fileName: string, sequelizeConfig: object = {}) {
     // Configure the path to the database file
-    this.fileName = _fileName + '.sqlite';
     const appDir = path.resolve(process.cwd());
-    const _dbPath = path.join(appDir, 'src', 'database', 'local-sqlite-database');
-    this.dbPath = path.join(_dbPath, this.fileName);
+    const _dbDirectory = path.join(appDir, 'src', 'database', 'local-sqlite-database');
+    _fileName = _fileName + '.sqlite';
+    const _dbPath = path.join(_dbDirectory, _fileName);
     // Set up config for new Sequelize instance
     const config = {
       ...Database.DEFAULT_CONFIG,
-      storage: this.dbPath,
+      storage: _dbPath,
       ...sequelizeConfig,
     };
-    this.sequelize = new Sequelize(config);
+    super(config);
   }
 
   public static async build(
@@ -42,9 +40,9 @@ class Database {
   }
 
   public async setModels(models: (string | ModelCtor<Model<any, any>>)[]): Promise<boolean> {
-    this.sequelize.addModels(models);
+    this.addModels(models);
     try {
-      await this.sequelize.sync(); // Update database schema to match models
+      await this.sync(); // Update database schema to match models
     } catch (error) {
       console.log('error', error);
       return false;
@@ -55,7 +53,7 @@ class Database {
   public getModels(): {
     [key: string]: ModelCtor<Model>;
   } {
-    return this.sequelize.models as { [key: string]: ModelCtor<Model> };
+    return this.models as { [key: string]: ModelCtor<Model> };
   }
 }
 
