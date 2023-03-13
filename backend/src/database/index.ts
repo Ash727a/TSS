@@ -1,5 +1,3 @@
-import path from 'path';
-
 import Database from './Database.class.js';
 import setup from './extraSetup.js';
 import { liveModels } from './models/index.js';
@@ -10,7 +8,7 @@ const modelsArray: [] = Object.values(liveModels as any) as [];
 const LiveDatabase = await Database.build('suits', modelsArray);
 
 // We execute any extra setup after the models are defined, such as adding associations.
-setup.applyExtraSetup(LiveDatabase.sequelize);
+setup.applyExtraSetup(LiveDatabase);
 
 // We export the sequelize connection instance to be used around our app.
-export default LiveDatabase.sequelize;
+export default LiveDatabase;

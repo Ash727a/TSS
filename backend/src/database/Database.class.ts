@@ -14,6 +14,7 @@ class Database extends Sequelize {
     logging: false, // Set to console.log for developer mode (shows the SQL statements executed in terminal), false to be less verbose
     benchmark: true,
   };
+
   private constructor(_fileName: string, sequelizeConfig: object = {}) {
     // Configure the path to the database file
     const appDir = path.resolve(process.cwd());

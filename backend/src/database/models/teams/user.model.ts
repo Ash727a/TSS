@@ -38,7 +38,7 @@ export default class user extends Model {
   // @ForeignKey(() => Room)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  declare room: number;
+  declare room_id: number;
 
   // User GUID
   @AllowNull(false)
