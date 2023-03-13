@@ -19,3 +19,24 @@ export default {
   ...teams.default,
   ...telemetry.default,
 };
+
+/** EXPORT MODULE: liveModels
+ * @fileoverview Exports all live TSS models in the models directory.
+ * @module liveModels
+ * @category models
+ */
+export const liveModels = {
+  role,
+  room,
+  ...stations.default,
+  ...teams.default,
+  ...telemetry.default,
+};
+
+/** EXPORT MODULE: logModels
+ * @fileoverview Exports all log TSS models in the models directory.
+ * @module logModels
+ */
+export const logModels = {
+  ...logging.default,
+};

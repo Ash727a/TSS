@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 
+import Database from './database/Database.class.js';
 import sequelize from './database/index.js';
 import app from './server/express/app.js';
 
@@ -9,11 +10,11 @@ const API_URL = process.env.API_URL as string | undefined;
 const API_PORT = process.env.API_PORT as number | undefined;
 const SOCKET_PORT = process.env.SOCKET_PORT as number | undefined;
 
-const LiveDatabase = new Database('suits', {}, modelsArray);
-let models = LiveDatabase.getModels();
-export function getModels() {
-  return models;
-}
+// const LiveDatabase = new Database('suits', {}, modelsArray);
+// let models = LiveDatabase.getModels();
+// export function getModels() {
+//   return models;
+// }
 
 // Log the environment variables
 console.log(`API PORT: ${API_PORT}`);
