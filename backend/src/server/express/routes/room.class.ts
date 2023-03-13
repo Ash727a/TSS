@@ -1,8 +1,8 @@
 import { Model } from 'sequelize';
 
-import Route from './Route.class.js';
+import ModelRoute from './ModelRoute.class.js';
 
-class room extends Route {
+class room extends ModelRoute {
   constructor(_model: any) {
     super(_model);
   }
@@ -12,9 +12,9 @@ class room extends Route {
     res: {
       status: (arg0: number) => {
         (): any;
-        new (): any;
-        json: { (arg0: Model<any, any>[]): void; new (): any };
-        send: { (arg0: string): void; new (): any };
+        (): any;
+        json: { (arg0: Model<any, any>[]): void; (): any };
+        send: { (arg0: string): void; (): any };
       };
     }
   ): Promise<void> {

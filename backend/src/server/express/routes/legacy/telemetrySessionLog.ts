@@ -54,33 +54,6 @@ async function getById(
 }
 
 /**
- * GET MULTIPLE by room id /api/telemetrySessionLog/room/:room
- * @param {*} req
- * @param {*} res
- * @returns {TelemetrySessionLog[]}
- * @throws 404 - Not found
- */
-async function getByRoomId(
-  req: { params: { room: any } },
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      (): any;
-      json: { (arg0: Model<any>[]): void; (): any };
-      send: { (arg0: string): void; (): any };
-    };
-  }
-): Promise<void> {
-  const id = req.params.room;
-  const results = await model.findAll({ where: { room: id } });
-  if (results) {
-    res.status(200).json(results);
-  } else {
-    res.status(404).send('404 - Not found');
-  }
-}
-
-/**
  * POST SINGLE /api/telemetrySessionLog
  * @param {*} req
  * @param {*} res

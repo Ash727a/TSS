@@ -2,29 +2,46 @@ import { Model, Optional } from 'sequelize';
 
 import { getIdParam } from '../helpers.js';
 
-class Route {
-  model: any;
-
+/** CLASS: ModelRoute
+ * @description This class is a generic class for all routes that are based on a model.
+ * @param {any} _model - The model that is used for the route.
+ * @returns {ModelRoute} - The ModelRoute object.
+ */
+class ModelRoute {
+  protected model: any;
   constructor(_model: any) {
     this.model = _model;
   }
 
+  /**
+   * GET ALL /api/{model's name}
+   * @param {*} req
+   * @param {*} res
+   * @returns {any[]}
+   */
   async getAll(
     req: any,
-    res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: Model<any, any>[]): void; new (): any } } }
+    res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
   ): Promise<void> {
     const results = await this.model.findAll();
     res.status(200).json(results);
   }
 
+  /**
+   * GET SINGLE by id /api/{model's name}/:id
+   * @param {*} req
+   * @param {*} res
+   * @returns {ant}
+   * @throws 404 - Not found
+   */
   async getById(
     req: any,
     res: {
       status: (arg0: number) => {
         (): any;
-        new (): any;
-        json: { (arg0: Model<any, any>): void; new (): any };
-        send: { (arg0: string): void; new (): any };
+        (): any;
+        json: { (arg0: Model<any, any>): void; (): any };
+        send: { (arg0: string): void; (): any };
       };
     }
   ): Promise<void> {
@@ -37,14 +54,20 @@ class Route {
     }
   }
 
+  /**
+   * POST SINGLE /api/{model's name}
+   * @param {*} req
+   * @param {*} res
+   * @throws 400 - Bad request
+   */
   async create(
     req: { body: Optional<any, string> | undefined },
     res: {
       status: (arg0: number) => {
         (): any;
-        new (): any;
-        send: { (arg0: string): void; new (): any };
-        end: { (): void; new (): any };
+        (): any;
+        send: { (arg0: string): void; (): any };
+        end: { (): void; (): any };
       };
     }
   ): Promise<void> {
@@ -58,9 +81,14 @@ class Route {
     }
   }
 
+  /**
+   * PUT SINGLE /api/{model's name}/:id
+   * @param {*} req
+   * @param {*} res
+   */
   async update(
     req: { body: { [x: string]: any } },
-    res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+    res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
   ): Promise<void> {
     const id = getIdParam(req);
     await this.model.update(req.body, {
@@ -71,9 +99,14 @@ class Route {
     res.status(200).end();
   }
 
+  /**
+   * DELETE SINGLE by id /api/{model's name}/:id
+   * @param {*} req
+   * @param {*} res
+   */
   async remove(
     req: any,
-    res: { status: (arg0: number) => { (): any; new (): any; end: { (): void; new (): any } } }
+    res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
   ): Promise<void> {
     const id = getIdParam(req);
     await this.model.destroy({
@@ -85,4 +118,4 @@ class Route {
   }
 }
 
-export default Route;
+export default ModelRoute;

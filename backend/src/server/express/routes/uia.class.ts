@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-import Route from './Route.class.js';
+import Route from './ModelRoute.class.js';
 
 class uia extends Route {
   constructor(_model: any) {
