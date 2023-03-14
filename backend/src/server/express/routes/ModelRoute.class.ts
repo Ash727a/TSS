@@ -14,6 +14,14 @@ class ModelRoute {
   }
 
   /**
+   * GETTER: model
+   * @returns {any} - The model that is used for the route.
+   */
+  public getModel(): any {
+    return this.model;
+  }
+
+  /**
    * GET ALL /api/{model's name}
    * @param {*} req
    * @param {*} res
