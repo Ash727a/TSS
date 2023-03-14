@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 import Database from './database/Database.class.js';
 import sequelize from './database/index.js';
-import { liveModels } from './database/models/index.js';
+import { liveModels, logModels } from './database/models/index.js';
 import ExpressApp from './server/express/app.js';
 
 // Environment variables
@@ -12,13 +12,11 @@ const API_PORT = process.env.API_PORT as number | undefined;
 const SOCKET_PORT = process.env.SOCKET_PORT as number | undefined;
 
 // We define all models according to their files.
-const modelsArray: [] = Object.values(liveModels as any) as [];
-const LiveDatabase = await Database.build('suits', modelsArray);
-const express = new ExpressApp(LiveDatabase.getModels());
-// let models = LiveDatabase.getModels();
-// export function getModels() {
-//   return models;
-// }
+const liveModelsArray: [] = Object.values(liveModels as any) as [];
+const logModelsArray: [] = Object.values(logModels as any) as [];
+const LiveDatabase = await Database.build('suits', liveModelsArray);
+const LogDatabase = await Database.build('logs', logModelsArray);
+const express = new ExpressApp({ ...LiveDatabase.getModels(), ...LogDatabase.getModels() });
 
 // Log the environment variables
 console.log(`API PORT: ${API_PORT}`);

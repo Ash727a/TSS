@@ -4,6 +4,7 @@ import room from './room.class.js';
 import simulationControl from './simulationControl.class.js';
 import simulationFailure from './simulationFailure.class.js';
 import simulationState from './simulationState.class.js';
+import telemetryErrorLog from './telemetryErrorLog.class.js';
 import telemetrySessionLog from './telemetrySessionLog.class.js';
 import telemetryStationLog from './telemetryStationLog.class.js';
 import uia from './uia.class.js';
@@ -19,5 +20,6 @@ export {
   uia,
   telemetrySessionLog,
   telemetryStationLog,
+  telemetryErrorLog,
   users,
 };

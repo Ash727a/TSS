@@ -1,20 +1,16 @@
 import { Model } from 'sequelize';
 
+import HasRoomID from './HasRoomID.interface.js';
 import ModelRoute from './ModelRoute.class.js';
+import * as shared from './shared.js';
 
-class telemetrySessionLog extends ModelRoute {
+class telemetrySessionLog extends ModelRoute implements HasRoomID {
   constructor(_model: any) {
     super(_model);
   }
 
-  /**
-   * GET MULTIPLE by room id /api/telemetrySessionLog/room/:room
-   * @param {*} req
-   * @param {*} res
-   * @returns {TelemetrySessionLog[]}
-   * @throws 404 - Not found
-   */
-  async getByRoomId(
+  /* See shared.ts for getByRoomId function definition */
+  async getByRoomID(
     req: { params: { room: any } },
     res: {
       status: (arg0: number) => {
@@ -25,13 +21,7 @@ class telemetrySessionLog extends ModelRoute {
       };
     }
   ): Promise<void> {
-    const id = req.params.room;
-    const results = await this.model.findAll({ where: { room: id } });
-    if (results) {
-      res.status(200).json(results);
-    } else {
-      res.status(404).send('404 - Not found');
-    }
+    return await shared.getByRoomID(this.model, req, res);
   }
 }
 

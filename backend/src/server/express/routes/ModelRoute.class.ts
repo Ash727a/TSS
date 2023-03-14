@@ -1,15 +1,18 @@
 import { Model, Optional } from 'sequelize';
 
 import { getIdParam } from '../helpers.js';
+import Route from './Route.class.js';
 
 /** CLASS: ModelRoute
  * @description This class is a generic class for all routes that are based on a model.
  * @param {any} _model - The model that is used for the route.
  * @returns {ModelRoute} - The ModelRoute object.
  */
-class ModelRoute {
-  protected model: any;
+class ModelRoute extends Route {
+  public model: any;
   constructor(_model: any) {
+    super();
+    console.log('got model: ', _model);
     this.model = _model;
   }
 
@@ -31,7 +34,9 @@ class ModelRoute {
     req: any,
     res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
   ): Promise<void> {
-    const results = await this.model.findAll();
+    console.log('model: ', this);
+    console.log('model ooo : ', this.model);
+    const results = await this?.model.findAll();
     res.status(200).json(results);
   }
 

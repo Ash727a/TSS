@@ -27,7 +27,7 @@ import {
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table
+@Table({ tableName: 'simulationFailure', underscored: true })
 export default class simulationFailure extends Model {
   // ID (PK) // edit later
   @PrimaryKey

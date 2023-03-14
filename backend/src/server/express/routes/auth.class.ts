@@ -1,13 +1,16 @@
 import { Optional } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
-class auth {
+import Route from './Route.class.js';
+
+class auth extends Route {
   userModel: any;
   visionKitModel: any;
   hmdModel: any;
   private static readonly SECRET_KEY = 'admin78$Akt';
 
   constructor(_userModel: any, _visionKitModel: any, _hmdModel: any) {
+    super();
     this.userModel = _userModel;
     this.visionKitModel = _visionKitModel;
     this.hmdModel = _hmdModel;
