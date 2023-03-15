@@ -13,7 +13,6 @@ class ModelRoute extends Route {
   public model: any;
   constructor(_model: any) {
     super();
-    console.log('got model: ', _model);
     this.model = _model;
   }
 
@@ -121,8 +120,6 @@ class ModelRoute extends Route {
     res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
   ): Promise<void> {
     const id = getIdParam(req);
-    console.log('id: ', id);
-
     await this.model.destroy({
       where: {
         [primaryKeyOf(this.model)]: id,

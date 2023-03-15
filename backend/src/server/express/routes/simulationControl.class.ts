@@ -69,7 +69,6 @@ class simulationControl extends ModelRoute {
             this.sims.push(simInst);
             // Start w/ 1sec delay
             setTimeout(() => {
-              console.log(simInst.room, simInst.sim.session_log_id);
               simInst.sim.start(simInst.room, simInst.sim.session_log_id);
             }, 1000);
           }

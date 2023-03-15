@@ -21,7 +21,6 @@ class ExpressApp {
     this.app.get('/conntest', (req: any, res: any) => {
       res.status(200).send({ ok: true, time: new Date() });
     });
-    console.log('🚀 ~ file: app.ts:26 ~ ExpressApp ~ constructor ~ _models:', _models);
     this.initRoutes(_models);
   }
 

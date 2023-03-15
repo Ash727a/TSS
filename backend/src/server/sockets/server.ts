@@ -127,7 +127,6 @@ wss.on('connection', (ws: any, req) => {
 });
 
 function unassignAllRooms(): void {
-  console.log('here');
   try {
     models.room
       .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })

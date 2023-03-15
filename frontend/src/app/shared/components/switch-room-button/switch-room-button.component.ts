@@ -1,19 +1,20 @@
+import { Subscription } from 'rxjs';
+
 import {
   Component,
+  EventEmitter,
   Input,
-  Output,
-  OnInit,
   OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
   ViewChild,
   ViewContainerRef,
-  TemplateRef,
-  EventEmitter,
 } from '@angular/core';
-import { ModalService } from '@services/modal/modal.service';
-import { Subscription } from 'rxjs';
 import { Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
+import { ModalService } from '@services/modal/modal.service';
 
 /** | EXAMPLE USAGE |
   <app-shared-switch-room-button
