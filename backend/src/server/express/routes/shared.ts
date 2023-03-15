@@ -27,7 +27,7 @@ async function getByRoomID(
   }
 ): Promise<void> {
   const id = req.params.room;
-  const results = await model.findAll({ where: { room: id } });
+  const results = await model.findAll({ where: { room_id: id } });
   if (results) {
     res.status(200).json(results);
   } else {

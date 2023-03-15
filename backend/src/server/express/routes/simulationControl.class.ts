@@ -5,8 +5,11 @@ import ModelRoute from './ModelRoute.class.js';
 
 class simulationControl extends ModelRoute {
   private sims: any = [];
-  constructor(_model: any) {
+  private dependentModels: any;
+
+  constructor(_model: any, _dependentModels: any) {
     super(_model);
+    this.dependentModels = _dependentModels;
   }
 
   public async commandSim(
@@ -29,10 +32,19 @@ class simulationControl extends ModelRoute {
           {
             let simInst: any = {};
             const session_log_id = uuidv4();
+            const simModels = {
+              simulationState: this.dependentModels.simulationState,
+              simulationControl: this.dependentModels.simulationControl,
+              simulationFailure: this.dependentModels.simulationFailure,
+              room: this.dependentModels.room,
+              telemetrySessionLog: this.dependentModels.telemetrySessionLog,
+              telemetryStationLog: this.dependentModels.telemetryStationLog,
+              telemetryErrorLog: this.dependentModels.telemetryErrorLog,
+            };
             if (!existingSim) {
               simInst = {
                 room: req.params.room,
-                sim: new EVASimulation(req.params.room, session_log_id),
+                sim: new EVASimulation(simModels, req.params.room, session_log_id),
                 controls: {
                   fan_switch: false,
                   suit_power: false,

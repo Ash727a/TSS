@@ -51,7 +51,7 @@ export default class simulationState extends Model {
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  declare id: number;
+  declare room_id: number;
 
   // Is the simulation running?
   @AllowNull(false)

@@ -29,17 +29,12 @@ import {
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'simulationFailure', underscored: true })
 export default class simulationFailure extends Model {
-  // ID (PK) // edit later
+  // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  declare id: number;
-
-  // Room ID
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare room: number;
+  declare room_id: number;
 
   // Start time
   @AllowNull(true)

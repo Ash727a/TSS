@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import WebSocket, { Server } from 'ws';
 
 import sequelize from '../../database/index.js';
+import { primaryKeyOf } from '../../helpers.js';
 import User from './events/connect.js';
 import Event from './events/event.js';
 import Parser from './events/parser.js';
@@ -81,11 +82,15 @@ wss.on('connection', (ws: any, req) => {
   async function sendData(): Promise<void> {
     try {
       const room_id = ws.roomId;
-      const sim_state_res = await models.simulationState.findOne({ where: { id: room_id } });
+      const sim_state_res = await models.simulationState.findOne({
+        where: { [primaryKeyOf(models.simulationState)]: room_id },
+      });
       const sim_state = sim_state_res?.get({ plain: true });
       //let gps_val  = await models.gpsMsg.findAll({ where: { room_id: room_id }});
       //let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
-      const telem_val = await models.simulationState.findAll({ where: { id: room_id } });
+      const telem_val = await models.simulationState.findAll({
+        where: { [primaryKeyOf(models.simulationState)]: room_id },
+      });
 
       const data = {
         //gpsMsg: gps_val,
@@ -111,7 +116,7 @@ wss.on('connection', (ws: any, req) => {
       // stop sim s
       http.get(STOP_SIM_URL + `${ws.roomId}/stop`);
       // remove the client from the assigned room
-      const room: any = await models.room.findOne({ where: { id: ws.roomId } });
+      const room: any = await models.room.findOne({ where: { [primaryKeyOf(models.room)]: ws.roomId } });
       room.client_id = null;
       await room.save();
       console.log(`Client removed from room ${room.name}`);

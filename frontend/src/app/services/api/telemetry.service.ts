@@ -22,10 +22,10 @@ export class TelemetryService {
   }
 
   async getTelemetryByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationState/${roomID}`))
       .then((result) => {
-        let res: TelemetryData[] = result as TelemetryData[];
-        return res[0];
+        let res: TelemetryData = result as TelemetryData;
+        return res;
       })
       .catch((e) => {
         return { ok: false, err: e };
@@ -55,10 +55,10 @@ export class TelemetryService {
   }
 
   async getSimulationErrorsByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationFailure/${roomID}`))
       .then((result) => {
-        let res: Object[] = result as Object[];
-        return res[0] as SimulationErrorData;
+        let res: SimulationErrorData = result as SimulationErrorData;
+        return res as SimulationErrorData;
       })
       .catch((e) => {
         return { ok: false, err: e };

@@ -1,6 +1,5 @@
 export interface TelemetryData {
-  id: number;
-  room: number;
+  room_id: number;
   is_running: boolean;
   is_paused: boolean;
   time: number;
@@ -33,8 +32,7 @@ export interface TelemetryData {
 }
 
 export interface SimulationErrorData {
-  id: number;
-  room: number;
+  room_id: number;
   fan_error: boolean;
   o2_error: boolean;
   power_error: boolean;
@@ -43,14 +41,6 @@ export interface SimulationErrorData {
   o2_error_id: string;
   power_error_id: string;
   pump_error_id: string;
-  // fan_error_start: string;
-  // o2_error_start: string;
-  // power_error_start: string;
-  // pump_error_start: string;
-  // fan_error_end: string;
-  // o2_error_end: string;
-  // power_error_end: string;
-  // pump_error_end: string;
   createdAt: Date;
   updatedAt: Date;
 }

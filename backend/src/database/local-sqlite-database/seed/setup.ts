@@ -45,6 +45,7 @@ async function reset(models: { [key: string]: ModelCtor<Model> }): Promise<void>
   // Create a new row of data for each room in each model's table
   roomList.forEach(async (room, idx) => {
     const simRow = { room: idx + 1 };
+    await models.simulationControl.create(simRow);
     await models.simulationFailure.create(simRow);
     await models.simulationState.create(simRow);
     await models.uia.create(simRow);

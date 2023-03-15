@@ -1,5 +1,6 @@
 import { Model, Optional } from 'sequelize';
 
+import { primaryKeyOf } from '../../../helpers.js';
 import { getIdParam } from '../helpers.js';
 import Route from './Route.class.js';
 
@@ -34,8 +35,6 @@ class ModelRoute extends Route {
     req: any,
     res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
   ): Promise<void> {
-    console.log('model: ', this);
-    console.log('model ooo : ', this.model);
     const results = await this?.model.findAll();
     res.status(200).json(results);
   }
@@ -106,7 +105,7 @@ class ModelRoute extends Route {
     const id = getIdParam(req);
     await this.model.update(req.body, {
       where: {
-        id: id,
+        [primaryKeyOf(this.model)]: id,
       },
     });
     res.status(200).end();
@@ -122,9 +121,11 @@ class ModelRoute extends Route {
     res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
   ): Promise<void> {
     const id = getIdParam(req);
+    console.log('id: ', id);
+
     await this.model.destroy({
       where: {
-        id: id,
+        [primaryKeyOf(this.model)]: id,
       },
     });
     res.status(200).end();

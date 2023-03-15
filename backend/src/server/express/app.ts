@@ -26,95 +26,134 @@ class ExpressApp {
   }
 
   private initRoutes(_models: any): void {
-    console.log('ROOM', _models.room);
-    const model = new routes.room(_models.room);
     const routeDictionary = {
-      // auth: new routes.auth(_models.user, _models.visionKit, _models.hmd),
-      // roles: new routes.role(_models.role),
-      rooms: model,
-      // users: new routes.users(_models.user),
-      // simulationControl: new routes.simulationControl(_models.simulationControl),
-      // simulationState: new routes.simulationState(_models.simulationState),
-      // simulationFailure: new routes.simulationFailure(_models.simulationFailure),
-      // uia: new routes.uia(_models.uia),
-      // telemetrySessionLog: new routes.telemetrySessionLog(_models.telemetrySessionLog),
-      // telemetryStationLog: new routes.telemetryStationLog(_models.telemetryStationLog),
-      // telemetryErrorLog: new routes.telemetryErrorLog(_models.telemetryErrorLog),
+      auth: new routes.auth(_models.user, _models.visionKit, _models.hmd),
+      roles: new routes.role(_models.role),
+      rooms: new routes.room(_models.room),
+      users: new routes.users(_models.user),
+      simulationControl: new routes.simulationControl(_models.simulationControl, {
+        simulationState: _models.simulationState,
+        simulationFailure: _models.simulationFailure,
+        room: _models.room,
+        telemetrySessionLog: _models.telemetrySessionLog,
+        telemetryStationLog: _models.telemetryStationLog,
+        telemetryErrorLog: _models.telemetryErrorLog,
+      }),
+      simulationState: new routes.simulationState(_models.simulationState),
+      simulationFailure: new routes.simulationFailure(_models.simulationFailure),
+      uia: new routes.uia(_models.uia),
+      telemetrySessionLog: new routes.telemetrySessionLog(_models.telemetrySessionLog),
+      telemetryStationLog: new routes.telemetryStationLog(_models.telemetryStationLog),
+      telemetryErrorLog: new routes.telemetryErrorLog(_models.telemetryErrorLog),
     };
-    this.app.get(
-      `/api/rooms`,
-      this.makeHandlerAwareOfAsyncErrors(() => model.getById)
-    );
 
-    // // We define the standard REST APIs for each route (if they exist).
-    // for (const [routeName, routeController] of Object.entries(routeDictionary)) {
-    //   console.log(`Initializing route: ${routeName}...`, routeController, routeController.getModel());
-    //   // break;
+    // We define the standard REST APIs for each route (if they exist).
+    for (const [routeName, routeController] of Object.entries(routeDictionary)) {
+      // If it's a ModelRoute, then we can define the standard REST APIs.
+      if (routeController instanceof ModelRoute) {
+        this.app.get(
+          `/api/${routeName}`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getAll(req, res))
+        );
+        this.app.get(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getById(req, res))
+        );
+        this.app.post(
+          `/api/${routeName}`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.create(req, res))
+        );
+        this.app.put(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.update(req, res))
+        );
+        this.app.delete(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.remove(req, res))
+        );
+        this.app.get(
+          `/api/${routeName}`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getAll(req, res))
+        );
+        this.app.get(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getById(req, res))
+        );
+        this.app.post(
+          `/api/${routeName}`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.create(req, res))
+        );
+        this.app.put(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.update(req, res))
+        );
+        this.app.delete(
+          `/api/${routeName}/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.remove(req, res))
+        );
+      }
 
-    //   // If it's a ModelRoute, then we can define the standard REST APIs.
-    //   if (routeController instanceof ModelRoute) {
-    //     this.app.get(`/api/${routeName}`, routeController.getAll);
-    //     // this.app.get(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.getById));
-    //     // this.app.post(`/api/${routeName}`, this.makeHandlerAwareOfAsyncErrors(routeController.create));
-    //     // this.app.put(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.update));
-    //     // this.app.delete(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.remove));
-    //     // this.app.get(`/api/${routeName}`, this.makeHandlerAwareOfAsyncErrors(routeController.getAll));
-    //     // this.app.get(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.getById));
-    //     // this.app.post(`/api/${routeName}`, this.makeHandlerAwareOfAsyncErrors(routeController.create));
-    //     // this.app.put(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.update));
-    //     // this.app.delete(`/api/${routeName}/:id`, this.makeHandlerAwareOfAsyncErrors(routeController.remove));
-    //   }
+      // Check if the getByRoomID method exists in this routeController. If so, we define its endpoint.
+      if (routeController.getMethods().includes('getByRoomID')) {
+        const hasRoomIDController = routeController as HasRoomID;
+        this.app.get(
+          `/api/${routeName}/room/:id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => hasRoomIDController.getByRoomID(req, res))
+        );
+      }
 
-    //   // Check if the getByRoomID method exists in this routeController. If so, we define its endpoint.
-    //   // if (routeController.getMethods().includes('getByRoomID')) {
-    //   //   const hasRoomIDController = routeController as HasRoomID;
-    //   //   this.app.get(`/api/${routeName}/room/:id`, this.makeHandlerAwareOfAsyncErrors(hasRoomIDController.getByRoomID));
-    //   // }
+      // If it's an instance of auth, we define its endpoints.
+      if (routeController instanceof routes.auth) {
+        this.app.post(
+          `/api/${routeName}/register`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.registerUser(req, res))
+        );
+        this.app.post(
+          `/api/${routeName}/finduser`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.findUser(req, res))
+        );
+        this.app.post(
+          `/api/${routeName}/assignment`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.assignmentLookup(req, res))
+        );
+        this.app.post(
+          `/api/${routeName}/assignmentrelease`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.assignmentRelease(req, res))
+        );
+      }
 
-    //   // If it's an instance of auth, we define its endpoints.
-    //   if (routeController instanceof routes.auth) {
-    //     this.app.post(`/api/${routeName}/register`, this.makeHandlerAwareOfAsyncErrors(routeController.registerUser));
-    //     this.app.post(`/api/${routeName}/finduser`, this.makeHandlerAwareOfAsyncErrors(routeController.findUser));
-    //     this.app.post(
-    //       `/api/${routeName}/assignment`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.assignmentLookup)
-    //     );
-    //     this.app.post(
-    //       `/api/${routeName}/assignmentrelease`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.assignmentRelease)
-    //     );
-    //   }
+      // If it's an instance of uia, we define its endpoints.
+      if (routeController instanceof routes.uia) {
+        this.app.put(
+          '/api/updateuia',
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateUIA(req, res))
+        );
+      }
 
-    //   // If it's an instance of users, we define its endpoints.
-    //   if (routeController instanceof routes.users) {
-    //     this.app.put('/api/updateuia', this.makeHandlerAwareOfAsyncErrors(routeController.updateUIA));
-    //   }
+      // If it's an instance of room, we define its endpoints.
+      if (routeController instanceof routes.room) {
+        this.app.get(
+          `/api/${routeName}/station/:station_name`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getRoomByStationName(req, res))
+        );
+      }
 
-    //   // If it's an instance of room, we define its endpoints.
-    //   if (routeController instanceof routes.room) {
-    //     this.app.get(
-    //       `/api/${routeName}/station/:station_name`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.getRoomByStationName)
-    //     );
-    //   }
-
-    //   // If it's an instance of simulationControl, we define its endpoints.
-    //   if (routeController instanceof routes.simulationControl) {
-    //     this.app.get(
-    //       `/api/${routeName}/room/:room/:event`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.commandSim)
-    //     );
-    //     this.app.get(
-    //       `/api/${routeName}/room/:room/:control`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.controlSim)
-    //     );
-    //     this.app.get(
-    //       `/api/${routeName}/room/:room/:failure`,
-    //       this.makeHandlerAwareOfAsyncErrors(routeController.failureSim)
-    //     );
-    //   }
-
-    // }
+      // If it's an instance of simulationControl, we define its endpoints.
+      if (routeController instanceof routes.simulationControl) {
+        this.app.get(
+          `/api/${routeName}/sim/:room/:event`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.commandSim(req, res))
+        );
+        this.app.get(
+          `/api/${routeName}/sim/:room/:control`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.controlSim(req, res))
+        );
+        this.app.get(
+          `/api/${routeName}/sim/:room/:failure`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.failureSim(req, res))
+        );
+      }
+    }
   }
 
   // We create a wrapper to workaround async errors not being transmitted correctly.

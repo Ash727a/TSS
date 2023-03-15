@@ -1,6 +1,9 @@
 import { Model } from 'sequelize';
 
+import { primaryKeyOf } from '../../../helpers.js';
+import HasRoomID from './HasRoomID.interface.js';
 import ModelRoute from './ModelRoute.class.js';
+import * as shared from './shared.js';
 
 class uia extends ModelRoute {
   constructor(_model: any) {
@@ -26,7 +29,7 @@ class uia extends ModelRoute {
 
     await this.model.update(req.body, {
       where: {
-        room: id,
+        [primaryKeyOf(this.model)]: id,
       },
     });
 

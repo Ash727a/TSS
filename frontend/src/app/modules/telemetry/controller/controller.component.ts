@@ -55,6 +55,7 @@ export class ControllerComponent {
     this.telemetryService.getSimulationErrorsByRoomID(roomID).then((result: SimulationErrorData) => {
       // Set the metadata for the switches
       this.simulationErrorData = result;
+      console.log("🚀 ~ file: controller.component.ts:58 ~ ControllerComponent ~ this.telemetryService.getSimulationErrorsByRoomID ~ result:", result)
       // Set the switch values and remove from the metadata object
       for (let i = 0; i < this.switches.length; i++) {
         const keyName: SimulationErrorKey = this.switches[i].key;
@@ -177,7 +178,7 @@ export class ControllerComponent {
       // (this.simulationErrorData as any)[s.key + '_id'] = s.error_id;
     });
     this.telemetryService
-      .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)
+      .updateSimulationErrorsByID(this.simulationErrorData.room_id, this.simulationErrorData)
       .then((res) => { });
   }
 
