@@ -12,7 +12,7 @@ import {
 
 /** MODEL: simulationState
  * This is the model for the simulation state.
- * @column id: ID (PK)
+ * @column room_id: Room ID (PK)
  * @column is_running: Is the simulation running?
  * @column is_paused: Is the simulation paused?
  * @column time: Current simulation time

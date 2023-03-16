@@ -12,6 +12,14 @@ import {
 
 /** MODEL: simulationControl
  * This is the model for the simulation control
+ * @column room_id: Room ID (PK)
+ * @column started_at: Start time
+ * @column suit_power: Suit Power
+ * @column o2_switch: O2 Switch
+ * @column aux: Aux
+ * @column rca: RCA
+ * @column pump: Pump
+ * @column fan_switch: Fan
  */
 
 // We export a function that defines the model.

@@ -12,8 +12,7 @@ import {
 
 /** MODEL: simulationFailure
  * This is the model for the simulation failure.
- * @column id: ID (PK)
- * @column room: Room ID
+ * @column room_id: Room ID (PK)
  * @column started_at: Start time
  * @column o2_error: O2 Error
  * @column pump_error: Pump Error

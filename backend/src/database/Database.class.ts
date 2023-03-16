@@ -1,5 +1,7 @@
 import path from 'path';
-import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
+import { Model, Sequelize } from 'sequelize-typescript';
+
+import { SequelizeModel } from './interfaces.js';
 
 /** CLASS: Database
  * @initialize_with await Database.build(<filename>, <modelsArray>, <sequelizeConfig>);
@@ -15,6 +17,28 @@ class Database extends Sequelize {
     benchmark: true,
   };
 
+  /**
+   * Used as a static method to create a new Database instance. Use this instead of the constructor to initialize a new Database instance.
+   * @param {string} _fileName Name of the database file (without .sqlite extension)
+   * @param {SequelizeModel[]} models Array of model names or model constructors
+   * @param {object} sequelizeConfig Optional config object to pass to the Sequelize constructor
+   * @returns {Promise<Database>} Promise that resolves to a new Database instance
+   */
+  public static async build(
+    _fileName: string,
+    models: SequelizeModel[],
+    sequelizeConfig: object = {}
+  ): Promise<Database> {
+    const _db = new Database(_fileName, sequelizeConfig); // Create a new Database instance (itself)
+    await _db.setModels(models); // Set the models for the new Database instance
+    return _db; // Return the new Database instance
+  }
+
+  /**
+   * Use the static build() method instead of this constructor. This constructor is privately used to help the build() method.
+   * @param {string} _fileName Name of the database file (without .sqlite extension)
+   * @param {object} sequelizeConfig Optional config object to pass to the Sequelize constructor
+   */
   private constructor(_fileName: string, sequelizeConfig: object = {}) {
     // Configure the path to the database file
     const appDir = path.resolve(process.cwd());
@@ -27,20 +51,15 @@ class Database extends Sequelize {
       storage: _dbPath,
       ...sequelizeConfig,
     };
-    super(config);
+    super(config); // Call the Sequelize constructor
   }
 
-  public static async build(
-    _fileName: string,
-    models: (string | ModelCtor<Model<any, any>>)[],
-    sequelizeConfig: object = {}
-  ): Promise<Database> {
-    const _db = new Database(_fileName, sequelizeConfig);
-    await _db.setModels(models);
-    return _db;
-  }
-
-  public async setModels(models: (string | ModelCtor<Model<any, any>>)[]): Promise<boolean> {
+  /**
+   * Add models to the Database instance
+   * @param models Array of model names or model constructors
+   * @returns {boolean} True if models were added successfully, false otherwise
+   */
+  public async setModels(models: SequelizeModel[]): Promise<boolean> {
     this.addModels(models);
     try {
       await this.sync(); // Update database schema to match models
@@ -52,9 +71,9 @@ class Database extends Sequelize {
   }
 
   public getModels(): {
-    [key: string]: ModelCtor<Model>;
+    [key: string]: SequelizeModel;
   } {
-    return this.models as { [key: string]: ModelCtor<Model> };
+    return this.models as { [key: string]: SequelizeModel };
   }
 }
 

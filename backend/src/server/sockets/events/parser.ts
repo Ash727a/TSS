@@ -1,5 +1,3 @@
-import { Model, ModelCtor } from 'sequelize';
-
 import { primaryKeyOf } from '../../../helpers.js';
 
 class Parser {

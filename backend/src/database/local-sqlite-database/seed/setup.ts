@@ -1,11 +1,10 @@
-import { Model, ModelCtor } from 'sequelize-typescript';
-
 import Database from '../../Database.class.js';
+import { SequelizeModel } from '../../interfaces.js';
 import { liveModels } from '../../models/index.js';
 
 // import { pickRandom, randomDate } from './helpers.js';
 
-async function reset(models: { [key: string]: ModelCtor<Model> }): Promise<void> {
+async function reset(models: { [key: string]: SequelizeModel }): Promise<void> {
   console.log('\nPopulating suits.sqlite database...');
 
   const roomList = [
