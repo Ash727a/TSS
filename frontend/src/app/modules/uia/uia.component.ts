@@ -19,7 +19,7 @@ export class UIAComponent {
   private uiaData: UIAData = {} as UIAData;
   protected connected: boolean = false;
 
-  constructor(private roomsService: RoomsService, private uiaService: UIAService) {}
+  constructor(private roomsService: RoomsService, private uiaService: UIAService) { }
 
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1
@@ -37,19 +37,19 @@ export class UIAComponent {
     });
     // console.log(this.uiaData);
     this.sensors1 = [
-      { name: 'EMU1', status: this.uiaData?.emu1 ?? undefined },
-      { name: 'EV1 SUPPLY', status: this.uiaData?.ev1_supply ?? undefined },
-      { name: 'EV1 WASTE', status: this.uiaData?.ev1_waste ?? undefined },
-      // { name: 'EV1 OXYGEN', status: this.uiaData?.ev1_O2 ?? undefined },
-      { name: 'O2 VENT', status: this.uiaData?.O2_vent ?? undefined },
+      { name: 'EMU1 POWER', status: this.uiaData?.emu1_pwr_switch ?? undefined },
+      { name: 'EV1 SUPPLY', status: this.uiaData?.ev1_supply_switch ?? undefined },
+      { name: 'EV1 WASTE', status: this.uiaData?.ev1_water_waste_switch ?? undefined },
+      { name: 'EV1 OXYGEN', status: this.uiaData?.emu1_o2_supply_switch ?? undefined },
+      { name: 'O2 VENT', status: this.uiaData?.o2_vent_switch ?? undefined },
     ];
 
     this.sensors2 = [
-      { name: 'EMU2', status: this.uiaData?.emu2 ?? undefined },
-      { name: 'EV2 SUPPLY', status: this.uiaData?.ev2_supply ?? undefined },
-      { name: 'EV2 WASTE', status: this.uiaData?.ev2_waste ?? undefined },
-      // { name: 'EV2 OXYGEN', status: this.uiaData?.ev2_O2 ?? undefined },
-      { name: 'DEPRESS PUMP', status: this.uiaData?.depress_pump ?? undefined },
+      { name: 'EMU2 POWER', status: this.uiaData?.emu2_pwr_switch ?? undefined },
+      { name: 'EV2 SUPPLY', status: this.uiaData?.ev1_supply_switch ?? undefined },
+      { name: 'EV2 WASTE', status: this.uiaData?.ev2_water_waste_switch ?? undefined },
+      { name: 'EV2 OXYGEN', status: this.uiaData?.emu2_o2_supply_switch ?? undefined },
+      { name: 'DEPRESS PUMP', status: this.uiaData?.depress_pump_switch ?? undefined },
     ];
   }
 

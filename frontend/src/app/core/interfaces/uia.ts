@@ -1,19 +1,19 @@
 export interface UIAData {
-  O2_vent: boolean;
-  createdAt: Date;
-  depress_pump: boolean;
-  emu1: boolean;
-  emu1_O2: boolean;
-  emu2: boolean;
-  emu2_O2: boolean;
-  ev1_supply: boolean;
-  ev1_waste: boolean;
-  ev2_supply: boolean;
-  ev2_waste: boolean;
-  id: number;
-  room: number;
+  room_id: number,
   started_at: Date;
-  updatedAt: Date;
+  emu1_pwr_switch: boolean;
+  ev1_supply_switch: boolean;
+  ev1_water_waste_switch: boolean;
+  emu1_o2_supply_switch: boolean;
+  emu2_pwr_switch: boolean;
+  ev2_water_supply_switch: boolean;
+  ev2_water_waste_switch: boolean;
+  emu2_o2_supply_switch: boolean;
+  o2_vent_switch: boolean;
+  depress_pump_switch: boolean;
+  depress_pump_fault: boolean;
+  created_at: Date,
+  updated_at: Date,
 }
 
 export interface StatusSensor {
