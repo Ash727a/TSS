@@ -15,7 +15,7 @@ export default class telemetrySessionLog extends Model {
   // Telemetry session ID (PK)
   @PrimaryKey
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
   // Room ID it was assigned to (FK => Room.id)

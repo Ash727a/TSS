@@ -18,12 +18,12 @@ export default class telemetryStationLog extends Model {
   // Station Assignment ID
   @PrimaryKey
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare station_log_id: string;
 
   // Telemetry Session ID (FK)
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
   // Room ID it was assigned to (FK)

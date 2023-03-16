@@ -7,16 +7,16 @@ import ExpressApp from './server/express/app.js';
 
 // Environment variables
 dotenv.config();
-const API_URL = process.env.API_URL as string | undefined;
-const API_PORT = process.env.API_PORT as number | undefined;
-const SOCKET_PORT = process.env.SOCKET_PORT as number | undefined;
+const API_URL: string | undefined = process.env.API_URL as string | undefined;
+const API_PORT: number | undefined = process.env.API_PORT as number | undefined;
+const SOCKET_PORT: number | undefined = process.env.SOCKET_PORT as number | undefined;
 
 // We define all models according to their files.
-const liveModelsArray: [] = Object.values(liveModels as any) as [];
-const logModelsArray: [] = Object.values(logModels as any) as [];
-const LiveDatabase = await Database.build('suits', liveModelsArray);
-const LogDatabase = await Database.build('logs', logModelsArray);
-const express = new ExpressApp({ ...LiveDatabase.getModels(), ...LogDatabase.getModels() });
+const liveModelsArray: [] = Object.values(liveModels) as [];
+const logModelsArray: [] = Object.values(logModels) as [];
+const LiveDatabase: Database = await Database.build('suits', liveModelsArray);
+const LogDatabase: Database = await Database.build('logs', logModelsArray);
+const express: ExpressApp = new ExpressApp({ ...LiveDatabase.getModels(), ...LogDatabase.getModels() });
 
 // Log the environment variables
 console.log(`API PORT: ${API_PORT}`);

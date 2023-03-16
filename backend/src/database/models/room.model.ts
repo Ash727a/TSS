@@ -39,7 +39,7 @@ export default class room extends Model {
   // Telemetry session ID (FK)
   // @ForeignKey(() => TelemetrySessionLog.session_log_id)
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
   // Number of users in the room

@@ -1,5 +1,5 @@
 import path from 'path';
-import { Model, Sequelize } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize-typescript';
 
 import { SequelizeModel } from './interfaces.js';
 
@@ -56,11 +56,11 @@ class Database extends Sequelize {
 
   /**
    * Add models to the Database instance
-   * @param models Array of model names or model constructors
+   * @param {SequelizeModel[]} models Array of model names or model constructors
    * @returns {boolean} True if models were added successfully, false otherwise
    */
   public async setModels(models: SequelizeModel[]): Promise<boolean> {
-    this.addModels(models);
+    this.addModels(models); // Add models to the Database / native Sequelize instance
     try {
       await this.sync(); // Update database schema to match models
     } catch (error) {
@@ -70,6 +70,10 @@ class Database extends Sequelize {
     return true;
   }
 
+  /**
+   * Getter method for the models from the Database instance
+   * @returns {[key: string]: SequelizeModel} Object containing the models
+   */
   public getModels(): {
     [key: string]: SequelizeModel;
   } {

@@ -18,12 +18,12 @@ export default class telemetryErrorLog extends Model {
   // Error ID (PK)
   @PrimaryKey
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare error_log_id: string;
 
   // ID of the telemetry session where the error was thrown (FK)
   @AllowNull(false)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
   // ID of the room where the error was thrown (FK)
