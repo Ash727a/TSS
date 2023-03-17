@@ -12,19 +12,19 @@ import {
 
 /** MODEL: uia
  * This model is for holding live UIA states and data for all rooms.
- * @column room Room ID (PK)
+ * @column room_id Room ID (PK)
  * @column started_at Current simulation start time
- * @column emu1 EMU1
- * @column ev1_supply EV1 Supply
- * @column ev1_waste EV1 Waste
- * @column ev2_supply EV2 Supply
- * @column ev2_waste EV2 Waste
- * @column emu1_O2 EMU1 O2
- * @column emu2 EMU2
- * @column emu2_O2 EMU2 O2
- * @column O2_vent O2 Vent
- * @column depress_pump Depress Pump
- * @column depress_valve Depress Valve
+ * @column emu1_pwr_switch EMU1 Power Switch
+ * @column ev1_supply_switch EV1 Supply Switch
+ * @column ev1_water_waste_switch EV1 Water Waste Switch
+ * @column emu1_o2_supply_switch EMU1 O2 Supply Switch
+ * @column emu2_pwr_switch EMU2 Power Switch
+ * @column ev2_water_supply_switch EV2 Supply Switch
+ * @column ev2_water_waste_switch EV2 Water Waste Switch
+ * @column emu2_o2_supply_switch EMU2 O2 Supply Switch
+ * @column o2_vent_switch O2 Vent Switch
+ * @column depress_pump_switch Depress Pump Switch
+ * @column depress_pump_fault Depress Pump Fault
  */
 
 // We export a function that defines the model.
@@ -43,63 +43,69 @@ export default class uia extends Model {
   @Column(DataType.STRING)
   declare started_at: string;
 
-  // EMU1
+  // EMU1 Power Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare emu1: boolean;
+  declare emu1_pwr_switch: boolean;
 
-  // EV1 Supply
+  // EV1 Supply Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare ev1_supply: boolean;
+  declare ev1_supply_switch: boolean;
 
-  // EV1 Waste
+  // EV1 Water Waste Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare ev1_waste: boolean;
+  declare ev1_water_waste_switch: boolean;
 
-  // EMU1 O2
+  // EMU1 O2 Supply Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare emu1_O2: boolean;
+  declare emu1_o2_supply_switch: boolean;
 
-  // EMU2
+  // EMU2 Power Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare emu2: boolean;
+  declare emu2_pwr_switch: boolean;
 
-  // EV2 Supply
+  // EV2 Supply Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare ev2_supply: boolean;
+  declare ev2_water_supply_switch: boolean;
 
-  // EV2 Waste
+  // EV2 Water Waste Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare ev2_waste: boolean;
+  declare ev2_water_waste_switch: boolean;
 
-  // EMU2 O2
+  // EMU2 O2 Supply Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare emu2_O2: boolean;
+  declare emu2_o2_supply_switch: boolean;
 
-  // O2 Vent
+  // O2 Vent Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare O2_vent: boolean;
+  declare o2_vent_switch: boolean;
 
-  // Depress Pump
+  // Depress Pump Switch
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare depress_pump: boolean;
+  declare depress_pump_switch: boolean;
+
+  // Depress Pump Fault
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare depress_pump_fault: boolean;
 }

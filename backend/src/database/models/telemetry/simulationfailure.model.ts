@@ -12,8 +12,7 @@ import {
 
 /** MODEL: simulationFailure
  * This is the model for the simulation failure.
- * @column id: ID (PK)
- * @column room: Room ID
+ * @column room_id: Room ID (PK)
  * @column started_at: Start time
  * @column o2_error: O2 Error
  * @column pump_error: Pump Error
@@ -27,19 +26,14 @@ import {
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table
+@Table({ tableName: 'simulationFailure', underscored: true })
 export default class simulationFailure extends Model {
-  // ID (PK) // edit later
+  // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  declare id: number;
-
-  // Room ID
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare room: number;
+  declare room_id: number;
 
   // Start time
   @AllowNull(true)

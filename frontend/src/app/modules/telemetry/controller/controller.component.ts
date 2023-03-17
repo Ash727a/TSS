@@ -177,7 +177,7 @@ export class ControllerComponent {
       // (this.simulationErrorData as any)[s.key + '_id'] = s.error_id;
     });
     this.telemetryService
-      .updateSimulationErrorsByID(this.simulationErrorData.id, this.simulationErrorData)
+      .updateSimulationErrorsByID(this.simulationErrorData.room_id, this.simulationErrorData)
       .then((res) => { });
   }
 

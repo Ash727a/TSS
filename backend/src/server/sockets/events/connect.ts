@@ -1,3 +1,5 @@
+import { primaryKeyOf } from '../../../helpers.js';
+
 class User {
   uRoomId: number;
   uUsername: string;
@@ -13,8 +15,8 @@ class User {
     const room = await models.room;
 
     try {
-      const existingUser = await user.findOne({ where: { client_id: this.uClientId } });
-      const assigned_room = await room.findOne({ where: { id: this.uRoomId, client_id: null } });
+      const existingUser = await user.findOne({ where: { [primaryKeyOf(user)]: this.uClientId } });
+      const assigned_room = await room.findOne({ where: { [primaryKeyOf(room)]: this.uRoomId, client_id: null } });
       //check if user is already registered
       if (!existingUser) {
         console.log(reg);
@@ -24,7 +26,7 @@ class User {
 
       //check if assigned room is vacant
       if (assigned_room) {
-        await room.update({ client_id: this.uClientId }, { where: { id: this.uRoomId } }); //assign the client_id to the room
+        await room.update({ client_id: this.uClientId }, { where: { [primaryKeyOf(room)]: this.uRoomId } }); //assign the client_id to the room
         await assigned_room.save();
         console.log(`${this.uUsername} assigned to room ${this.uRoomId}.`);
         return false;

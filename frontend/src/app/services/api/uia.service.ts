@@ -11,7 +11,7 @@ export class UIAService {
   constructor(private http: HttpClient) {}
 
   async getUIAStateByRoomID(roomID: number): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/uia/room/${roomID}`))
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/uia/${roomID}`))
       .then((result) => {
         return { ok: true, data: result }
       })

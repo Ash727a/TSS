@@ -1,4 +1,4 @@
-import { Model, ModelCtor } from 'sequelize';
+import { primaryKeyOf } from '../../../helpers.js';
 
 class Parser {
   // constructor() {}
@@ -26,7 +26,7 @@ class Parser {
         imuMsg.create(obj);
       } else {
         imuMsg.update(obj, {
-          where: { id: 1 },
+          where: { [primaryKeyOf(imuMsg)]: 1 },
         });
       }
       return imuMsg;
@@ -48,7 +48,7 @@ class Parser {
         gpsMsg.create(obj);
       } else {
         gpsMsg.update(obj, {
-          where: { id: 1 },
+          where: { [primaryKeyOf(gpsMsg)]: 1 },
         });
       }
       return gpsMsg;
