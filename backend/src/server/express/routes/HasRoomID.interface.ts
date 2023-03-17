@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { APIRequest, APIResult } from '../../../interfaces.js';
 
 /** INTERFACE: HasRoomID
  * @description This interface is a generic interface for all routes that have a room_id column.
@@ -8,22 +8,12 @@ import { Model } from 'sequelize';
 interface HasRoomID {
   /**
    * GET MULTIPLE by room id /api/{model's name}/room/:room
-   * @param {*} req
-   * @param {*} res
+   * @param {APIRequest} req
+   * @param {APIResult} res
    * @returns {any[]}
    * @throws 404 - Not found
    */
-  getByRoomID(
-    req: { params: { room: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: Model<any>[]): void; (): any };
-        send: { (arg0: string): void; (): any };
-      };
-    }
-  ): Promise<void>;
+  getByRoomID(req: APIRequest, res: APIResult): Promise<void>;
 }
 
 export default HasRoomID;

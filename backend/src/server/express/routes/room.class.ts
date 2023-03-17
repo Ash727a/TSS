@@ -1,23 +1,19 @@
-import { Model } from 'sequelize';
-
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import ModelRoute from './ModelRoute.class.js';
 
+/** CLASS: room
+ * @description: This class matches with the room model in the DB.
+ * @extends ModelRoute
+ * @param {SequelizeModel} _model - The model that is used for the route.
+ * @returns {room} - The room object.
+ */
+
 class room extends ModelRoute {
-  constructor(_model: any) {
+  constructor(_model: SequelizeModel) {
     super(_model);
   }
 
-  async getRoomByStationName(
-    req: { params: { station_name: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: Model<any, any>[]): void; (): any };
-        send: { (arg0: string): void; (): any };
-      };
-    }
-  ): Promise<void> {
+  async getRoomByStationName(req: APIRequest, res: APIResult): Promise<void> {
     const station_name = req.params.station_name;
     const room = await this.model.findAll({ where: { station_name: station_name } });
     if (room) {

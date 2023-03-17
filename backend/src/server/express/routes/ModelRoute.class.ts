@@ -1,12 +1,11 @@
-import { Model, Optional } from 'sequelize';
-
 import { primaryKeyOf } from '../../../helpers.js';
-import { APIResult, SequelizeModel } from '../../../interfaces.js';
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import { getIdParam } from '../helpers.js';
 import Route from './Route.class.js';
 
 /** CLASS: ModelRoute
  * @description This class is a generic class for all routes that are based on a model.
+ * @extends Route
  * @param {SequelizeModel} _model - The model that is used for the route.
  * @returns {ModelRoute} - The ModelRoute object.
  */
@@ -27,36 +26,23 @@ class ModelRoute extends Route {
 
   /**
    * GET ALL /api/{model's name}
-   * @param {*} req
-   * @param {*} res
+   * @param {APIRequest} req
+   * @param {APIResult} res
    * @returns {any[]}
    */
-  async getAll(
-    req: any,
-    res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: Model<any, any>[]): void; (): any } } }
-  ): Promise<void> {
+  async getAll(req: APIRequest, res: APIResult): Promise<void> {
     const results = await this?.model.findAll();
     res.status(200).json(results);
   }
 
   /**
    * GET SINGLE by id /api/{model's name}/:id
-   * @param {*} req
-   * @param {*} res
-   * @returns {ant}
+   * @param {APIRequest} req
+   * @param {APIResult} res
+   * @returns {any}
    * @throws 404 - Not found
    */
-  async getById(
-    req: any,
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: Model<any, any>): void; (): any };
-        send: { (arg0: string): void; (): any };
-      };
-    }
-  ): Promise<void> {
+  async getById(req: APIRequest, res: APIResult): Promise<void> {
     const id = getIdParam(req);
     const result = await this.model.findByPk(id);
     if (result) {
@@ -68,25 +54,15 @@ class ModelRoute extends Route {
 
   /**
    * POST SINGLE /api/{model's name}
-   * @param {*} req
-   * @param {*} res
+   * @param {APIRequest} req
+   * @param {APIResult} res
    * @throws 400 - Bad request
    */
-  async create(
-    req: { body: Optional<any, string> | undefined },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        send: { (arg0: string): void; (): any };
-        end: { (): void; (): any };
-      };
-    }
-  ): Promise<void> {
+  async create(req: APIRequest, res: APIResult): Promise<void> {
     if (req?.body?.id) {
       res
         .status(400)
-        .send(`Bad request: ID should not be provided, since it is determined automatically by the database.`);
+        .send('Bad request: ID should not be provided, since it is determined automatically by the database.');
     } else {
       await this.model.create(req.body);
       res.status(201).end();
@@ -95,13 +71,10 @@ class ModelRoute extends Route {
 
   /**
    * PUT SINGLE /api/{model's name}/:id
-   * @param {*} req
-   * @param {*} res
+   * @param {APIRequest} req
+   * @param {APIResult} res
    */
-  async update(
-    req: { body: { [x: string]: any } },
-    res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
-  ): Promise<void> {
+  async update(req: APIRequest, res: APIResult): Promise<void> {
     const id = getIdParam(req);
     await this.model.update(req.body, {
       where: {
@@ -113,13 +86,10 @@ class ModelRoute extends Route {
 
   /**
    * DELETE SINGLE by id /api/{model's name}/:id
-   * @param {*} req
-   * @param {*} res
+   * @param {APIRequest} req
+   * @param {APIResult} res
    */
-  async remove(
-    req: any,
-    res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
-  ): Promise<void> {
+  async remove(req: APIRequest, res: APIResult): Promise<void> {
     const id = getIdParam(req);
     await this.model.destroy({
       where: {

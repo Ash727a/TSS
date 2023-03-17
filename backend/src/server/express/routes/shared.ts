@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 
 /** EXPORT MODULE: shared
  * @fileoverview Exports shared functions in the routes directory.
@@ -8,24 +8,12 @@ import { Model } from 'sequelize';
 
 /**
  * GET MULTIPLE by room id /api/{model's name}/room/:room
- * @param {any} model a sequelize model
- * @param {*} req
- * @param {*} res
- * @returns {any[]}
+ * @param {SequelizeModel} model a sequelize model
+ * @param {APIRequest} req
+ * @param {APIResult} res
  * @throws 404 - Not found
  */
-async function getByRoomID(
-  model: any,
-  req: { params: { room: any } },
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      (): any;
-      json: { (arg0: Model<any>[]): void; (): any };
-      send: { (arg0: string): void; (): any };
-    };
-  }
-): Promise<void> {
+async function getByRoomID(model: SequelizeModel, req: APIRequest, res: APIResult): Promise<void> {
   const id = req.params.room;
   const results = await model.findAll({ where: { room_id: id } });
   if (results) {

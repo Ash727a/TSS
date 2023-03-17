@@ -1,12 +1,15 @@
-import { Optional } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
-import { APIResult, SequelizeModel } from '../../../interfaces.js';
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import Route from './Route.class.js';
 
 /** CLASS: auth
  * @description: This class is responsible for handling all authentication endpoints.
  * @extends Route
+ * @param {SequelizeModel} _userModel - The user model.
+ * @param {SequelizeModel} _visionKitModel - The vision kit model.
+ * @param {SequelizeModel} _hmdModel - The hmd model.
+ * @returns {auth} - The auth object.
  */
 class auth extends Route {
   userModel: SequelizeModel;
@@ -45,16 +48,10 @@ class auth extends Route {
     return unassigned;
   }
 
-  public async registerUser(
-    req: { body: Optional<any, string> | undefined },
-    res: { status: (arg0: number) => { (): any; (): any; json: { (arg0: any): void; (): any } } }
-  ): Promise<any> {
-    //Debug console.log(req.body);
-
+  public async registerUser(req: APIRequest, res: APIResult): Promise<void> {
     //////////// User Checks
-
-    if (req?.body?.username === undefined || req.body.username === '') {
-      res.status(400).json({ ok: false, err: 'Username is missing or empty' });
+    if (req.body.username === undefined || req.body.username === '') {
+      res.status(400).send('Username is missing or empty');
       return;
     }
 
@@ -63,13 +60,13 @@ class auth extends Route {
       users = await this.getUsers();
     } catch (err) {
       console.log(err);
-      res.status(400).json({ ok: false, err: 'Could not get Users' });
+      res.status(400).send('Could not get Users');
       return;
     }
 
     for (const userRecord of users) {
       if (req.body.username === userRecord.username) {
-        res.status(400).json({ ok: false, err: 'User already exists' });
+        res.status(400).send('User already exists');
         return;
       }
     }
@@ -78,7 +75,7 @@ class auth extends Route {
 
     //TODO check if room is full
     if (req.body.room === undefined || req.body.room > 24) {
-      res.status(400).json({ ok: false, err: 'Room ID is missing or out of range' });
+      res.status(400).send('Room ID is missing or out of range');
       return;
     }
 
@@ -89,7 +86,7 @@ class auth extends Route {
       vks = await this.getVKs();
     } catch (err) {
       console.log(err);
-      res.status(400).json({ ok: false, err: 'Could not get VKs' });
+      res.status(400).send('Could not get VKs');
       return;
     }
 
@@ -97,7 +94,7 @@ class auth extends Route {
     let next_vk;
 
     if (unassigned_vks.length === 0) {
-      res.status(400).json({ ok: false, err: 'No more VKs to assign' });
+      res.status(400).send('No more VKs to assign');
       return;
     } else {
       next_vk = unassigned_vks[0];
@@ -111,7 +108,7 @@ class auth extends Route {
       hmds = await this.getHMDs();
     } catch (err) {
       console.log(err);
-      res.status(400).json({ ok: false, err: 'Could not get HMDs' });
+      res.status(400).send('Could not get HMDs');
       return;
     }
 
@@ -119,7 +116,7 @@ class auth extends Route {
     let next_hmd;
 
     if (unassigned_hmds.length === 0) {
-      res.status(400).json({ ok: false, err: 'No more HMDs to assign' });
+      res.status(400).send('No more HMDs to assign');
       return;
     } else {
       next_hmd = unassigned_hmds[0];
@@ -139,19 +136,9 @@ class auth extends Route {
     res.status(200).json(user);
   }
 
-  public async assignmentLookup(
-    req: { body: { hmd: undefined; vk: undefined } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err?: string; data?: any }): void; (): any };
-      };
-    }
-  ): Promise<any> {
+  public async assignmentLookup(req: APIRequest, res: APIResult): Promise<void> {
     if (req.body.hmd === undefined || req.body.vk === undefined) {
-      const _result: APIResult['ERROR'] = { ok: false, error: 'HMD or VK not specified' };
-      res.status(400).json(_result);
+      res.status(400).send('HMD or VK not specified');
       return;
     }
 
@@ -161,15 +148,13 @@ class auth extends Route {
         hmds = await this.getHMDs();
       } catch (err) {
         console.log(err);
-        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get HMDs' };
-        res.status(400).json(_result);
+        res.status(400).send('Could not get HMDs');
         return;
       }
 
       for (const hmdrecord of hmds) {
         if (req.body.hmd === hmdrecord.name) {
-          const _result: APIResult['OK'] = { ok: true, data: hmdrecord };
-          res.status(200).json(_result);
+          res.status(200).json(hmdrecord);
           return;
         }
       }
@@ -181,44 +166,30 @@ class auth extends Route {
         vks = await this.getVKs();
       } catch (err) {
         console.log(err);
-        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get VKs' };
-        res.status(400).json(_result);
+        res.status(400).send('Could not get VKs');
         return;
       }
 
       for (const vkrecord of vks) {
         if (req.body.vk === vkrecord.name) {
-          const _result: APIResult['OK'] = { ok: true, data: vkrecord };
-          res.status(200).json(_result);
+          res.status(200).json(vkrecord);
           return;
         }
       }
     }
 
-    const _result: APIResult['ERROR'] = { ok: false, error: 'VK or HMD not found' };
-    res.status(400).json(_result);
+    res.status(400).send('VK or HMD not found');
     return;
   }
 
-  public async assignmentRelease(
-    req: { body: { hmd: undefined; vk: undefined; secret: string } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err?: string; data?: any }): void; (): any };
-      };
-    }
-  ): Promise<any> {
+  public async assignmentRelease(req: APIRequest, res: APIResult): Promise<void> {
     if (req.body.hmd === undefined && req.body.vk === undefined) {
-      const _result: APIResult['ERROR'] = { ok: false, error: 'HMD or VK not specified' };
-      res.status(400).json(_result);
+      res.status(400).send('HMD or VK not specified');
       return;
     }
 
     if (req.body.secret !== auth.SECRET_KEY) {
-      const _result: APIResult['ERROR'] = { ok: false, error: 'Unauthorized' };
-      res.status(400).json(_result);
+      res.status(401).send('Unauthorized');
       return;
     }
 
@@ -228,8 +199,7 @@ class auth extends Route {
         hmds = await this.getHMDs();
       } catch (err) {
         console.log(err);
-        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get HMDs' };
-        res.status(400).json(_result);
+        res.status(400).send('Could not get HMDs');
         return;
       }
 
@@ -239,8 +209,7 @@ class auth extends Route {
           users = await this.getUsers();
         } catch (err) {
           console.log(err);
-          const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
-          res.status(400).json(_result);
+          res.status(400).send('Could not get Users');
           return;
         }
 
@@ -254,8 +223,7 @@ class auth extends Route {
         if (req.body.hmd === hmdrecord.name) {
           hmdrecord.assignment = null;
           await hmdrecord.save();
-          const _result: APIResult['OK'] = { ok: true, data: hmdrecord };
-          res.status(200).json(_result);
+          res.status(200).json(hmdrecord);
           return;
         }
       }
@@ -267,8 +235,7 @@ class auth extends Route {
         vks = await this.getVKs();
       } catch (err) {
         console.log(err);
-        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get VKs' };
-        res.status(400).json(_result);
+        res.status(400).send('Could not get VKs');
         return;
       }
 
@@ -279,8 +246,7 @@ class auth extends Route {
             users = await this.getUsers();
           } catch (err) {
             console.log(err);
-            const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
-            res.status(400).json(_result);
+            res.status(400).send('Could not get Users');
             return;
           }
 
@@ -294,34 +260,22 @@ class auth extends Route {
           vkrecord.assignment = null;
           await vkrecord.save();
 
-          const _result: APIResult['OK'] = { ok: true, data: vkrecord };
-          res.status(200).json(_result);
+          res.status(200).json(vkrecord);
           return;
         }
       }
       return;
     }
-    const _result: APIResult['ERROR'] = { ok: false, error: 'VK or HMD not found' };
-    res.status(400).json(_result);
+    res.status(400).send('VK or HMD not found');
     return;
   }
 
-  public async findUser(
-    req: { body: { username: string | undefined; guid: string | undefined } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err?: string; user?: any }): void; (): any };
-      };
-    }
-  ): Promise<any> {
+  public async findUser(req: APIRequest, res: APIResult): Promise<void> {
     if (
       (req.body.username === undefined || req.body.username === '') &&
       (req.body.guid === undefined || req.body.guid === '')
     ) {
-      const _result: APIResult['ERROR'] = { ok: false, error: 'Username or guid is missing or empty' };
-      res.status(400).json(_result);
+      res.status(400).send('Username or guid is missing or empty');
       return;
     }
 
@@ -330,27 +284,23 @@ class auth extends Route {
       users = await this.getUsers();
     } catch (err) {
       console.log(err);
-      const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
-      res.status(400).json(_result);
+      res.status(400).send('Could not get Users');
       return;
     }
 
     for (const userRecord of users) {
       if (req.body.guid === userRecord.guid) {
-        const _result: APIResult['OK'] = { ok: true, data: userRecord };
-        res.status(200).json(_result);
+        res.status(200).json(userRecord);
         return;
       }
 
       if (req.body.username === userRecord.username) {
-        const _result: APIResult['OK'] = { ok: true, data: userRecord };
-        res.status(200).json(_result);
+        res.status(200).json(userRecord);
         return;
       }
     }
 
-    const _result: APIResult['ERROR'] = { ok: false, error: 'Could not find User' };
-    res.status(400).json(_result);
+    res.status(400).send('Could not find User');
   }
 }
 
