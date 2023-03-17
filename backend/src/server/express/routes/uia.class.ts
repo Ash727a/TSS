@@ -1,19 +1,19 @@
-import { Model } from 'sequelize';
-
 import { primaryKeyOf } from '../../../helpers.js';
-import HasRoomID from './HasRoomID.interface.js';
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import ModelRoute from './ModelRoute.class.js';
-import * as shared from './shared.js';
 
+/** CLASS: uia
+ * @description: This class matches with the uia model in the DB.
+ * @extends ModelRoute
+ * @param {SequelizeModel} _model - The model that is used for the route.
+ * @returns {uia} - The uia object.
+ */
 class uia extends ModelRoute {
-  constructor(_model: any) {
+  constructor(_model: SequelizeModel) {
     super(_model);
   }
 
-  async updateUIA(
-    req: { body: { [x: string]: boolean } },
-    res: { status: (arg0: number) => { (): any; (): any; end: { (): void; (): any } } }
-  ): Promise<void> {
+  async updateUIA(req: APIRequest, res: APIResult): Promise<void> {
     const roomInUIA = await this.model.findOne({
       attributes: ['id'],
       where: {
