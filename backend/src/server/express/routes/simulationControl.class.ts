@@ -1,36 +1,44 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import EVASimulation from '../../../simulations/evasimulation.js';
 import ModelRoute from './ModelRoute.class.js';
 
-class simulationControl extends ModelRoute {
-  private sims: any = [];
-  private dependentModels: any;
+/** CLASS: simulationControl
+ * @description: This class matches with the simulationControl model in the DB.
+ * @extends ModelRoute
+ * @param {SequelizeModel} _model - The model that is used for the route.
+ * @param {SequelizeModel{}} _dependentModels - The dependent models that are used for the simulation.
+ * @returns {simulationControl} - The simulationControl object.
+ */
 
-  constructor(_model: any, _dependentModels: any) {
+type SimulationInstance = {
+  room: string;
+  sim: EVASimulation;
+  controls: { [key: string]: boolean };
+  failure: { [key: string]: boolean };
+};
+class simulationControl extends ModelRoute {
+  private sims: SimulationInstance[] = [];
+  private dependentModels: { [key: string]: SequelizeModel };
+
+  constructor(_model: SequelizeModel, _dependentModels: { [key: string]: SequelizeModel }) {
     super(_model);
     this.dependentModels = _dependentModels;
   }
 
-  public async commandSim(
-    req: { params: { room: any; event: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err?: string; event?: any }): void; (): any };
-      };
-    }
-  ): Promise<void> {
+  public async commandSim(req: APIRequest, res: APIResult): Promise<void> {
     console.log(`Room: ${req.params.room} Event: ${req.params.event}`);
     if (req.params.event && req.params.room) {
       // Check if the sim already exists
-      const existingSim: any = this.sims.find((x: any) => x.room === req.params.room);
+      const existingSim: SimulationInstance | undefined = this.sims.find(
+        (_sim: SimulationInstance) => _sim.room === req.params.room
+      );
 
       switch (req.params.event) {
         case 'start':
           {
-            let simInst: any = {};
+            let simInst: SimulationInstance;
             const session_log_id = uuidv4();
             const simModels = {
               simulationState: this.dependentModels.simulationState,
@@ -77,46 +85,39 @@ class simulationControl extends ModelRoute {
           if (existingSim) {
             existingSim.sim.pause();
           } else {
-            res.status(400).json({ ok: false, err: 'Simulation must be started before it can be paused.' });
+            res.status(400).send('Simulation must be started before it can be paused.');
           }
           break;
         case 'unpause':
           if (existingSim) {
             existingSim.sim.unpause();
           } else {
-            res.status(400).json({ ok: false, err: 'Simulation must be paused before it can be unpaused.' });
+            res.status(400).send('Simulation must be paused before it can be unpaused.');
           }
           break;
         case 'stop':
           if (existingSim) {
             existingSim.sim.stop();
           } else {
-            res.status(400).json({ ok: false, err: 'Simulation must be running or paused before it can be stopped.' });
+            res.status(400).send('Simulation must be running or paused before it can be stopped.');
           }
           break;
       }
     } else {
-      res.status(400).json({ ok: false, err: 'A room and event are both required.' });
+      res.status(400).send('A room and event are both required.');
     }
-    res.status(200).json({ ok: true, event: req.params.event });
+    res.status(200).json(req.params.event);
   }
 
-  public async controlSim(
-    req: { params: { room: any; control: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err: string }): void; (): any };
-        send: { (arg0: { ok: boolean; controls: any }): void; (): any };
-      };
-    }
-  ): Promise<void> {
-    const simInst = this.sims.find((x: any) => x.room === req.params.room);
+  public async controlSim(req: APIRequest, res: APIResult): Promise<void> {
+    const simInst: SimulationInstance | undefined = this.sims.find(
+      (_sim: SimulationInstance) => _sim.room === req.params.room
+    );
 
     if (!simInst) {
-      res.status(400).json({ ok: false, err: 'No sim found to command. Have you started the simulation?' });
       console.warn(`CTRL No Sim Found of ${this.sims.length} sims`);
+      res.status(400).send('No sim found to command. Have you started the simulation?');
+      return;
     }
 
     switch (req.params.control) {
@@ -142,25 +143,18 @@ class simulationControl extends ModelRoute {
     }
 
     simInst.sim.setControls(simInst.controls);
-    res.status(200).send({ ok: true, controls: simInst.controls });
+    res.status(200).json(simInst.controls);
   }
 
-  public async failureSim(
-    req: { params: { room: any; failure: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: { ok: boolean; err: string }): void; (): any };
-        send: { (arg0: { ok: boolean; failures: any }): void; (): any };
-      };
-    }
-  ): Promise<void> {
-    const simInst = this.sims.find((x: any) => x.room === req.params.room);
+  public async failureSim(req: APIRequest, res: APIResult): Promise<void> {
+    const simInst: SimulationInstance | undefined = this.sims.find(
+      (_sim: SimulationInstance) => _sim.room === req.params.room
+    );
 
     if (!simInst) {
-      res.status(400).json({ ok: false, err: 'No sim found to apply failures. Have you started the simulation?' });
       console.warn(`CTLFAILURE No Sim Found of ${this.sims.length} sims`);
+      res.status(400).send('No sim found to apply failures. Have you started the simulation?');
+      return;
     }
 
     switch (req.params.failure) {
@@ -179,7 +173,7 @@ class simulationControl extends ModelRoute {
     }
 
     simInst.sim.setFailure(simInst.failure);
-    res.status(200).send({ ok: true, failures: simInst.failure });
+    res.status(200).json(simInst.failure);
   }
 }
 

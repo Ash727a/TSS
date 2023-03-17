@@ -14,7 +14,8 @@ export class TelemetryService {
   async simulationControl(roomID: number, command: string): Promise<any> {
     return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationControl/sim/${roomID}/${command}`))
       .then((result) => {
-        return result as { ok: boolean; event: string };
+        const res: { ok: boolean, data: string } = { ok: true, data: result as string };
+        return res;
       })
       .catch((e) => {
         return { ok: false, err: e };

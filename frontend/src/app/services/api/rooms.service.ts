@@ -14,7 +14,6 @@ export class RoomsService {
   async getRooms(): Promise<any> {
     try {
       const rooms = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms`));
-      console.log("!!!!!Rooms,", rooms);
       return { ok: true, payload: rooms };
     } catch (e) {
       console.log('err caught', e);

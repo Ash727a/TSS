@@ -10,17 +10,7 @@ class telemetryErrorLog extends ModelRoute implements HasRoomID {
   }
 
   /* See shared.ts for getByRoomId function definition */
-  async getByRoomID(
-    req: { params: { room: any } },
-    res: {
-      status: (arg0: number) => {
-        (): any;
-        (): any;
-        json: { (arg0: Model<any>[]): void; (): any };
-        send: { (arg0: string): void; (): any };
-      };
-    }
-  ): Promise<void> {
+  async getByRoomID(req: any, res: any): Promise<void> {
     return await shared.getByRoomID(this.model, req, res);
   }
 }
