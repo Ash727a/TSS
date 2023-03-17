@@ -10,13 +10,3 @@ function primaryKeyOf(model: any): string {
 }
 
 export { primaryKeyOf };
-
-// function updateModelByPrimaryKey(model: any, data: any, data: any): Promise<any> {
-//   return model.update(data, {
-//     where: {
-//       [primaryKey]: data[primaryKey],
-//     },
-//   });
-// }
-
-// export { updateModelByPrimaryKey };
