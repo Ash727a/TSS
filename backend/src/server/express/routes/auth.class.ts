@@ -1,15 +1,20 @@
 import { Optional } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
+import { APIResult, SequelizeModel } from '../../../interfaces.js';
 import Route from './Route.class.js';
 
+/** CLASS: auth
+ * @description: This class is responsible for handling all authentication endpoints.
+ * @extends Route
+ */
 class auth extends Route {
-  userModel: any;
-  visionKitModel: any;
-  hmdModel: any;
+  userModel: SequelizeModel;
+  visionKitModel: SequelizeModel;
+  hmdModel: SequelizeModel;
   private static readonly SECRET_KEY = 'admin78$Akt';
 
-  constructor(_userModel: any, _visionKitModel: any, _hmdModel: any) {
+  constructor(_userModel: SequelizeModel, _visionKitModel: SequelizeModel, _hmdModel: SequelizeModel) {
     super();
     this.userModel = _userModel;
     this.visionKitModel = _visionKitModel;
@@ -144,8 +149,9 @@ class auth extends Route {
       };
     }
   ): Promise<any> {
-    if (req.body.hmd === undefined && req.body.vk === undefined) {
-      res.status(400).json({ ok: false, err: 'HMD or VK not specified' });
+    if (req.body.hmd === undefined || req.body.vk === undefined) {
+      const _result: APIResult['ERROR'] = { ok: false, error: 'HMD or VK not specified' };
+      res.status(400).json(_result);
       return;
     }
 
@@ -155,13 +161,15 @@ class auth extends Route {
         hmds = await this.getHMDs();
       } catch (err) {
         console.log(err);
-        res.status(400).json({ ok: false, err: 'Could not get HMDs' });
+        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get HMDs' };
+        res.status(400).json(_result);
         return;
       }
 
       for (const hmdrecord of hmds) {
         if (req.body.hmd === hmdrecord.name) {
-          res.status(200).json({ ok: true, data: hmdrecord });
+          const _result: APIResult['OK'] = { ok: true, data: hmdrecord };
+          res.status(200).json(_result);
           return;
         }
       }
@@ -173,19 +181,22 @@ class auth extends Route {
         vks = await this.getVKs();
       } catch (err) {
         console.log(err);
-        res.status(400).json({ ok: false, err: 'Could not get VKs' });
+        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get VKs' };
+        res.status(400).json(_result);
         return;
       }
 
       for (const vkrecord of vks) {
         if (req.body.vk === vkrecord.name) {
-          res.status(200).json({ ok: true, data: vkrecord });
+          const _result: APIResult['OK'] = { ok: true, data: vkrecord };
+          res.status(200).json(_result);
           return;
         }
       }
     }
 
-    res.status(400).json({ ok: false, err: 'VK or HMD not found' });
+    const _result: APIResult['ERROR'] = { ok: false, error: 'VK or HMD not found' };
+    res.status(400).json(_result);
     return;
   }
 
@@ -200,23 +211,25 @@ class auth extends Route {
     }
   ): Promise<any> {
     if (req.body.hmd === undefined && req.body.vk === undefined) {
-      res.status(400).json({ ok: false, err: 'HMD or VK not specified' });
+      const _result: APIResult['ERROR'] = { ok: false, error: 'HMD or VK not specified' };
+      res.status(400).json(_result);
       return;
     }
 
     if (req.body.secret !== auth.SECRET_KEY) {
-      res.status(400).json({ ok: false, err: 'Unauthorized' });
+      const _result: APIResult['ERROR'] = { ok: false, error: 'Unauthorized' };
+      res.status(400).json(_result);
       return;
     }
 
-    let name;
     if (req.body.hmd) {
       let hmds;
       try {
         hmds = await this.getHMDs();
       } catch (err) {
         console.log(err);
-        res.status(400).json({ ok: false, err: 'Could not get HMDs' });
+        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get HMDs' };
+        res.status(400).json(_result);
         return;
       }
 
@@ -226,7 +239,8 @@ class auth extends Route {
           users = await this.getUsers();
         } catch (err) {
           console.log(err);
-          res.status(400).json({ ok: false, err: 'Could not get Users' });
+          const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
+          res.status(400).json(_result);
           return;
         }
 
@@ -240,7 +254,8 @@ class auth extends Route {
         if (req.body.hmd === hmdrecord.name) {
           hmdrecord.assignment = null;
           await hmdrecord.save();
-          res.status(200).json({ ok: true, data: hmdrecord });
+          const _result: APIResult['OK'] = { ok: true, data: hmdrecord };
+          res.status(200).json(_result);
           return;
         }
       }
@@ -252,7 +267,8 @@ class auth extends Route {
         vks = await this.getVKs();
       } catch (err) {
         console.log(err);
-        res.status(400).json({ ok: false, err: 'Could not get VKs' });
+        const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get VKs' };
+        res.status(400).json(_result);
         return;
       }
 
@@ -263,7 +279,8 @@ class auth extends Route {
             users = await this.getUsers();
           } catch (err) {
             console.log(err);
-            res.status(400).json({ ok: false, err: 'Could not get Users' });
+            const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
+            res.status(400).json(_result);
             return;
           }
 
@@ -277,15 +294,15 @@ class auth extends Route {
           vkrecord.assignment = null;
           await vkrecord.save();
 
-          res.status(200).json({ ok: true, data: vkrecord });
+          const _result: APIResult['OK'] = { ok: true, data: vkrecord };
+          res.status(200).json(_result);
           return;
         }
       }
-
       return;
     }
-
-    res.status(400).json({ ok: false, err: 'Could not release VK or HMD.' });
+    const _result: APIResult['ERROR'] = { ok: false, error: 'VK or HMD not found' };
+    res.status(400).json(_result);
     return;
   }
 
@@ -303,7 +320,8 @@ class auth extends Route {
       (req.body.username === undefined || req.body.username === '') &&
       (req.body.guid === undefined || req.body.guid === '')
     ) {
-      res.status(400).json({ ok: false, err: 'Username or guid is missing or empty' });
+      const _result: APIResult['ERROR'] = { ok: false, error: 'Username or guid is missing or empty' };
+      res.status(400).json(_result);
       return;
     }
 
@@ -312,23 +330,27 @@ class auth extends Route {
       users = await this.getUsers();
     } catch (err) {
       console.log(err);
-      res.status(400).json({ ok: false, err: 'Could not get Users' });
+      const _result: APIResult['ERROR'] = { ok: false, error: 'Could not get Users' };
+      res.status(400).json(_result);
       return;
     }
 
     for (const userRecord of users) {
       if (req.body.guid === userRecord.guid) {
-        res.status(200).json({ ok: false, user: userRecord });
+        const _result: APIResult['OK'] = { ok: true, data: userRecord };
+        res.status(200).json(_result);
         return;
       }
 
       if (req.body.username === userRecord.username) {
-        res.status(200).json({ ok: false, user: userRecord });
+        const _result: APIResult['OK'] = { ok: true, data: userRecord };
+        res.status(200).json(_result);
         return;
       }
     }
 
-    res.status(400).json({ ok: false, err: 'Could not find User' });
+    const _result: APIResult['ERROR'] = { ok: false, error: 'Could not find User' };
+    res.status(400).json(_result);
   }
 }
 

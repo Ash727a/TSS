@@ -1,26 +1,27 @@
 import { Model, Optional } from 'sequelize';
 
 import { primaryKeyOf } from '../../../helpers.js';
+import { APIResult, SequelizeModel } from '../../../interfaces.js';
 import { getIdParam } from '../helpers.js';
 import Route from './Route.class.js';
 
 /** CLASS: ModelRoute
  * @description This class is a generic class for all routes that are based on a model.
- * @param {any} _model - The model that is used for the route.
+ * @param {SequelizeModel} _model - The model that is used for the route.
  * @returns {ModelRoute} - The ModelRoute object.
  */
 class ModelRoute extends Route {
-  public model: any;
-  constructor(_model: any) {
+  public model: SequelizeModel;
+  constructor(_model: SequelizeModel) {
     super();
     this.model = _model;
   }
 
   /**
    * GETTER: model
-   * @returns {any} - The model that is used for the route.
+   * @returns {SequelizeModel} - The model that is used for the route.
    */
-  public getModel(): any {
+  public getModel(): SequelizeModel {
     return this.model;
   }
 

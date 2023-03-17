@@ -1,18 +1,23 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { Express } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { SequelizeModel } from '../../interfaces.js';
 import HasRoomID from './routes/HasRoomID.interface.js';
 import * as routes from './routes/index.js';
 import ModelRoute from './routes/ModelRoute.class.js';
 
+/** CLASS: ExpressApp
+ * @description: The Express app that will be used to serve the API.
+ * @param {{ [key: string]: SequelizeModel }} _models The models to use in the routes.
+ */
 class ExpressApp {
-  public app: any;
-  constructor(_models: any) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+  public app: Express;
+  constructor(_models: { [key: string]: SequelizeModel }) {
+    const __filename: string = fileURLToPath(import.meta.url);
+    const __dirname: string = path.dirname(__filename);
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,8 +29,8 @@ class ExpressApp {
     this.initRoutes(_models);
   }
 
-  private initRoutes(_models: any): void {
-    const routeDictionary = {
+  private initRoutes(_models: { [key: string]: SequelizeModel }): void {
+    const routeDictionary: object = {
       auth: new routes.auth(_models.user, _models.visionKit, _models.hmd),
       roles: new routes.role(_models.role),
       rooms: new routes.room(_models.room),
@@ -94,7 +99,7 @@ class ExpressApp {
 
       // Check if the getByRoomID method exists in this routeController. If so, we define its endpoint.
       if (routeController.getMethods().includes('getByRoomID')) {
-        const hasRoomIDController = routeController as HasRoomID;
+        const hasRoomIDController: HasRoomID = routeController as HasRoomID;
         this.app.get(
           `/api/${routeName}/room/:id`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => hasRoomIDController.getByRoomID(req, res))
@@ -156,7 +161,9 @@ class ExpressApp {
   }
 
   // We create a wrapper to workaround async errors not being transmitted correctly.
-  private makeHandlerAwareOfAsyncErrors(handler: (arg0: any, arg1: any) => any): any {
+  private makeHandlerAwareOfAsyncErrors(
+    handler: (req: any, res: any) => Promise<void>
+  ): (req: any, res: any, next: (arg0: unknown) => void) => Promise<void> {
     return async function (req: any, res: any, next: (arg0: unknown) => void) {
       try {
         await handler(req, res);
@@ -167,5 +174,4 @@ class ExpressApp {
   }
 }
 
-// export default app;
 export default ExpressApp;

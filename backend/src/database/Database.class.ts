@@ -1,7 +1,7 @@
 import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
 
-import { SequelizeModel } from './interfaces.js';
+import { SequelizeModel } from '../interfaces.js';
 
 /** CLASS: Database
  * @initialize_with await Database.build(<filename>, <modelsArray>, <sequelizeConfig>);
@@ -72,11 +72,12 @@ class Database extends Sequelize {
 
   /**
    * Getter method for the models from the Database instance
-   * @returns {[key: string]: SequelizeModel} Object containing the models
+   * @returns {{ [key: string]: SequelizeModel }} Object containing the models
    */
   public getModels(): {
     [key: string]: SequelizeModel;
   } {
+    // Convert array into key value pair object, the name being the model name
     return this.models as { [key: string]: SequelizeModel };
   }
 }

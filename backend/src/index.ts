@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 
+import { liveDatabaseName, logDatabaseName } from './config.js';
 import Database from './database/Database.class.js';
 import sequelize from './database/index.js';
 import { liveModels, logModels } from './database/models/index.js';
@@ -14,8 +15,8 @@ const SOCKET_PORT: number | undefined = process.env.SOCKET_PORT as number | unde
 // We define all models according to their files.
 const liveModelsArray: [] = Object.values(liveModels) as [];
 const logModelsArray: [] = Object.values(logModels) as [];
-const LiveDatabase: Database = await Database.build('suits', liveModelsArray);
-const LogDatabase: Database = await Database.build('logs', logModelsArray);
+const LiveDatabase: Database = await Database.build(liveDatabaseName, liveModelsArray);
+const LogDatabase: Database = await Database.build(logDatabaseName, logModelsArray);
 const express: ExpressApp = new ExpressApp({ ...LiveDatabase.getModels(), ...LogDatabase.getModels() });
 
 // Log the environment variables
