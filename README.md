@@ -30,7 +30,7 @@ npm i
 ```
 5. Run...
 ```
-ng serve
+npm start
 ```
 6. Open in your browser
 ```
