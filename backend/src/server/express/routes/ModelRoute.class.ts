@@ -10,7 +10,7 @@ import Route from './Route.class.js';
  * @returns {ModelRoute} - The ModelRoute object.
  */
 class ModelRoute extends Route {
-  public model: SequelizeModel;
+  public readonly model: SequelizeModel;
   constructor(_model: SequelizeModel) {
     super();
     this.model = _model;

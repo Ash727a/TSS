@@ -12,9 +12,9 @@ import Route from './Route.class.js';
  * @returns {auth} - The auth object.
  */
 class auth extends Route {
-  userModel: SequelizeModel;
-  visionKitModel: SequelizeModel;
-  hmdModel: SequelizeModel;
+  private readonly userModel: SequelizeModel;
+  private readonly visionKitModel: SequelizeModel;
+  private readonly hmdModel: SequelizeModel;
   private static readonly SECRET_KEY = 'admin78$Akt';
 
   constructor(_userModel: SequelizeModel, _visionKitModel: SequelizeModel, _hmdModel: SequelizeModel) {

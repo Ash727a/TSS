@@ -29,7 +29,7 @@ class Database extends Sequelize {
     models: SequelizeModel[],
     sequelizeConfig: object = {}
   ): Promise<Database> {
-    const _db = new Database(_fileName, sequelizeConfig); // Create a new Database instance (itself)
+    const _db: Database = new Database(_fileName, sequelizeConfig); // Create a new Database instance (itself)
     await _db.setModels(models); // Set the models for the new Database instance
     return _db; // Return the new Database instance
   }
@@ -41,10 +41,10 @@ class Database extends Sequelize {
    */
   private constructor(_fileName: string, sequelizeConfig: object = {}) {
     // Configure the path to the database file
-    const appDir = path.resolve(process.cwd());
-    const _dbDirectory = path.join(appDir, 'src', 'database', 'local-sqlite-database');
+    const appDir: string = path.resolve(process.cwd());
+    const _dbDirectory: string = path.join(appDir, 'src', 'database', 'local-sqlite-database');
     _fileName = _fileName + '.sqlite';
-    const _dbPath = path.join(_dbDirectory, _fileName);
+    const _dbPath: string = path.join(_dbDirectory, _fileName);
     // Set up config for new Sequelize instance
     const config = {
       ...Database.DEFAULT_CONFIG,
