@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { primaryKeyOf } from '../helpers.js';
+import { INIT_TELEMETRY_DATA, TelemetryData } from '../interfaces.js';
 import simControlSeed from './seed/simcontrol.js';
 import simFailureSeed from './seed/simfailure.js';
-import simStateSeed from './seed/simstate.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
 
 interface SimulationModels {
@@ -17,18 +17,17 @@ interface SimulationModels {
 }
 
 class EVASimulation {
-  models: SimulationModels;
+  private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
-  simStateID: any = null;
-  simControlID: any = null;
-  simFailureID: any = null;
+  simStateID!: number;
+  simControlID!: number;
+  simFailureID!: number;
   holdID = null;
   lastTimestamp: number | null = null;
   session_log_id: string | null = null;
-  room;
-
+  private readonly room;
   // Data Objects
-  simState: any = {};
+  simState: TelemetryData = INIT_TELEMETRY_DATA;
   simControls: any = {};
   simFailure: any = {};
 
@@ -49,7 +48,7 @@ class EVASimulation {
     // const failure = await models.simulationFailure.findOne({ where: { room: parseInt(this.room) } });
     // Seed the states on start
 
-    await this.models.simulationState.update(simStateSeed, {
+    await this.models.simulationState.update(INIT_TELEMETRY_DATA, {
       where: { [primaryKeyOf(this.models.simulationState)]: parseInt(this.room) },
     });
 
@@ -65,7 +64,7 @@ class EVASimulation {
 
   async start(roomid: any, sessionLogID: any): Promise<void | boolean> {
     console.log('Starting Sim');
-    this.simState = {};
+    this.simState = INIT_TELEMETRY_DATA; // Clear data
     this.simControls = {};
     this.simFailure = {};
 
@@ -105,7 +104,7 @@ class EVASimulation {
       start_time: Date.now(),
     });
 
-    this.simStateID = this.simState[primaryKeyOf(this.models.simulationState)];
+    this.simStateID = Number.parseInt(this.simState[primaryKeyOf(this.models.simulationState)] as string);
     // this.simControlID = this.simControls[primaryKeyOf(this.models.simulationControl)]];
     this.simFailureID = this.simFailure[primaryKeyOf(this.models.simulationFailure)];
 
@@ -247,7 +246,12 @@ class EVASimulation {
       this.simFailure = { ...this.simFailure, ...newSimFailure };
       // this.updateTelemetryErrorLogs();
       // this.updateTelemetryStation();
-      const newSimState = evaTelemetry.simulationStep(dt, this.simControls, this.simFailure, this.simState);
+      const newSimState: TelemetryData = evaTelemetry.simulationStep(
+        dt,
+        this.simControls,
+        this.simFailure,
+        this.simState
+      );
       Object.assign(this.simState, newSimState);
       // await simState.save()
       await this.models.simulationState

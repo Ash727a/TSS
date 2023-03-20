@@ -1,7 +1,7 @@
 function simulationStepUIA(dt: any, uiaControls: { depress_pump?: any; O2_vent?: any }, uiaOldSimState: any): any {
-  // const cap_battery = batteryStep(dt, controls, oldSimState).cap_battery
-  // const t_battery = batteryStep(dt, controls, oldSimState).t_battery
-  // const battery_out = batteryStep(dt, controls, oldSimState).battery_out
+  // const battery_capacity = batteryStep(dt, controls, oldSimState).battery_capacity
+  // const battery_time_left = batteryStep(dt, controls, oldSimState).battery_time_left
+  // const battery_output = batteryStep(dt, controls, oldSimState).battery_output
   //const emu1 = emuOnOff(dt, uiaControls, uiaOldSimState).onOff1
   //const emu2 = emuOnOff(dt, uiaControls, uiaOldSimState).onOff2
   //if (uiaControls.emu_on_off === true)

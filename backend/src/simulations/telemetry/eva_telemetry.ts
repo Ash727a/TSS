@@ -1,34 +1,41 @@
-function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any, oldSimState: any): any {
-  const battery_percent = batteryStep(dt, controls, oldSimState).battery_percent;
-  const t_battery = batteryStep(dt, controls, oldSimState).t_battery;
-  const battery_out = batteryStep(dt, controls, oldSimState).battery_out;
+import { TelemetryData } from '../../interfaces.js';
 
-  return {
-    time: missionTimer(dt, controls, oldSimState).time,
-    timer: missionTimer(dt, controls, oldSimState).timer,
-    heart_bpm: heartBeat(dt, controls, failure, oldSimState),
-    p_sub: pressureSUB(),
-    p_suit: pressureSuit(dt, controls, failure, oldSimState),
-    t_sub: tempSub(),
-    v_fan: velocFan(dt, controls, failure, oldSimState),
-    p_o2: pressureOxygen(dt, controls, failure, oldSimState),
-    rate_o2: rateOxygen(dt, controls, failure, oldSimState),
-    cap_battery: capacityBattery(dt, controls, failure, oldSimState),
-    battery_percent,
-    battery_out,
-    t_battery,
-    p_h2o_g: pressureWaterGas(),
-    p_h2o_l: pressureWaterLiquid(),
-    p_sop: pressureSOP(),
-    rate_sop: rateSOP(),
-    t_oxygenPrimary: oxygenLife(dt, controls, oldSimState).t_oxygenPrimary,
-    t_oxygenSec: oxygenLife(dt, controls, oldSimState).t_oxygenSecondary,
-    ox_primary: oxygenLife(dt, controls, oldSimState).oxPrimar_out,
-    ox_secondary: oxygenLife(dt, controls, oldSimState).oxSecondary_out,
-    t_oxygen: oxygenLife(dt, controls, oldSimState).o2_time,
-    cap_water: waterLife(dt, controls, oldSimState).cap_water,
-    t_water: waterLife(dt, controls, oldSimState).t_water,
+function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any, oldSimState: any): TelemetryData {
+  const battery_percentage = batteryStep(dt, controls, oldSimState).battery_percentage;
+  const battery_time_left = batteryStep(dt, controls, oldSimState).battery_time_left;
+  const battery_output = batteryStep(dt, controls, oldSimState).battery_output;
+  const returnSim: TelemetryData = {
+    room_id: oldSimState.room_id,
+    is_running: oldSimState.is_running,
+    is_paused: oldSimState.is_paused,
+    time: missionTimer(dt, oldSimState).time,
+    timer: missionTimer(dt, oldSimState).timer,
+    heart_rate: heartBeat(dt, controls, failure, oldSimState),
+    suit_pressure: pressureSuit(dt, controls, failure, oldSimState),
+    sub_pressure: pressureSUB(),
+    o2_pressure: pressureOxygen(dt, controls, failure, oldSimState),
+    o2_rate: rateOxygen(dt, controls, failure, oldSimState),
+    h2o_gas_pressure: pressureWaterGas(),
+    h2o_liquid_pressure: pressureWaterLiquid(),
+    sop_pressure: pressureSOP(),
+    sop_rate: rateSOP(),
+    fan_tachometer: velocFan(dt, controls, failure, oldSimState),
+    battery_capacity: capacityBattery(dt, controls, failure, oldSimState),
+    battery_percentage: battery_percentage,
+    battery_outputput: battery_output,
+    temperature: tempSub(),
+    battery_time_left: batteryStep(dt, controls, oldSimState).battery_time_left,
+    o2_time_left: oxygenLife(dt, controls, oldSimState).o2_time,
+    h2o_time_left: waterLife(dt, controls, oldSimState).h2o_time_left,
+    oxygen_primary_time: oxygenLife(dt, controls, oldSimState).oxygen_primary_time,
+    oxygen_secondary_time: oxygenLife(dt, controls, oldSimState).oxygen_secondary_timeondary,
+    water_capacity: waterLife(dt, controls, oldSimState).water_capacity,
+    primary_oxygen: oxygenLife(dt, controls, oldSimState).oxPrimar_out,
+    secondary_oxygen: oxygenLife(dt, controls, oldSimState).oxSecondary_out,
+    started_at: oldSimState.started_at,
   };
+
+  return returnSim;
 
   function padValues(n: string | number | any[], width: number, z = '0'): string {
     n = n.toString();
@@ -45,22 +52,22 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
     return time;
   }
 
-  function missionTimer(dt: number, controls: { suit_power: boolean }, oldSimState: { time: number }): any {
+  function missionTimer(dt: number, oldSimState: any): any {
     const time = oldSimState.time + dt / 1000;
     const timer = secondsToHms(time);
     return { timer, time };
   }
 
-  function batteryStep(dt: number, controls: { suit_power: any }, oldSimState: { battery_percent: string }): any {
+  function batteryStep(dt: number, controls: { suit_power: any }, oldSimState: any): any {
     const drainRate = 100 / (4 * 60 * 60); // 4 hours of life (%/s)
-    let battery_percent = Number.parseFloat(oldSimState.battery_percent);
+    let battery_percentage = Number.parseFloat(oldSimState.battery_percentage);
     const amountDrained = drainRate * (dt / 1000); // %
-    const t_battery = secondsToHms(battery_percent / drainRate); // s
-    const battery_out = Math.floor(battery_percent);
+    const battery_time_left = secondsToHms(battery_percentage / drainRate); // s
+    const battery_output = Math.floor(battery_percentage);
     if (controls.suit_power === false) {
-      battery_percent = battery_percent - amountDrained; // %
+      battery_percentage = battery_percentage - amountDrained; // %
     }
-    return { battery_percent, t_battery, battery_out };
+    return { battery_percentage, battery_time_left, battery_output };
   }
 
   function capacityBattery(
@@ -68,7 +75,7 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
     control: { suit_power: any },
     fail: { power_error: any },
     oldSimState: any
-  ): string {
+  ): number {
     let batt_max = 0;
     let batt_min = 0;
 
@@ -79,68 +86,63 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
       batt_max = 45;
       batt_min = 60;
     }
-    const cap_battery = Math.random() * (batt_max - batt_min) + batt_min;
-    return cap_battery.toFixed(0);
+    const battery_capacity = Math.random() * (batt_max - batt_min) + batt_min;
+    return round(battery_capacity, 0);
   }
 
   function oxygenLife(
     dt: number,
     controls: { suit_power?: boolean; O2_switch?: any },
-    oldSimState: { t_oxygenPrimary: any; t_oxygenSec: any }
+    oldSimState: { oxygen_primary_time: any; oxygen_secondary_time: any }
   ): any {
     const ox_drainRate = 100 / (3 * 60 * 60); // 3 hours of life (%/s)
 
     const amountDrained = ox_drainRate * (dt / 1000); // %
-    let t_oxygenPrimary = oldSimState.t_oxygenPrimary;
-    let t_oxygenSecondary = oldSimState.t_oxygenSec;
+    let oxygen_primary_time = oldSimState.oxygen_primary_time;
+    let oxygen_secondary_timeondary = oldSimState.oxygen_secondary_time;
 
     if (controls.O2_switch === false) {
-      t_oxygenPrimary = t_oxygenPrimary - amountDrained; // %
-    } else t_oxygenSecondary = t_oxygenSecondary - amountDrained;
+      oxygen_primary_time = oxygen_primary_time - amountDrained; // %
+    } else oxygen_secondary_timeondary = oxygen_secondary_timeondary - amountDrained;
 
-    if (controls.O2_switch && t_oxygenPrimary <= 0) {
-      t_oxygenPrimary = 0;
-      t_oxygenSecondary = t_oxygenSecondary - amountDrained; // %
+    if (controls.O2_switch && oxygen_primary_time <= 0) {
+      oxygen_primary_time = 0;
+      oxygen_secondary_timeondary = oxygen_secondary_timeondary - amountDrained; // %
     }
-    if (t_oxygenSecondary <= 0) {
-      t_oxygenSecondary = 0;
+    if (oxygen_secondary_timeondary <= 0) {
+      oxygen_secondary_timeondary = 0;
     }
 
-    const o2_time = secondsToHms(t_oxygenPrimary / ox_drainRate + t_oxygenSecondary / ox_drainRate);
-    const oxPrimar_out = Math.floor(t_oxygenPrimary);
-    const oxSecondary_out = Math.floor(t_oxygenSecondary);
+    const o2_time = secondsToHms(oxygen_primary_time / ox_drainRate + oxygen_secondary_timeondary / ox_drainRate);
+    const oxPrimar_out = Math.floor(oxygen_primary_time);
+    const oxSecondary_out = Math.floor(oxygen_secondary_timeondary);
 
     return {
-      t_oxygenPrimary,
-      t_oxygenSecondary,
+      oxygen_primary_time,
+      oxygen_secondary_timeondary,
       oxPrimar_out,
       oxSecondary_out,
       o2_time,
     };
   }
 
-  function waterLife(dt: number, controls: { suit_power: boolean }, oldSimState: { cap_water: string }): any {
+  function waterLife(dt: number, controls: { suit_power: boolean }, oldSimState: { water_capacity: string }): any {
     const drainRate = 100 / (5.5 * 60 * 60); // 5.5 hours of life (%/s)
-    let cap_water = Number.parseFloat(oldSimState.cap_water);
+    let water_capacity = Number.parseFloat(oldSimState.water_capacity);
     const amountDrained = drainRate * (dt / 1000); // %
-    const t_water = secondsToHms(cap_water / drainRate); // s
-    cap_water = cap_water - amountDrained; // %
+    const h2o_time_left = secondsToHms(water_capacity / drainRate); // s
+    water_capacity = water_capacity - amountDrained; // %
 
-    return { cap_water, t_water };
+    return { water_capacity, h2o_time_left };
   }
 
-  function heartBeat(
-    dt: any,
-    controls: { suit_power?: boolean; fan_switch?: any },
-    failure: { fan_error: boolean },
-    oldSimState: { heart_bpm: string }
-  ): any {
+  function heartBeat(dt: any, controls: any, failure: any, oldSimState: any): number {
     let hr_max = 0;
     let hr_min = 0;
     // console.log(failure.fan_error, controls.fan_switch);
     if (failure.fan_error === true && !controls.fan_switch) {
-      hr_max = Number.parseFloat(oldSimState.heart_bpm) + 2;
-      hr_min = Number.parseFloat(oldSimState.heart_bpm);
+      hr_max = Number.parseFloat(oldSimState.heart_rate) + 2;
+      hr_min = Number.parseFloat(oldSimState.heart_rate);
       // **NOTE: Changed from === 120 to >= 120 to prevent overrun
       if (hr_max >= 120) {
         hr_max = 120;
@@ -151,55 +153,54 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
       hr_min = 85;
     }
 
-    const heart_bpm = Math.random() * (hr_max - hr_min) + hr_min;
-    const hr_mean = (Number.parseFloat(oldSimState.heart_bpm) + heart_bpm) / 2;
-    const avg_hr = (heart_bpm + hr_max + hr_mean + hr_min) / 4;
-
-    return avg_hr.toFixed(0);
+    const heart_rate = Math.random() * (hr_max - hr_min) + hr_min;
+    const hr_mean = (Number.parseFloat(oldSimState.heart_rate) + heart_rate) / 2;
+    const avg_hr = (heart_rate + hr_max + hr_mean + hr_min) / 4;
+    return round(avg_hr, 0);
   }
 
-  function pressureSUB(): string {
-    const p_sub_max = 4;
-    const p_sub_min = 3.85;
-    const p_sub = Math.random() * (p_sub_max - p_sub_min) + p_sub_min;
-    return p_sub.toFixed(2);
+  function pressureSUB(): number {
+    const sub_pressure_max = 4;
+    const sub_pressure_min = 3.85;
+    const sub_pressure = Math.random() * (sub_pressure_max - sub_pressure_min) + sub_pressure_min;
+    return round(sub_pressure);
   }
 
-  function pressureSuit(
-    dt: any,
-    controls: { suit_power?: boolean; pump?: any },
-    failure: { pump_error: any },
-    oldSimState: any
-  ): any {
-    let p_suit_max = 0;
-    let p_suit_min = 0;
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  function round(num: number, round: number = 2): number {
+    return parseFloat(num.toFixed(round));
+  }
+
+  function pressureSuit(dt: any, controls: any, failure: any, oldSimState: any): number {
+    let suit_pressure_max = 0;
+    let suit_pressure_min = 0;
     // console.log("PSUIT " + failure.pump_error + " " + controls.pump);
     if (failure.pump_error && !controls.pump) {
-      p_suit_max = 2.5;
-      p_suit_min = 1.75;
+      suit_pressure_max = 2.5;
+      suit_pressure_min = 1.75;
     } else {
-      p_suit_max = 4.0;
-      p_suit_min = 3.92;
+      suit_pressure_max = 4.0;
+      suit_pressure_min = 3.92;
     }
-    const p_suit = Math.random() * (p_suit_max - p_suit_min) + p_suit_min;
-    return p_suit.toFixed(2);
+    const suit_pressure = Math.random() * (suit_pressure_max - suit_pressure_min) + suit_pressure_min;
+    return round(suit_pressure);
   }
 
-  function tempSub(): string {
-    const t_sub_max = 32;
-    const t_sub_min = 31.5;
-    const t_sub = Math.random() * (t_sub_max - t_sub_min) + t_sub_min;
-    const t_sub_avg = (t_sub_max + t_sub_min + t_sub) / 3;
-    return t_sub_avg.toFixed(1);
+  function tempSub(): number {
+    const temperature_max = 32;
+    const temperature_min = 31.5;
+    const temperature = Math.random() * (temperature_max - temperature_min) + temperature_min;
+    const temperature_avg = (temperature_max + temperature_min + temperature) / 3;
+    return round(temperature_avg, 1);
   }
 
   function velocFan(
     dt: any,
     controls: { suit_power?: boolean; fan_switch?: any },
     failure: { fan_error: boolean },
-    oldSimState: { v_fan: string }
-  ): any {
-    let v_fan = Number.parseFloat(oldSimState.v_fan);
+    oldSimState: { fan_tachometer: string }
+  ): number {
+    let fan_tachometer = Number.parseFloat(oldSimState.fan_tachometer);
     let fan_max = 0;
     let fan_min = 0;
     if (failure.fan_error === true && controls.fan_switch === false) {
@@ -210,36 +211,36 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
       fan_min = 39900.0;
     }
     // else if (fan_switch === false ){
-    // 	v_fan = 0
+    // 	fan_tachometer = 0
     // }
-    //return (v_fan/1000).toFixed(2)
-    v_fan = Math.random() * (fan_max - fan_min) + fan_min;
-    return v_fan.toFixed(0);
+    //return round((fan_tachometer/1000), 2);
+    fan_tachometer = Math.random() * (fan_max - fan_min) + fan_min;
+    return round(fan_tachometer, 0);
   }
 
   function pressureOxygen(
     dt: any,
     controls: { suit_power: boolean },
     failure: { o2_error: boolean },
-    oldSimState: { p_o2: string }
-  ): any {
-    let p_o2 = Number.parseFloat(oldSimState.p_o2);
+    oldSimState: { o2_pressure: string }
+  ): number {
+    let o2_pressure = Number.parseFloat(oldSimState.o2_pressure);
     const oxPressure_max = 780;
     const oxPressure_min = 778;
     if (failure.o2_error === false) {
       // Regular state
-      p_o2 = Math.random() * (oxPressure_max - oxPressure_min) + oxPressure_min;
+      o2_pressure = Math.random() * (oxPressure_max - oxPressure_min) + oxPressure_min;
       // } else if (failure.o2_error === true && !controls.o2_switch) // For DCU
     } else if (failure.o2_error === true) {
       // Gradually decrease if the error is on
       const random = Math.random() * 10 + 1;
-      p_o2 -= random;
+      o2_pressure -= random;
       // Bottom bound the o2 pressure to 0
-      if (p_o2 < 0) {
-        p_o2 = 0;
+      if (o2_pressure < 0) {
+        o2_pressure = 0;
       }
     }
-    return p_o2.toFixed(2);
+    return round(o2_pressure);
   }
 
   function rateOxygen(
@@ -247,7 +248,7 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
     controls: { suit_power?: boolean; o2_switch?: any },
     failure: { o2_error: boolean },
     oldSimState: any
-  ): any {
+  ): number {
     let oxRate_max = 0;
     let oxRate_min = 0;
     if (failure.o2_error == true && !controls.o2_switch) {
@@ -257,37 +258,37 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
       oxRate_max = 1;
       oxRate_min = 0.5;
     }
-    const rate_o2 = Math.random() * (oxRate_max - oxRate_min) + oxRate_min;
-    return rate_o2.toFixed(2);
+    const o2_rate = Math.random() * (oxRate_max - oxRate_min) + oxRate_min;
+    return round(o2_rate);
   }
 
-  function pressureWaterGas(): string {
+  function pressureWaterGas(): number {
     const gasPressure_max = 16;
     const gasPressure_min = 14;
-    const p_h2o_g = Math.random() * (gasPressure_max - gasPressure_min) + gasPressure_min;
-    return p_h2o_g.toFixed(2);
+    const h2o_gas_pressure = Math.random() * (gasPressure_max - gasPressure_min) + gasPressure_min;
+    return round(h2o_gas_pressure);
   }
 
-  function pressureWaterLiquid(): string {
+  function pressureWaterLiquid(): number {
     const waterPressure_max = 14;
     const waterPressure_min = 16;
-    const p_h2o_l = Math.random() * (waterPressure_max - waterPressure_min) + waterPressure_min;
-    return p_h2o_l.toFixed(2);
+    const h2o_liquid_pressure = Math.random() * (waterPressure_max - waterPressure_min) + waterPressure_min;
+    return round(h2o_liquid_pressure);
   }
 
-  function pressureSOP(): string {
+  function pressureSOP(): number {
     const sopPressure_max = 850;
     const sopPressure_min = 910;
-    const p_sop = Math.random() * (sopPressure_max - sopPressure_min) + sopPressure_min;
-    const p_sop_avg = (sopPressure_max + sopPressure_min + p_sop) / 3;
-    return p_sop_avg.toFixed(0);
+    const sop_pressure = Math.random() * (sopPressure_max - sopPressure_min) + sopPressure_min;
+    const sop_pressure_avg = (sopPressure_max + sopPressure_min + sop_pressure) / 3;
+    return round(sop_pressure_avg, 0);
   }
 
-  function rateSOP(): string {
+  function rateSOP(): number {
     const sopRate_max = 1;
     const sopRate_min = 0.6;
-    const rate_sop = Math.random() * (sopRate_max - sopRate_min) + sopRate_min;
-    return rate_sop.toFixed(1);
+    const sop_rate = Math.random() * (sopRate_max - sopRate_min) + sopRate_min;
+    return round(sop_rate, 1);
   }
 }
 

@@ -18,28 +18,28 @@ import {
  * @column time: Current simulation time
  * @column timer: Current simulation timer
  * @column started_at: Current simulation start time
- * @column heart_bpm: Current heart BPM
- * @column p_sub: Current P_sub
- * @column p_suit: Current P_suit
- * @column t_sub: Current T_sub
- * @column v_fan: Current V_fan
- * @column p_o2: Current P_o2
- * @column rate_o2: Current rate_o2
- * @column battery_percent: Current battery percent
- * @column cap_battery: Current battery capacity
- * @column battery_out: Current battery output
- * @column p_h2o_g: Current P_h2o_g
- * @column p_h2o_l: Current P_h2o_l
- * @column p_sop: Current P_sop
- * @column rate_sop: Current rate_sop
- * @column t_battery: Current battery time
- * @column t_oxygenPrimary: Current oxygen primary time
- * @column t_oxygenSec: Current oxygen secondary time
- * @column ox_primary: Current oxygen primary
- * @column ox_secondary: Current oxygen secondary
- * @column t_oxygen: Current oxygen time
- * @column cap_water: Current water capacity
- * @column t_water: Current water time
+ * @column primary_oxygen: Oxygen primary
+ * @column secondary_oxygen: Oxygen secondary
+ * @column suit_pressure: Suit pressure
+ * @column sub_pressure: Sub pressure
+ * @column o2_pressure: O2 pressure
+ * @column o2_rate: O2 rate
+ * @column h2o_gas_pressure: H2O gas pressure
+ * @column h2o_liquid_pressure: H2O liquid pressure
+ * @column sop_pressure: SOP pressure
+ * @column sop_rate: SOP rate
+ * @column heart_rate: Heart rate
+ * @column fan_tachometer: Fan tachometer
+ * @column battery_capacity: Battery capacity
+ * @column temperature: Temperature
+ * @column battery_time_left: Battery time left
+ * @column o2_time_left: O2 time left
+ * @column h2o_time_left: H2O time left
+ * @column battery_percentage: Battery percentage
+ * @column battery_outputput: Battery output
+ * @column oxygen_primary_time: Oxygen primary time
+ * @column oxygen_secondary_time: Oxygen secondary time
+ * @column water_capacity: Water capacity
  */
 
 // We export a function that defines the model.
@@ -83,135 +83,135 @@ export default class simulationState extends Model {
   @Column(DataType.STRING)
   declare started_at: string;
 
-  // Current heart BPM
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare heart_bpm: number;
-
-  // Current pressure in suit
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_sub: number;
-
-  // Current pressure in suit
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_suit: number;
-
-  // Current temperature in suit
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare t_sub: number;
-
-  // Current fan speed
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare v_fan: number;
-
-  // Current O2 pressure
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_o2: number;
-
-  // Current O2 rate
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare rate_o2: number;
-
-  // Current battery percentage
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare battery_percent: number;
-
-  // Current battery capacity
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare cap_battery: number;
-
-  // Current battery output
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare battery_out: number;
-
-  // Current H2O pressure in gas tank
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_h2o_g: number;
-
-  // Current H2O pressure in liquid tank
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_h2o_l: number;
-
-  // Current SOP pressure
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare p_sop: number;
-
-  // Current SOP rate
-  @AllowNull(false)
-  @Default(0)
-  @Column(DataType.NUMBER)
-  declare rate_sop: number;
-
-  // Current battery time
-  @AllowNull(false)
-  @Default('00:00:00')
-  @Column(DataType.STRING)
-  declare t_battery: string;
-
-  // Oxygen primary time
-  @AllowNull(false)
-  @Default(100)
-  @Column(DataType.NUMBER)
-  declare t_oxygenPrimary: number;
-
-  // Oxygen secondary time
-  @AllowNull(false)
-  @Default(100)
-  @Column(DataType.NUMBER)
-  declare t_oxygenSec: number;
-
   // Oxygen primary
   @AllowNull(false)
   @Default(100)
   @Column(DataType.NUMBER)
-  declare ox_primary: number;
+  declare primary_oxygen: number;
 
   // Oxygen secondary
   @AllowNull(false)
   @Default(100)
   @Column(DataType.NUMBER)
-  declare ox_secondary: number;
+  declare secondary_oxygen: number;
 
-  // Oxygen time
+  // Current pressure in suit
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare suit_pressure: number;
+
+  // Current pressure in sub
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare sub_pressure: number;
+
+  // Current O2 pressure
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare o2_pressure: number;
+
+  // Current O2 rate
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare o2_rate: number;
+
+  // Current H2O pressure in gas tank
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare h2o_gas_pressure: number;
+
+  // Current H2O pressure in liquid tank
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare h2o_liquid_pressure: number;
+
+  // Current SOP pressure
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare sop_pressure: number;
+
+  // Current SOP rate
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare sop_rate: number;
+
+  // Current heart rate (BPM)
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare heart_rate: number;
+
+  // Current fan tachometer speed
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare fan_tachometer: number;
+
+  // Current battery capacity
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare battery_capacity: number;
+
+  // Current temperature in suit
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare temperature: number;
+
+  // Current battery time left
   @AllowNull(false)
   @Default('00:00:00')
   @Column(DataType.STRING)
-  declare t_oxygen: string;
+  declare battery_time_left: string;
+
+  // Current oxygen time left
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare o2_time_left: string;
+
+  // Current water time left
+  @AllowNull(false)
+  @Default('00:00:00')
+  @Column(DataType.STRING)
+  declare h2o_time_left: string;
+
+  // Current battery percentage
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare battery_percentage: number;
+
+  // Current battery output
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  declare battery_outputput: number;
+
+  // Oxygen primary time
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare oxygen_primary_time: number;
+
+  // Oxygen secondary time
+  @AllowNull(false)
+  @Default(100)
+  @Column(DataType.NUMBER)
+  declare oxygen_secondary_time: number;
 
   // Water capacity
   @AllowNull(false)
   @Default('00:00:00')
   @Column(DataType.STRING)
-  declare cap_water: string;
-
-  // Water time
-  @AllowNull(false)
-  @Default('00:00:00')
-  @Column(DataType.STRING)
-  declare t_water: string;
+  declare water_capacity: string;
 }
