@@ -5,11 +5,12 @@ import { Op } from 'sequelize';
 import WebSocket, { Server } from 'ws';
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';
-import User from './events/connect.js';
+import User from './events/user.class.js';
 import Parser from './events/parser.js';
 import { SequelizeModel } from '../../interfaces.js';
 import { SocketMsg, MsgBlob, CrewmemberMsgBlob, IMUMsgBlob, GPSMsgBlob, UnknownMsgBlob } from './socket_interfaces.js';
 import { SocketAddress } from 'net';
+import { IAllModels } from '../../database/models/index.js';
 
 const models = sequelize.models;
 
@@ -30,7 +31,7 @@ export class TSSSocketServer {
   readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
   readonly _wss: WebSocket.Server;
 
-  constructor(_models: { [key: string]: SequelizeModel }) {
+  constructor(_models: IAllModels) {
     this._server = http.createServer();
     this._wss = new WebSocket.Server({
       server: this._server,
