@@ -68,7 +68,7 @@ export default class simulationState extends Model {
   // Current simulation time
   @AllowNull(false)
   @Default(0)
-  @Column(DataType.NUMBER)
+  @Column(DataType.INTEGER)
   declare time: number;
 
   // Current simulation timer
