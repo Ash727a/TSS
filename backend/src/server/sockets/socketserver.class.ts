@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
-import WebSocket, { Server } from 'ws';
+import WebSocket, { Server, WebSocketServer } from 'ws';
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';
 import User from './events/user.class.js';
@@ -20,7 +20,7 @@ dotenv.config({ path: envPath });
 const SOCKET_PORT = process.env.SOCKET_PORT;
 const API_URL = `${process.env.API_URL as string}:${process.env.API_PORT as number | undefined}`;
 const server = http.createServer();
-const wss = new WebSocket.Server({ server });
+// const wss = new WebSocket.Server({ server });
 const STOP_SIM_URL = `${API_URL}/api/simulationControl/sim/`;
 const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 
@@ -37,8 +37,10 @@ export class TSSSocketServer {
       server: this._server,
     });
 
-    wss.on('connection', (ws: WebSocket.WebSocket & { roomId: number }, req) => {
+    this._wss.on('connection', (ws: WebSocket.WebSocket, req) => {
       console.log(`*** USER CONNECTED ***`);
+
+      let session_room_id: number;
 
       ws.on('message', async (data) => {
         console.log(`** MESSAGE RECEIVED **`);
@@ -71,7 +73,7 @@ export class TSSSocketServer {
 
           // Add the client to the room
           if (!duplicate) {
-            ws.roomId = room_id;
+            session_room_id = room_id;
             setInterval(() => sendData(), HMD_UPDATE_INTERVAL);
           } else {
             ws.send('Connection failed, duplicate sign on attempt.');
@@ -97,7 +99,7 @@ export class TSSSocketServer {
       //setInterval(async function() {
       async function sendData(): Promise<void> {
         try {
-          const room_id = ws.roomId;
+          const room_id = session_room_id;
           const sim_state_res = await _models.simulationState.findOne({
             where: { [primaryKeyOf(_models.simulationState)]: room_id },
           });
@@ -128,11 +130,11 @@ export class TSSSocketServer {
 
       ws.on('close', async () => {
         console.log(`*** USER DISCONNECTED ***`);
-        if (ws.roomId) {
+        if (session_room_id) {
           // stop sim s
-          http.get(STOP_SIM_URL + `${ws.roomId}/stop`);
+          http.get(STOP_SIM_URL + `${session_room_id}/stop`);
           // remove the client from the assigned room
-          const room: any = await _models.room.findOne({ where: { [primaryKeyOf(_models.room)]: ws.roomId } });
+          const room: any = await _models.room.findOne({ where: { [primaryKeyOf(_models.room)]: session_room_id } });
           room.client_id = null;
           await room.save();
           console.log(`Client removed from room ${room.name}`);
@@ -171,3 +173,10 @@ process.on('SIGINT', () => {
 server.listen(SOCKET_PORT, () => {
   console.log(`SUITS Socket Server listening on: ${SOCKET_PORT}`);
 });
+
+class d extends WebSocketServer {
+  constructor() {
+    super();
+    this.on('connection');
+  }
+}
