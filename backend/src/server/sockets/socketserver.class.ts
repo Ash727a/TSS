@@ -8,7 +8,8 @@ import { primaryKeyOf } from '../../helpers.js';
 import User from './events/connect.js';
 import Parser from './events/parser.js';
 import { SequelizeModel } from '../../interfaces.js';
-import { SocketData } from './socket_interfaces.js';
+import { SocketMsg, MsgBlob, CrewmemberMsgBlob, IMUMsgBlob, GPSMsgBlob, UnknownMsgBlob } from './socket_interfaces.js';
+import { SocketAddress } from 'net';
 
 const models = sequelize.models;
 
@@ -32,7 +33,7 @@ export class TSSSocketServer {
   constructor(_models: { [key: string]: SequelizeModel }) {
     this._server = http.createServer();
     this._wss = new WebSocket.Server({
-      server: this._server
+      server: this._server,
     });
 
     wss.on('connection', (ws: WebSocket.WebSocket & { roomId: number }, req) => {
@@ -41,7 +42,7 @@ export class TSSSocketServer {
       ws.on('message', async (data) => {
         console.log(`** MESSAGE RECEIVED **`);
 
-        const parsedMsg = JSON.parse(data.toString('utf-8')) as SocketData;
+        const parsedMsg = JSON.parse(data.toString('utf-8')) as SocketMsg<MsgBlob>;
         // console.log(data);
         // const msgtype = parsedMsg.MSGTYPE;
         // const header = parsedMsg.BLOB;
@@ -50,20 +51,21 @@ export class TSSSocketServer {
 
         //Client messages are always DATA
         if (parsedMsg.MSGTYPE !== 'DATA') {
-          console.log(parsedMsg.BLOB.DATA);
+          console.log(`MSGTYPE !== 'DATA' in:\n${parsedMsg}`);
           ws.send(JSON.stringify({ ERR: "MSGTYPE isn't DATA" }));
           return;
         }
 
         if (parsedMsg.BLOB.DATATYPE == 'CREWMEMBER') {
-          const room_id = parsedMsg.BLOB.DATA.room_id;
-          const username = parsedMsg.BLOB.DATA.username;
-          const client_id = parsedMsg.BLOB.DATA.client_id;
+          const crewMemberMsg = parsedMsg as SocketMsg<CrewmemberMsgBlob>;
+          const room_id = crewMemberMsg.BLOB.DATA.room_id;
+          const username = crewMemberMsg.BLOB.DATA.username;
+          const client_id = crewMemberMsg.BLOB.DATA.client_id;
 
           const user = new User(username, client_id, room_id);
           if (user) {
             // Register the user in the database and assign them to room
-            duplicate = await user.registerUser(parsedMsg.BLOB.DATA, _models);
+            duplicate = await user.registerUser(crewMemberMsg.BLOB.DATA, _models);
           }
 
           // Add the client to the room
@@ -78,13 +80,16 @@ export class TSSSocketServer {
         }
 
         if (parsedMsg.BLOB.DATATYPE == 'IMU') {
-          console.log(parsedMsg.BLOB.DATA);
-          parser.parseMessageIMU(parsedMsg.BLOB.DATA, _models);
+          const imuMsg = parsedMsg as SocketMsg<IMUMsgBlob>;
+          console.log(imuMsg.BLOB.DATA);
+          parser.parseMessageIMU(imuMsg.BLOB.DATA, _models);
         }
 
         if (parsedMsg.BLOB.DATATYPE == 'GPS') {
-          console.log(parsedMsg.BLOB.DATA);
-          parser.parseMessageGPS(parsedMsg.BLOB.DATA, _models);
+          const gpsMsg = parsedMsg as SocketMsg<GPSMsgBlob>;
+
+          console.log(gpsMsg.BLOB.DATA);
+          parser.parseMessageGPS(gpsMsg.BLOB.DATA, _models);
         }
       });
 
