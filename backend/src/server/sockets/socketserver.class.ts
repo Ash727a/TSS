@@ -173,10 +173,3 @@ process.on('SIGINT', () => {
 server.listen(SOCKET_PORT, () => {
   console.log(`SUITS Socket Server listening on: ${SOCKET_PORT}`);
 });
-
-class d extends WebSocketServer {
-  constructor() {
-    super();
-    this.on('connection');
-  }
-}
