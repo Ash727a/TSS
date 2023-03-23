@@ -26,8 +26,8 @@ import {
  * @column o2_rate: O2 rate
  * @column h2o_gas_pressure: H2O gas pressure
  * @column h2o_liquid_pressure: H2O liquid pressure
- * @column sop_pressure: SOP pressure
- * @column sop_rate: SOP rate
+ * @column sop_pressure: SOP (Secondary Oxygen Pack) pressure
+ * @column sop_rate: SOP (Secondary Oxygen Pack) rate
  * @column heart_rate: Heart rate
  * @column fan_tachometer: Fan tachometer
  * @column battery_capacity: Battery capacity
@@ -131,13 +131,13 @@ export default class simulationState extends Model {
   @Column(DataType.NUMBER)
   declare h2o_liquid_pressure: number;
 
-  // Current SOP pressure
+  // Current SOP (Secondary Oxygen Pack) pressure
   @AllowNull(false)
   @Default(0)
   @Column(DataType.NUMBER)
   declare sop_pressure: number;
 
-  // Current SOP rate
+  // Current SOP (Secondary Oxygen Pack) rate
   @AllowNull(false)
   @Default(0)
   @Column(DataType.NUMBER)
