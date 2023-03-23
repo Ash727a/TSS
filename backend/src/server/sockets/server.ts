@@ -3,11 +3,9 @@ import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
 import WebSocket, { Server } from 'ws';
-
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';
-import User from './events/connect.js';
-import Event from './events/event.js';
+import User from './events/user.class.js';
 import Parser from './events/parser.js';
 
 const models = sequelize.models;

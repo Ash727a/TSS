@@ -11,7 +11,7 @@ import * as telemetry from './telemetry/index.js';
  * @category models
  */
 
-export default {
+const allModels = {
   ...logging.default,
   role,
   room,
@@ -19,6 +19,8 @@ export default {
   ...teams.default,
   ...telemetry.default,
 };
+export default allModels;
+export type IAllModels = typeof allModels;
 
 /** EXPORT MODULE: liveModels
  * @fileoverview Exports all live TSS models in the models directory.
@@ -32,6 +34,7 @@ export const liveModels = {
   ...teams.default,
   ...telemetry.default,
 };
+export type ILiveModels = typeof liveModels;
 
 /** EXPORT MODULE: logModels
  * @fileoverview Exports all log TSS models in the models directory.
@@ -40,3 +43,4 @@ export const liveModels = {
 export const logModels = {
   ...logging.default,
 };
+export type ILogModels = typeof liveModels;

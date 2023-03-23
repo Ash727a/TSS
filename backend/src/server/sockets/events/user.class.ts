@@ -1,4 +1,8 @@
 import { primaryKeyOf } from '../../../helpers.js';
+import { CrewmemberMsgBlob } from '../socket_interfaces.js';
+import { SequelizeModel } from '../../../interfaces.js';
+import { ILiveModels } from '../../../database/models/index.js';
+// import { ISocketServerModels } from '../model_interfaces.js';
 
 class User {
   uRoomId: number;
@@ -10,7 +14,10 @@ class User {
     this.uClientId = client_id;
   }
 
-  async registerUser(reg: any, models: { [x: string]: any; user?: any; room?: any }): Promise<boolean> {
+  async registerUser(
+    registration_data: CrewmemberMsgBlob['DATA'],
+    models: Pick<ILiveModels, 'user' | 'room'>
+  ): Promise<boolean> {
     const user = await models.user;
     const room = await models.room;
 
@@ -19,8 +26,8 @@ class User {
       const assigned_room = await room.findOne({ where: { [primaryKeyOf(room)]: this.uRoomId, client_id: null } });
       //check if user is already registered
       if (!existingUser) {
-        console.log(reg);
-        await user.create(reg); //register the new user
+        console.log(registration_data);
+        await user.create(registration_data); //register the new user
         console.log(`${this.uUsername} successfully registered.`);
       } else console.log(`${this.uUsername} is already registered.`);
 
