@@ -3,7 +3,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 /** MODEL: gpsMsg
  * This model is for the GPS messages received from the Vision Kit.
  * @column id: GPS message ID (PK)
- * @column device: Device ID
+ * @column guid: GUID (The Vision Kit's ID)
  * @column mode: Mode
  * @column time: Time
  * @column ept: EPT
@@ -27,10 +27,10 @@ export default class gpsMsg extends Model {
   @Column(DataType.INTEGER)
   declare id: number;
 
-  // Device ID
+  // GUID (The Vision Kit's ID)
   @AllowNull(true)
   @Column(DataType.STRING)
-  declare device: string;
+  declare guid: string;
 
   // Mode
   @AllowNull(true)
