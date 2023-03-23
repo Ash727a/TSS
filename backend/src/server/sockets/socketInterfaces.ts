@@ -15,10 +15,12 @@ export interface CrewmemberMsgBlob extends MsgBlob {
     client_id: string;
   };
 }
+export type CrewmemberMsg = SocketMsg<CrewmemberMsgBlob>;
 
 export interface UnknownMsgBlob extends MsgBlob {
   DATA: any;
 }
+export type UnknownMsg = SocketMsg<UnknownMsgBlob>;
 
 export interface IMUMsgBlob extends MsgBlob {
   DATATYPE: 'IMU';
@@ -28,6 +30,7 @@ export interface IMUMsgBlob extends MsgBlob {
     client_id: number;
   };
 }
+export type IMUMsg = SocketMsg<IMUMsgBlob>;
 
 export interface GPSMsgBlob extends MsgBlob {
   DATATYPE: 'GPS';
@@ -37,3 +40,4 @@ export interface GPSMsgBlob extends MsgBlob {
     client_id: number;
   };
 }
+export type GPSMsg = SocketMsg<GPSMsgBlob>;
