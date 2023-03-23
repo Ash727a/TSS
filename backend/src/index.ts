@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 
 import { liveDatabaseName, logDatabaseName } from './config.js';
 import Database from './database/Database.class.js';
-import sequelize from './database/index.js';
+// import sequelize from './database/index.js';
+import { ILiveModels, ILogModels } from './database/models';
 import { liveModels, logModels } from './database/models/index.js';
 import ExpressApp from './server/express/app.js';
 
@@ -13,10 +14,8 @@ const API_PORT: number | undefined = process.env.API_PORT as number | undefined;
 const SOCKET_PORT: number | undefined = process.env.SOCKET_PORT as number | undefined;
 
 // We define all models according to their files.
-const liveModelsArray: [] = Object.values(liveModels) as [];
-const logModelsArray: [] = Object.values(logModels) as [];
-const LiveDatabase: Database = await Database.build(liveDatabaseName, liveModelsArray);
-const LogDatabase: Database = await Database.build(logDatabaseName, logModelsArray);
+const LiveDatabase: Database<ILiveModels> = await Database.build(liveDatabaseName, liveModels);
+const LogDatabase: Database<ILogModels> = await Database.build(logDatabaseName, logModels);
 const express: ExpressApp = new ExpressApp({ ...LiveDatabase.getModels(), ...LogDatabase.getModels() });
 
 // Log the environment variables
@@ -26,7 +25,8 @@ console.log(`SOCKET PORT: ${SOCKET_PORT}`);
 async function assertDatabaseConnectionOk(): Promise<void> {
   console.log('Checking database connection...');
   try {
-    await sequelize.authenticate();
+    await LiveDatabase.authenticate();
+    await LogDatabase.authenticate();
     console.log('Database connection OK!');
   } catch (error: any) {
     console.log('Unable to connect to the database:');

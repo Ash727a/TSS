@@ -1,14 +1,16 @@
-import { teams } from '../../../config.js';
+import { liveDatabaseName, teams } from '../../../config.js';
 import { SequelizeModel } from '../../../interfaces.js';
 import Database from '../../Database.class.js';
+import { ILiveModels } from '../../models';
 import { liveModels } from '../../models/index.js';
+import applyExtraSetup from './extraSetup.js';
 
 /**
  * Populates the database with the teams.
  * @param models The models to populate.
  * @returns {Promise<void>}
  */
-async function reset(models: { [key: string]: SequelizeModel }): Promise<void> {
+async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
   console.log('\nPopulating suits.sqlite database...');
 
   // Create the rooms
@@ -29,7 +31,6 @@ async function reset(models: { [key: string]: SequelizeModel }): Promise<void> {
 }
 
 // We define all models according to their files.
-const modelsArray: [] = Object.values(liveModels) as [];
-
-const LiveDatabase = await Database.build('suits', modelsArray);
-reset(LiveDatabase.getModels());
+const LiveDatabase = await Database.build<ILiveModels>(liveDatabaseName, liveModels);
+applyExtraSetup(LiveDatabase);
+seed(LiveDatabase.getModels());

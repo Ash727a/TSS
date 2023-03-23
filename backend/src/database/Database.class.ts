@@ -9,7 +9,7 @@ import { SequelizeModel } from '../interfaces.js';
  * @extends Sequelize
  */
 
-class Database extends Sequelize {
+class Database<IModels> extends Sequelize {
   private static readonly DEFAULT_CONFIG: object = {
     dialect: 'sqlite',
     logQueryParameters: false,
@@ -20,16 +20,16 @@ class Database extends Sequelize {
   /**
    * Used as a static method to create a new Database instance. Use this instead of the constructor to initialize a new Database instance.
    * @param {string} _fileName Name of the database file (without .sqlite extension)
-   * @param {SequelizeModel[]} models Array of model names or model constructors
+   * @param {_IModels} models Array of model names or model constructors
    * @param {object} sequelizeConfig Optional config object to pass to the Sequelize constructor
    * @returns {Promise<Database>} Promise that resolves to a new Database instance
    */
-  public static async build(
+  public static async build<_IModels>(
     _fileName: string,
-    models: SequelizeModel[],
+    models: _IModels,
     sequelizeConfig: object = {}
-  ): Promise<Database> {
-    const _db: Database = new Database(_fileName, sequelizeConfig); // Create a new Database instance (itself)
+  ): Promise<Database<_IModels>> {
+    const _db: Database<_IModels> = new Database(_fileName, sequelizeConfig); // Create a new Database instance (itself)
     await _db.setModels(models); // Set the models for the new Database instance
     return _db; // Return the new Database instance
   }
@@ -56,11 +56,11 @@ class Database extends Sequelize {
 
   /**
    * Add models to the Database instance
-   * @param {SequelizeModel[]} models Array of model names or model constructors
+   * @param {IModels models Array of model names or model constructors
    * @returns {boolean} True if models were added successfully, false otherwise
    */
-  public async setModels(models: SequelizeModel[]): Promise<boolean> {
-    this.addModels(models); // Add models to the Database / native Sequelize instance
+  public async setModels(models: IModels): Promise<boolean> {
+    this.addModels(Object.values(models as object) as []); // Add models to the Database / native Sequelize instance
     try {
       await this.sync(); // Update database schema to match models
     } catch (error) {
@@ -74,11 +74,9 @@ class Database extends Sequelize {
    * Getter method for the models from the Database instance
    * @returns {{ [key: string]: SequelizeModel }} Object containing the models
    */
-  public getModels(): {
-    [key: string]: SequelizeModel;
-  } {
+  public getModels(): IModels {
     // Convert array into key value pair object, the name being the model name
-    return this.models as { [key: string]: SequelizeModel };
+    return this.models as IModels;
   }
 }
 

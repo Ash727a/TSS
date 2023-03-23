@@ -3,10 +3,11 @@ import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
 import WebSocket, { Server } from 'ws';
+
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';
-import User from './events/user.class.js';
 import Parser from './events/parser.js';
+import User from './events/user.class.js';
 
 const models = sequelize.models;
 
@@ -131,7 +132,7 @@ function unassignAllRooms(): void {
       .then(() => {
         console.log('All rooms unassigned');
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error('Error unassigning rooms:', err);
       });
   } catch (e) {

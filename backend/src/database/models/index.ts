@@ -43,4 +43,4 @@ export type ILiveModels = typeof liveModels;
 export const logModels = {
   ...logging.default,
 };
-export type ILogModels = typeof liveModels;
+export type ILogModels = typeof logModels;
