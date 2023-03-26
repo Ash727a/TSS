@@ -1,7 +1,6 @@
+import { liveModels } from '../../../database/models/index.js';
 import { primaryKeyOf } from '../../../helpers.js';
-import { CrewmemberMsgBlob } from '../socket_interfaces.js';
-import { SequelizeModel } from '../../../interfaces.js';
-import { ILiveModels } from '../../../database/models/index.js';
+import { CrewmemberMsgBlob } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 
 class User {
@@ -16,7 +15,7 @@ class User {
 
   async registerUser(
     registration_data: CrewmemberMsgBlob['DATA'],
-    models: Pick<ILiveModels, 'user' | 'room'>
+    models: Pick<typeof liveModels, 'user' | 'room'>
   ): Promise<boolean> {
     const user = await models.user;
     const room = await models.room;
