@@ -2,15 +2,13 @@ import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
-import WebSocket, { Server, WebSocketServer } from 'ws';
+import WebSocket from 'ws';
 import sequelize from '../../database/index.js';
-import { primaryKeyOf } from '../../helpers.js';
-import User from './events/user.class.js';
-import Parser from './events/parser.js';
-import { SequelizeModel } from '../../interfaces.js';
-import { SocketMsg, MsgBlob, CrewmemberMsgBlob, IMUMsgBlob, GPSMsgBlob, UnknownMsgBlob } from './socket_interfaces.js';
-import { SocketAddress } from 'net';
 import { IAllModels } from '../../database/models/index.js';
+import { primaryKeyOf } from '../../helpers.js';
+import Parser from './events/parser.js';
+import User from './events/user.class.js';
+import { CrewmemberMsgBlob, GPSMsgBlob, IMUMsgBlob, MsgBlob, SocketMsg } from './socketInterfaces.js';
 
 const models = sequelize.models;
 
@@ -26,8 +24,7 @@ const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 
 const parser = new Parser();
 let duplicate = false;
-
-export class TSSSocketServer {
+export class TSSWebSocketServer {
   readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
   readonly _wss: WebSocket.Server;
 
@@ -63,9 +60,9 @@ export class TSSSocketServer {
           const crewMemberMsg = parsedMsg as SocketMsg<CrewmemberMsgBlob>;
           const room_id = crewMemberMsg.BLOB.DATA.room_id;
           const username = crewMemberMsg.BLOB.DATA.username;
-          const client_id = crewMemberMsg.BLOB.DATA.client_id;
+          const guid = crewMemberMsg.BLOB.DATA.guid;
 
-          const user = new User(username, client_id, room_id);
+          const user = new User(username, guid, room_id);
           if (user) {
             // Register the user in the database and assign them to room
             duplicate = await user.registerUser(crewMemberMsg.BLOB.DATA, _models);
