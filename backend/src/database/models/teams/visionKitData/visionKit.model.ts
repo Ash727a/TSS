@@ -1,3 +1,4 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: visionKit
@@ -12,7 +13,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'visionKit', underscored: true })
-export default class visionKit extends Model {
+export default class visionKit extends Model<InferAttributes<visionKit>, InferCreationAttributes<visionKit>> {
   // HMD ID (PK)
   @PrimaryKey
   @AllowNull(false)

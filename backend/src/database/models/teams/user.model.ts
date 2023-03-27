@@ -1,14 +1,5 @@
-import {
-  AllowNull,
-  AutoIncrement,
-  Column,
-  DataType,
-  Default,
-  ForeignKey,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: user
  * This is the model for the users.
@@ -21,7 +12,7 @@ import {
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'user', underscored: true })
-export default class user extends Model {
+export default class user extends Model<InferAttributes<user>, InferCreationAttributes<user>> {
   // User ID (PK)
   @PrimaryKey
   @AllowNull(false)
