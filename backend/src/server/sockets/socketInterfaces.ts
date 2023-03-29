@@ -1,43 +1,39 @@
-export interface SocketMsg<T extends MsgBlob> {
+import type { Subset } from '../../database/models/interfaceHelpers';
+import type { UserCreationAttributes } from '../../database/models/teams/user.model';
+import type { GpsData } from '../../database/models/teams/visionKitData/gpsMsg.model';
+import type { ImuData } from '../../database/models/teams/visionKitData/imuMsg.model';
+
+export interface SocketMsg<T> {
   MSGTYPE: 'DATA';
   BLOB: T;
 }
 
-export interface MsgBlob {
-  DATATYPE: string;
-}
-
-export interface CrewmemberMsgBlob extends MsgBlob {
+export interface CrewmemberBlob {
   DATATYPE: 'CREWMEMBER';
-  DATA: {
-    room_id: number;
-    username: string;
-    client_id: string;
-  };
+  DATA: Subset<
+    UserCreationAttributes,
+    {
+      username: string;
+      guid: string;
+    }
+  >;
 }
-export type CrewmemberMsg = SocketMsg<CrewmemberMsgBlob>;
+export type CrewmemberMsg = SocketMsg<CrewmemberBlob>;
 
-export interface UnknownMsgBlob extends MsgBlob {
+export interface UnknownMsgBlob {
+  DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'UIA';
   DATA: any;
 }
 export type UnknownMsg = SocketMsg<UnknownMsgBlob>;
 
-export interface IMUMsgBlob extends MsgBlob {
+export interface IMUMsgBlob {
   DATATYPE: 'IMU';
-  DATA: {
-    room_id: number;
-    username: string;
-    client_id: number;
-  };
+  DATA: ImuData;
 }
 export type IMUMsg = SocketMsg<IMUMsgBlob>;
 
-export interface GPSMsgBlob extends MsgBlob {
+export interface GPSMsgBlob {
   DATATYPE: 'GPS';
-  DATA: {
-    room_id: number;
-    username: string;
-    client_id: number;
-  };
+  DATA: GpsData;
 }
 export type GPSMsg = SocketMsg<GPSMsgBlob>;
