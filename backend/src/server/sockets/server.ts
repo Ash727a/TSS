@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
-import WebSocket, { Server } from 'ws';
+import WebSocket from 'ws';
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';
-import User from './events/user.class.js';
 import Parser from './events/parser.js';
+import User from './events/user.class.js';
 
 const models = sequelize.models;
 
