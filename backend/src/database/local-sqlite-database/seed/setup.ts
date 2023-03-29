@@ -1,4 +1,4 @@
-import { liveDatabaseName, teams } from '../../../config.js';
+import { liveDatabaseName, teams, visionKits } from '../../../config.js';
 import { SequelizeModel } from '../../../interfaces.js';
 import Database from '../../Database.class.js';
 import { ILiveModels } from '../../models';
@@ -15,6 +15,9 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
 
   // Create the rooms
   await models.room.bulkCreate(teams);
+
+  // Create the vision kits
+  await models.visionKit.bulkCreate(visionKits);
 
   // Create a new row of data for each room in each model's table
   teams.forEach(async (room, idx) => {

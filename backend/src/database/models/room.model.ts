@@ -1,6 +1,5 @@
-import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
-
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: room
  * This is the model for the rooms.
@@ -38,12 +37,6 @@ export default class room extends Model<InferAttributes<room>, InferCreationAttr
   @AllowNull(false)
   @Column(DataType.UUIDV4)
   declare user_guid: string;
-
-  // Room ID (FK)
-  // @ForeignKey(() => room)
-  @AllowNull(true)
-  @Column(DataType.STRING)
-  declare user_guid: string | null;
 
   // Station name
   @AllowNull(false)
