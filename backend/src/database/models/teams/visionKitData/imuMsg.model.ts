@@ -1,3 +1,4 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: imuMsg
@@ -18,7 +19,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'imuMsg', underscored: true })
-export default class imuMsg extends Model {
+export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreationAttributes<imuMsg>> {
   // IMU message ID (PK)
   @PrimaryKey
   @AllowNull(false)

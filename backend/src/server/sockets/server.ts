@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
-import WebSocket, { Server } from 'ws';
+import WebSocket from 'ws';
 
 import sequelize from '../../database/index.js';
 import { primaryKeyOf } from '../../helpers.js';

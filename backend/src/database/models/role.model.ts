@@ -1,3 +1,4 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: role
@@ -9,7 +10,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'role', underscored: true })
-export default class role extends Model {
+export default class role extends Model<InferAttributes<role>, InferCreationAttributes<role>> {
   // Role ID (PK)
   @PrimaryKey
   @AllowNull(false)

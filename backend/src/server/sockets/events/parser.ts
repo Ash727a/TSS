@@ -5,17 +5,6 @@ import User from './user.class.js';
 class Parser {
   // constructor() {}
 
-  parseMessage(data: { toString: () => string }, cb: (arg0: null, arg1: any) => void): void {
-    const obj = JSON.parse(data.toString());
-    console.log(obj);
-    // console.log(obj);
-    // if( (obj.event !== 'connection' && !obj.id) && !obj.event && !obj.payload) {
-    //     console.log(`ERR-PRSVAL`);
-    //     return cb(`ERR-PRSVAL`, null);
-    // }
-    return cb(null, obj);
-  }
-
   async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
     const imuMsg = await models.imuMsg;
 

@@ -1,13 +1,12 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
   AllowNull,
   AutoIncrement,
   Column,
   DataType,
-  Default,
-  ForeignKey,
-  Model,
+  Default, Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
 
 /** MODEL: simulationState
@@ -45,7 +44,7 @@ import {
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'simulationState', underscored: true })
-export default class simulationState extends Model {
+export default class simulationState extends Model<InferAttributes<simulationState>, InferCreationAttributes<simulationState>> {
   // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)
