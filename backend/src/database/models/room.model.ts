@@ -1,13 +1,4 @@
-import {
-  AllowNull,
-  AutoIncrement,
-  Column,
-  DataType,
-  Default,
-  Model,
-  PrimaryKey,
-  Table
-} from 'sequelize-typescript';
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
 
@@ -24,7 +15,7 @@ import { InferAttributes, InferCreationAttributes } from 'sequelize';
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.@Table({ tableName: 'room', underscored: true })
 @Table({ tableName: 'room', underscored: true })
-export default class room extends Model<InferAttributes<room>, InferCreationAttributes<room>>  {
+export default class room extends Model<InferAttributes<room>, InferCreationAttributes<room>> {
   // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)
@@ -48,6 +39,12 @@ export default class room extends Model<InferAttributes<room>, InferCreationAttr
   @Default(0)
   @Column(DataType.INTEGER)
   declare users: number;
+
+  // Room ID (FK)
+  // @ForeignKey(() => room)
+  @AllowNull(true)
+  @Column(DataType.STRING)
+  declare user_guid: string | null;
 
   // Station name
   @AllowNull(false)
