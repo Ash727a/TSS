@@ -3,22 +3,21 @@ import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey,
 
 /** MODEL: user
  * This is the model for the users.
- * @column id: User ID (PK)
+ * @column user_guid: User GUID (PK)
  * @column name: User name
  * @column room: Room ID (FK)
- * @column guid: User GUID
  */
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'user', underscored: true })
 export default class user extends Model<InferAttributes<user>, InferCreationAttributes<user>> {
-  // User ID (PK)
+  // User GUID (PK)
   @PrimaryKey
   @AllowNull(false)
   @AutoIncrement
-  @Column(DataType.INTEGER)
-  declare id: CreationOptional<number>;
+  @Column(DataType.UUIDV4)
+  declare user_guid: CreationOptional<string>;
 
   // User name
   @AllowNull(false)
@@ -30,12 +29,6 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @AllowNull(true)
   @Column(DataType.INTEGER)
   declare room_id: number;
-
-  // User GUID
-  @AllowNull(false)
-  @Default(DataType.UUIDV4)
-  @Column(DataType.UUIDV4)
-  declare guid: string;
 }
 
 export type UserCreationAttributes = InferCreationAttributes<user>;

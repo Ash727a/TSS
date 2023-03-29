@@ -13,7 +13,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'hmd', underscored: true })
-export default class hmd extends Model<InferAttributes<hmd>, InferCreationAttributes<hmd>>  {
+export default class hmd extends Model<InferAttributes<hmd>, InferCreationAttributes<hmd>> {
   // HMD ID (PK)
   @PrimaryKey
   @AllowNull(false)

@@ -4,7 +4,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 /** MODEL: gpsMsg
  * This model is for the GPS messages received from the Vision Kit.
  * @column id: GPS message ID (PK)
- * @column guid: GUID (The Vision Kit's ID)
+ * @column guid: GUID (The Vision Kit's ID) (FK)
  * @column mode: Mode
  * @column time: Time
  * @column ept: EPT
@@ -28,7 +28,7 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   @Column(DataType.INTEGER)
   declare id: number;
 
-  // GUID (The Vision Kit's ID)
+  // GUID (The Vision Kit's ID) (FK)
   @AllowNull(true)
   @Column(DataType.STRING)
   declare guid: string;

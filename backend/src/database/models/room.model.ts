@@ -7,7 +7,7 @@ import { InferAttributes, InferCreationAttributes } from 'sequelize';
  * @column id: Room ID (PK)
  * @column name: Room name
  * @column session_log_id: Telemetry session ID (FK)
- * @column users: Number of users in the room
+ * @column user_guid: User GUID
  * @column station_name: Station name
  * @column station_id: Station Log ID (FK)
  */
@@ -34,11 +34,10 @@ export default class room extends Model<InferAttributes<room>, InferCreationAttr
   @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
-  // Number of users in the room
+  // User GUID
   @AllowNull(false)
-  @Default(0)
-  @Column(DataType.INTEGER)
-  declare users: number;
+  @Column(DataType.UUIDV4)
+  declare user_guid: string;
 
   // Room ID (FK)
   // @ForeignKey(() => room)

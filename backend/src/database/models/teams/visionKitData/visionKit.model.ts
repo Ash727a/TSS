@@ -5,9 +5,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
  * This model is for the Vision Kit data.
  * @column id: HMD ID (PK)
  * @column name: HMD name
- * @column description: HMD description
- * @column assignment: HMD assignment
- * @column mac_address: HMD MAC address
+ * @column user_guid: User GUID (FK)
  */
 
 // We export a function that defines the model.
@@ -26,18 +24,8 @@ export default class visionKit extends Model<InferAttributes<visionKit>, InferCr
   @Column(DataType.STRING)
   declare name: string;
 
-  // HMD description
-  @AllowNull(true)
-  @Column(DataType.STRING)
-  declare description: string;
-
-  // HMD assignment
-  @AllowNull(true)
-  @Column(DataType.STRING)
-  declare assignment: string;
-
-  // HMD MAC address
+  // User GUID (FK)
   @AllowNull(false)
-  @Column(DataType.STRING)
-  declare mac_address: string;
+  @Column(DataType.UUIDV4)
+  declare user_guid: string;
 }

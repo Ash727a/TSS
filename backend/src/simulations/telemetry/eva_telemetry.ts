@@ -252,8 +252,8 @@ function simulationStep(dt: any, controls: { suit_power: boolean }, failure: any
     let oxRate_max = 0;
     let oxRate_min = 0;
     if (failure.o2_error == true && !controls.o2_switch) {
-      oxRate_max = 0.6;
-      oxRate_min = 0.4;
+      oxRate_max = 0.4;
+      oxRate_min = 0.2;
     } else {
       oxRate_max = 1;
       oxRate_min = 0.5;

@@ -56,7 +56,7 @@ class Database<IModels> extends Sequelize {
 
   /**
    * Add models to the Database instance
-   * @param {IModels models Array of model names or model constructors
+   * @param {IModels} models Array of model names or model constructors
    * @returns {boolean} True if models were added successfully, false otherwise
    */
   public async setModels(models: IModels): Promise<boolean> {

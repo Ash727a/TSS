@@ -4,6 +4,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 /** MODEL: imuMsg
  * This model is for the IMU messages received from the Vision Kit.
  * @column id: IMU message ID (PK)
+ * @column guid: GUID (The Vision Kit's ID) (FK)
  * @column heading: IMU message heading
  * @column accel_x: IMU message accel_x
  * @column accel_y: IMU message accel_y
@@ -26,6 +27,11 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
   @AutoIncrement
   @Column(DataType.INTEGER)
   declare id: number;
+
+  // GUID (The Vision Kit's ID) (FK)
+  @AllowNull(true)
+  @Column(DataType.STRING)
+  declare guid: string;
 
   // IMU message heading
   @AllowNull(true)
