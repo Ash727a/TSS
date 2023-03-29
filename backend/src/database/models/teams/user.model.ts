@@ -1,4 +1,4 @@
-import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: user
@@ -18,15 +18,15 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @AllowNull(false)
   @AutoIncrement
   @Column(DataType.INTEGER)
-  declare id: number;
+  declare id: CreationOptional<number>;
 
   // User name
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare name: string;
+  declare username: string;
 
   // Room ID (FK)
-  // @ForeignKey(() => Room)
+  // @ForeignKey(() => room)
   @AllowNull(true)
   @Column(DataType.INTEGER)
   declare room_id: number;
@@ -37,3 +37,5 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.UUIDV4)
   declare guid: string;
 }
+
+export type UserCreationAttributes = InferCreationAttributes<user>;
