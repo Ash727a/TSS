@@ -23,7 +23,6 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
   // GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.UUIDV4)
   declare user_guid: string;
 

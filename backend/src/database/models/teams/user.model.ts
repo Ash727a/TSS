@@ -15,7 +15,6 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   // User GUID (PK)
   @PrimaryKey
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.UUIDV4)
   declare user_guid: CreationOptional<string>;
 
