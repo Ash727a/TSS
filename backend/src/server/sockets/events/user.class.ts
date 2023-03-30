@@ -32,8 +32,8 @@ class User {
 
     this._ws.on('close', async () => {
       console.log(`*** USER DISCONNECTED ***`);
-      // stop sim s
-      http.get(STOP_SIM_URL + `${session_room_id}/stop`);
+      // stop sim
+      // http.get(STOP_SIM_URL + `${session_room_id}/stop`);
       // remove the client from the assigned room
       const room = await _models.room.findOne({ where: { id: user_record.room_id } });
 
