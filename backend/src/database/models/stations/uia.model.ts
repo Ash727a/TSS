@@ -1,13 +1,5 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import {
-  AllowNull,
-  AutoIncrement,
-  Column,
-  DataType,
-  Default, Model,
-  PrimaryKey,
-  Table
-} from 'sequelize-typescript';
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: uia
  * This model is for holding live UIA states and data for all rooms.
