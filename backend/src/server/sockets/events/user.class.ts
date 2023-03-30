@@ -86,11 +86,12 @@ class User {
       });
 
       // Update room with user's guid
-      await empty_room.update('user_guid', guid); //assign the newly registered user's guid to the room
+      await empty_room.update({ user_guid: guid }).catch(async (err: any) => {
+        console.log(err);
+      }); //assign the newly registered user's guid to the room
       empty_room.save();
 
-      console.log(`Created user with: ${JSON.stringify(user)}`);
-      console.log(`${guid} assigned to room ${empty_room.name}`);
+      console.log(`${username} assigned to room ${empty_room.name}`);
 
       return new User({ username, guid }, _models, new_user_record, _ws, hmd_update_interval);
 
