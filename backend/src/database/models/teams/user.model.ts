@@ -28,6 +28,11 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @AllowNull(true)
   @Column(DataType.INTEGER)
   declare room_id: number;
+
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare is_connected: boolean;
 }
 
 export type UserCreationAttributes = InferCreationAttributes<user>;
