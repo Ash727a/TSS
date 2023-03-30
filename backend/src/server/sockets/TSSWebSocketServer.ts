@@ -23,8 +23,8 @@ const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 const parser = new Parser();
 const duplicate = false;
 export class TSSWebSocketServer {
-  readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
-  readonly _wss: WebSocket.Server;
+  private readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
+  private readonly _wss: WebSocket.Server;
 
   constructor(_models: IAllModels, socket_port: number) {
     this._server = http.createServer();
