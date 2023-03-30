@@ -5,7 +5,6 @@ import { Op } from 'sequelize';
 import WebSocket from 'ws';
 import sequelize from '../../database/index.js';
 import { IAllModels } from '../../database/models/index.js';
-import { primaryKeyOf } from '../../helpers.js';
 import Parser from './events/parser.js';
 import handleSocketConnection from './socketConnectionHandler.js';
 
@@ -29,63 +28,14 @@ export class TSSWebSocketServer {
 
   constructor(_models: IAllModels, socket_port: string) {
     this._server = http.createServer();
-    this._wss = new WebSocket.Server({
-      server: this._server,
-    });
+    this._wss = new WebSocket.Server({ server: this._server });
 
     this._wss.on('connection', (ws: WebSocket.WebSocket, req) => {
       console.log(`*** USER CONNECTED ***`);
 
       let session_room_id: number;
 
-      handleSocketConnection(ws, _models);
-
-      //setInterval(async function() {
-      async function sendData(): Promise<void> {
-        try {
-          const room_id = session_room_id;
-          const sim_state_res = await _models.simulationState.findOne({
-            where: { [primaryKeyOf(_models.simulationState)]: room_id },
-          });
-          const sim_state = sim_state_res?.get({ plain: true });
-          //let gps_val  = await models.gpsMsg.findAll({ where: { room_id: room_id }});
-          //let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
-          const telem_val = await _models.simulationState.findAll({
-            where: { [primaryKeyOf(_models.simulationState)]: room_id },
-          });
-
-          const data = {
-            //gpsMsg: gps_val,
-            //imuMsg: imu_val,
-            simulationStates: telem_val,
-            /*
-              add spectrometer data
-              add rover data 
-            */
-          };
-
-          if (sim_state?.is_running) {
-            ws.send(JSON.stringify(data));
-          }
-        } catch (err) {
-          console.error('Error:', err);
-        }
-      }
-
-      ws.on('close', async () => {
-        console.log(`*** USER DISCONNECTED ***`);
-        if (session_room_id) {
-          // stop sim s
-          http.get(STOP_SIM_URL + `${session_room_id}/stop`);
-          // remove the client from the assigned room
-          const room: any = await _models.room.findOne({ where: { [primaryKeyOf(_models.room)]: session_room_id } });
-          room.client_id = null;
-          await room.save();
-          console.log(`Client removed from room ${room.name}`);
-        }
-        // close the connection
-        ws.terminate();
-      });
+      handleSocketConnection(ws, _models, HMD_UPDATE_INTERVAL);
     });
 
     server.listen(socket_port, () => {
