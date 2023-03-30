@@ -10,7 +10,7 @@ import applyExtraSetup from './extraSetup.js';
  * @param models The models to populate.
  * @returns {Promise<void>}
  */
-async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
+async function seed(models: ILiveModels): Promise<void> {
   console.log('\nPopulating suits.sqlite database...');
 
   // Create the rooms
