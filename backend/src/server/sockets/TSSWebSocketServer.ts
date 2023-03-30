@@ -1,16 +1,10 @@
-import dotenv from 'dotenv';
 import http from 'http';
-import path from 'path';
-import { Op } from 'sequelize';
 import { WebSocketServer, WebSocket } from 'ws';
 import { IAllModels } from '../../database/models/index.js';
-import Parser from './events/parser.js';
 import handleSocketConnection from './socketConnectionHandler.js';
 
 const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 
-const parser = new Parser();
-const duplicate = false;
 export class TSSWebSocketServer {
   private readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
   private readonly _wss: WebSocketServer;
@@ -21,8 +15,6 @@ export class TSSWebSocketServer {
 
     this._wss.on('connection', (ws: WebSocket, req) => {
       console.log(`*** USER CONNECTED ***`);
-
-      let session_room_id: number;
 
       handleSocketConnection(ws, _models, HMD_UPDATE_INTERVAL);
     });
