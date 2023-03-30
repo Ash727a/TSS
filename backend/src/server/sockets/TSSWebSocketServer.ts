@@ -3,12 +3,11 @@ import http from 'http';
 import path from 'path';
 import { Op } from 'sequelize';
 import WebSocket from 'ws';
-import sequelize from '../../database/index.js';
 import { IAllModels } from '../../database/models/index.js';
 import Parser from './events/parser.js';
 import handleSocketConnection from './socketConnectionHandler.js';
 
-const models = sequelize.models;
+// const models = sequelize.models;
 
 const envPath = path.join(__dirname, '../', '.env');
 dotenv.config({ path: envPath });
@@ -44,26 +43,26 @@ export class TSSWebSocketServer {
   }
 }
 
-function unassignAllRooms(): void {
-  try {
-    models.room
-      .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })
-      .then(() => {
-        console.log('All rooms unassigned');
-      })
-      .catch((err) => {
-        console.error('Error unassigning rooms:', err);
-      });
-  } catch (e) {
-    console.log(e);
-  }
-}
+// function unassignAllRooms(): void {
+//   try {
+//     models.room
+//       .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })
+//       .then(() => {
+//         console.log('All rooms unassigned');
+//       })
+//       .catch((err: any) => {
+//         console.error('Error unassigning rooms:', err);
+//       });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
 
-process.on('SIGINT', () => {
-  console.log('Received SIGINT signal, shutting down server...');
-  unassignAllRooms();
-  server.close(() => {
-    console.log('Server has been gracefully shutdown.');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', () => {
+//   console.log('Received SIGINT signal, shutting down server...');
+//   unassignAllRooms();
+//   server.close(() => {
+//     console.log('Server has been gracefully shutdown.');
+//     process.exit(0);
+//   });
+// });
