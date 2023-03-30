@@ -31,20 +31,12 @@ class User {
     setInterval(() => this.sendData(), hmd_update_interval);
 
     this._ws.on('close', async () => {
-      console.log(`*** USER DISCONNECTED ***`);
+      console.log(`*** USER: ${this.user_record.username} DISCONNECTED ***`);
+
       // stop sim
       // http.get(STOP_SIM_URL + `${session_room_id}/stop`);
-      // remove the client from the assigned room
-      const room = await _models.room.findOne({ where: { id: user_record.room_id } });
 
-      if (room == null) {
-        console.log(`No room found for user ${username}`); // Should never happen
-        return;
-      }
-      room.user_guid = null;
-      room.save();
-
-      console.log(`Client removed from room ${room.name}`);
+      this.user_record.update({ is_connected: false });
       this._ws.terminate();
     });
   }
@@ -61,39 +53,34 @@ class User {
     const room = await _models.room;
 
     try {
-      const existing_user = await user.findOne({ where: { user_guid: guid } });
+      let user_record = await user.findOne({ where: { user_guid: guid, username: username } });
 
-      //check if user is already registered
-      if (existing_user) {
-        console.log(`${username} is already registered. Cannot create new instance`);
-        return null;
+      if (user_record) {
+        console.log(`Found existing user with username: ${username}`);
+
+        // Reject connections if user is already connected
+        if (user_record?.is_connected) {
+          console.log(`${username} is already conencted. Cannot create new instance`);
+          return null;
+        }
+        user_record.update({ is_connected: true });
+      } else {
+        const empty_room = await room.findOne({ where: { user_guid: null } });
+        if (empty_room === null) {
+          console.log(`No empty room found to assign the following user to:\nUsername: ${username}`);
+          return null;
+        }
+        empty_room.update({ user_guid: guid });
+        empty_room.save();
+        user_record = await user.create({
+          username: username,
+          user_guid: guid,
+          room_id: empty_room.id,
+          is_connected: true,
+        });
+        console.log(`${username} assigned to room ${empty_room.name}`);
       }
-
-      console.log(`Attempting to register new user\nUsername: ${username}\nGuid: ${guid}`);
-
-      // look for an empty room for the user
-      const empty_room = await room.findOne({ where: { user_guid: null } });
-      if (empty_room === null) {
-        console.log(`No empty room found to assign the following user to:\nUsername: ${username}\nGuid: ${guid}`);
-        return null;
-      }
-
-      // Add new user to DB
-      const new_user_record = await user.create({
-        username: username,
-        user_guid: guid,
-        room_id: empty_room.id,
-      });
-
-      // Update room with user's guid
-      await empty_room.update({ user_guid: guid }).catch(async (err: any) => {
-        console.log(err);
-      }); //assign the newly registered user's guid to the room
-      empty_room.save();
-
-      console.log(`${username} assigned to room ${empty_room.name}`);
-
-      return new User({ username, guid }, _models, new_user_record, _ws, hmd_update_interval);
+      return new User({ username, guid }, _models, user_record, _ws, hmd_update_interval);
 
       //check if assigned room is vacant
       // if (assigned_room) {
