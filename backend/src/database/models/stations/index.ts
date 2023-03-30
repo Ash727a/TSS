@@ -1,3 +1,4 @@
+import geo from './geo.model.js';
 import uia from './uia.model.js';
 
 /** EXPORT MODULE: stations
@@ -7,4 +8,4 @@ import uia from './uia.model.js';
  * @subcategory stations
  */
 
-export default { uia };
+export default { uia, geo };
