@@ -34,9 +34,9 @@ export default class room extends Model<InferAttributes<room>, InferCreationAttr
   declare session_log_id: string;
 
   // User GUID
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.UUIDV4)
-  declare user_guid: string;
+  declare user_guid: string | null;
 
   // Station name
   @AllowNull(false)

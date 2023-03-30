@@ -1,23 +1,29 @@
 import { primaryKeyOf } from '../../../helpers.js';
-import { SocketMsg, CrewmemberMsgBlob } from '../socket_interfaces.js';
+import { SocketMsg } from '../socketInterfaces.js';
 import User from './user.class.js';
 
 class Parser {
   // constructor() {}
 
-  async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
+  async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imuMsg?: any }, guid: string): Promise<void> {
     const imuMsg = await models.imuMsg;
 
-    for (const elem in obj)
-      if (elem === 'id') delete obj[elem];
-      else obj[elem] = parseFloat(obj[elem]);
+    for (const elem in obj) {
+      if (elem === 'id') {
+        delete obj[elem];
+      } else {
+        obj[elem] = parseFloat(obj[elem]);
+      }
+      obj.guid = guid;
+    }
 
     try {
-      if ((await models.imuMsg.count()) === 0) {
+      let existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: guid } });
+      if (!existing_imu) {
         imuMsg.create(obj);
       } else {
         imuMsg.update(obj, {
-          where: { [primaryKeyOf(imuMsg)]: 1 },
+          where: { [primaryKeyOf(imuMsg)]: guid },
         });
       }
       return imuMsg;
@@ -34,12 +40,13 @@ class Parser {
       else obj[elem] = parseFloat(obj[elem]);
 
     try {
-      if ((await models.gpsMsg.count()) == 0) {
-        console.log('GPS TABLE CREATED');
+      const existing_gps = await gpsMsg.findOne({ where: { [primaryKeyOf(gpsMsg)]: guid } });
+      if (!existing_gps) {
+        console.log('GPS RECORD CREATED');
         gpsMsg.create(obj);
       } else {
         gpsMsg.update(obj, {
-          where: { [primaryKeyOf(gpsMsg)]: 1 },
+          where: { [primaryKeyOf(gpsMsg)]: guid },
         });
       }
       return gpsMsg;

@@ -1,6 +1,8 @@
 import { WebSocket } from 'ws';
+
 import { liveModels } from '../../../database/models/index.js';
 import { CrewmemberMsg } from '../socketInterfaces.js';
+
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
@@ -41,7 +43,7 @@ class User {
     const room = await _models.room;
 
     try {
-      const existing_user = await user.findOne({ where: { guid: guid } });
+      const existing_user = await user.findOne({ where: { user_guid: guid } });
 
       //check if user is already registered
       if (existing_user) {
@@ -61,7 +63,7 @@ class User {
       // Add new user to DB
       const new_mapped_user = await user.create({
         username: username,
-        guid: guid,
+        user_guid: guid,
         room_id: empty_room.id,
       });
 

@@ -48,8 +48,9 @@ wss.on('connection', (ws: any, req) => {
       const room_id = msgdata.room_id;
       const username = msgdata.username;
       const client_id = msgdata.client_id;
+      const vk_guid = msgdata.vk_guid;
 
-      const user = new User(username, client_id, room_id);
+      const user = new User(username, client_id, room_id, vk_guid);
       if (user) {
         // Register the user in the database and assign them to room
         duplicate = await user.registerUser(msgdata, models);
@@ -67,13 +68,13 @@ wss.on('connection', (ws: any, req) => {
     }
 
     if (datatype == 'IMU') {
-      console.log(msgdata);
-      parser.parseMessageIMU(msgdata, models);
+      const imuguid = data.MACADDRESS;
+      parser.parseMessageIMU(msgdata, models, imuguid);
     }
 
     if (datatype == 'GPS') {
-      console.log(msgdata);
-      parser.parseMessageGPS(msgdata, models);
+      const gpsguid = data.MACADDRESS;
+      parser.parseMessageGPS(msgdata, models, gpsguid);
     }
   });
 
@@ -85,20 +86,18 @@ wss.on('connection', (ws: any, req) => {
         where: { [primaryKeyOf(models.simulationState)]: room_id },
       });
       const sim_state = sim_state_res?.get({ plain: true });
-      //let gps_val  = await models.gpsMsg.findAll({ where: { room_id: room_id }});
-      //let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
+      const gps_val = await models.gpsMsg.findAll({ where: { user_guid: guid } });
+      const imu_val = await models.imuMsg.findAll({ where: { user_guid: guid } });
       const telem_val = await models.simulationState.findAll({
         where: { [primaryKeyOf(models.simulationState)]: room_id },
       });
-
       const data = {
-        //gpsMsg: gps_val,
-        //imuMsg: imu_val,
         simulationStates: telem_val,
-        /*
-          add spectrometer data
-          add rover data 
-        */
+        GPS: gps_val,
+        IMU: imu_val,
+        // GEO: geo_val,
+        // ROVER: rover_val,
+        EVA: telem_val,
       };
 
       if (sim_state?.is_running) {
@@ -125,29 +124,29 @@ wss.on('connection', (ws: any, req) => {
   });
 });
 
-function unassignAllRooms(): void {
-  try {
-    models.room
-      .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })
-      .then(() => {
-        console.log('All rooms unassigned');
-      })
-      .catch((err: any) => {
-        console.error('Error unassigning rooms:', err);
-      });
-  } catch (e) {
-    console.log(e);
-  }
-}
+// function unassignAllRooms(): void {
+//   try {
+//     models.room
+//       .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })
+//       .then(() => {
+//         console.log('All rooms unassigned');
+//       })
+//       .catch((err: any) => {
+//         console.error('Error unassigning rooms:', err);
+//       });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
 
-process.on('SIGINT', () => {
-  console.log('Received SIGINT signal, shutting down server...');
-  unassignAllRooms();
-  server.close(() => {
-    console.log('Server has been gracefully shutdown.');
-    process.exit(0);
-  });
-});
+// process.on('SIGINT', () => {
+//   console.log('Received SIGINT signal, shutting down server...');
+//   unassignAllRooms();
+//   server.close(() => {
+//     console.log('Server has been gracefully shutdown.');
+//     process.exit(0);
+//   });
+// });
 
 server.listen(SOCKET_PORT, () => {
   console.log(`SUITS Socket Server listening on: ${SOCKET_PORT}`);

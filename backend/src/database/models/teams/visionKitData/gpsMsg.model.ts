@@ -3,8 +3,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 
 /** MODEL: gpsMsg
  * This model is for the GPS messages received from the Vision Kit.
- * @column id: GPS message ID (PK)
- * @column guid: GUID (The Vision Kit's ID) (FK)
+ * @column guid: User GUID (The Vision Kit's ID) (FK)
  * @column mode: Mode
  * @column time: Time
  * @column ept: EPT
@@ -21,17 +20,10 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'gpsMsg', underscored: true })
 export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreationAttributes<gpsMsg>> {
-  // GPS message ID (PK)
-  @PrimaryKey
-  @AllowNull(false)
-  @AutoIncrement
-  @Column(DataType.INTEGER)
-  declare id: number;
-
-  // GUID (The Vision Kit's ID) (FK)
+  // User GUID (The Vision Kit's ID) (FK)
   @AllowNull(true)
   @Column(DataType.STRING)
-  declare guid: string;
+  declare user_guid: string;
 
   // Mode
   @AllowNull(true)

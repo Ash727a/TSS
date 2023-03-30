@@ -3,8 +3,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 
 /** MODEL: imuMsg
  * This model is for the IMU messages received from the Vision Kit.
- * @column id: IMU message ID (PK)
- * @column guid: GUID (The Vision Kit's ID) (FK)
+ * @column guid: User GUID (The Vision Kit's ID) (FK)
  * @column heading: IMU message heading
  * @column accel_x: IMU message accel_x
  * @column accel_y: IMU message accel_y
@@ -21,17 +20,12 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'imuMsg', underscored: true })
 export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreationAttributes<imuMsg>> {
-  // IMU message ID (PK)
+  // GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
   @AllowNull(false)
   @AutoIncrement
-  @Column(DataType.INTEGER)
-  declare id: number;
-
-  // GUID (The Vision Kit's ID) (FK)
-  @AllowNull(true)
-  @Column(DataType.STRING)
-  declare guid: string;
+  @Column(DataType.UUIDV4)
+  declare user_guid: string;
 
   // IMU message heading
   @AllowNull(true)
