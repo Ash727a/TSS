@@ -77,3 +77,5 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
   @Column(DataType.DOUBLE)
   declare mag_z: number;
 }
+
+export type IMUData = Omit<InferCreationAttributes<imuMsg>, keyof Model>;

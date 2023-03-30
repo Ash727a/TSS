@@ -1,29 +1,23 @@
+import { IAllModels } from '../../../database/models/index.js';
+import { IMUData } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 import { primaryKeyOf } from '../../../helpers.js';
-import { SocketMsg } from '../socketInterfaces.js';
+import { IMUMsg, SocketMsg, SpecMsg } from '../socketInterfaces.js';
+import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import User from './user.class.js';
 
 class Parser {
   // constructor() {}
 
-  async parseMessageIMU(obj: { [x: string]: any }, models: { [x: string]: any; imuMsg?: any }, guid: string): Promise<void> {
+  async parseMessageIMU(messageObject: any, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
     const imuMsg = await models.imuMsg;
 
-    for (const elem in obj) {
-      if (elem === 'id') {
-        delete obj[elem];
-      } else {
-        obj[elem] = parseFloat(obj[elem]);
-      }
-      obj.guid = guid;
-    }
-
     try {
-      let existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: guid } });
+      const existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: messageObject.guid } });
       if (!existing_imu) {
-        imuMsg.create(obj);
+        imuMsg.create(messageObject);
       } else {
-        imuMsg.update(obj, {
-          where: { [primaryKeyOf(imuMsg)]: guid },
+        imuMsg.update(messageObject, {
+          where: { [primaryKeyOf(imuMsg)]: messageObject.guid },
         });
       }
       return imuMsg;
@@ -32,27 +26,60 @@ class Parser {
     }
   }
 
-  async parseMessageGPS(obj: { [x: string]: any }, models: { [x: string]: any; gpsMsg?: any }): Promise<void> {
+  async parseMessageGPS(messageObject: any, models: { [x: string]: any; gpsMsg?: any }): Promise<void> {
     const gpsMsg = await models.gpsMsg;
 
-    for (const elem in obj)
-      if (elem === 'class') delete obj[elem];
-      else obj[elem] = parseFloat(obj[elem]);
-
     try {
-      const existing_gps = await gpsMsg.findOne({ where: { [primaryKeyOf(gpsMsg)]: guid } });
+      const existing_gps = await gpsMsg.findOne({ where: { [primaryKeyOf(gpsMsg)]: messageObject.guid } });
       if (!existing_gps) {
         console.log('GPS RECORD CREATED');
-        gpsMsg.create(obj);
+        gpsMsg.create(messageObject);
       } else {
-        gpsMsg.update(obj, {
-          where: { [primaryKeyOf(gpsMsg)]: guid },
+        gpsMsg.update(messageObject, {
+          where: { [primaryKeyOf(gpsMsg)]: messageObject.guid },
         });
       }
       return gpsMsg;
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async handleSpecData(spec_msg: SpecMsg, _model: Pick<IAllModels, 'geo' | 'room'>): Promise<void> {
+    // 1. Map rfid ID -> spec data (either through db or just an object)
+    const tag_id = spec_msg.BLOB.DATA.TAG_ID;
+    if (!isValidRockId(tag_id)) {
+      console.log(`"${tag_id}" is not a valid rfid tag id`);
+      return;
+    }
+
+    const room_in_geo = await _model.room.findOne({ where: { station_name: 'GEO' } });
+    if (room_in_geo == null) {
+      console.log('No room is in the geology task');
+      return;
+    }
+
+    // 2. Add scan to record for the room currently in GEO
+    _model.geo.update(
+      {
+        rock_tag_id: tag_id,
+        rock_data: JSON.stringify(spec_data_map[tag_id]),
+      },
+      {
+        where: {
+          room_id: room_in_geo.id,
+        },
+      }
+    );
+
+    console.log(
+      `Recording: ${{
+        rock_tag_id: tag_id,
+        rock_data: JSON.stringify(spec_data_map[tag_id]),
+      }} under room ${room_in_geo.name}`
+    );
+
+    // TODO: Log tag_id and scan_time to logs db
   }
 
   parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {

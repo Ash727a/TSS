@@ -13,22 +13,40 @@ class User {
   private readonly guid: string;
   private _models: ModelsForUser;
   private _ws: WebSocket;
-  private mapped_user: user;
+  private user_record: user;
 
   private constructor(
     { username, guid }: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
-    mapped_user: user,
+    user_record: user,
     _ws: WebSocket,
     hmd_update_interval: number
   ) {
     this.username = username;
     this.guid = guid;
     this._models = _models;
-    this.mapped_user = mapped_user;
+    this.user_record = user_record;
     this._ws = _ws;
 
     setInterval(() => this.sendData(), hmd_update_interval);
+
+    this._ws.on('close', async () => {
+      console.log(`*** USER DISCONNECTED ***`);
+      // stop sim s
+      http.get(STOP_SIM_URL + `${session_room_id}/stop`);
+      // remove the client from the assigned room
+      const room = await _models.room.findOne({ where: { id: user_record.room_id } });
+
+      if (room == null) {
+        console.log(`No room found for user ${username}`); // Should never happen
+        return;
+      }
+      room.user_guid = null;
+      room.save();
+
+      console.log(`Client removed from room ${room.name}`);
+      this._ws.terminate();
+    });
   }
 
   // TODO: CHANGE TO ACTUAL FK, BUT NULLABLE
@@ -61,7 +79,7 @@ class User {
       }
 
       // Add new user to DB
-      const new_mapped_user = await user.create({
+      const new_user_record = await user.create({
         username: username,
         user_guid: guid,
         room_id: empty_room.id,
@@ -74,7 +92,7 @@ class User {
       console.log(`Created user with: ${JSON.stringify(user)}`);
       console.log(`${guid} assigned to room ${empty_room.name}`);
 
-      return new User({ username, guid }, _models, new_mapped_user, _ws, hmd_update_interval);
+      return new User({ username, guid }, _models, new_user_record, _ws, hmd_update_interval);
 
       //check if assigned room is vacant
       // if (assigned_room) {
@@ -95,14 +113,14 @@ class User {
   async sendData(): Promise<void> {
     try {
       const sim_state_res = await this._models.simulationState.findOne({
-        where: { room_id: this.mapped_user.room_id },
+        where: { room_id: this.user_record.room_id },
       });
 
       const sim_state = sim_state_res?.get({ plain: true });
       if (sim_state == undefined) {
         return;
       }
-      // let gps_val  = await models.gpsMsg.findAll({ where: { room_id: room_id }});
+      // let gps_val  = await models.gpsMsg.findAll({ where: { user_guid: guid }});
       // let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
       // const telem_val = await this._models.simulationState.findAll({
       //   where: { id: this.room_id },

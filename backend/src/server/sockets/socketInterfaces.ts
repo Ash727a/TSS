@@ -21,8 +21,7 @@ export interface CrewmemberBlob {
 export type CrewmemberMsg = SocketMsg<CrewmemberBlob>;
 
 export interface UnknownMsgBlob {
-  DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'UIA';
-  DATA: any;
+  DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'SPEC';
 }
 export type UnknownMsg = SocketMsg<UnknownMsgBlob>;
 
@@ -37,3 +36,11 @@ export interface GPSMsgBlob {
   DATA: GpsData;
 }
 export type GPSMsg = SocketMsg<GPSMsgBlob>;
+
+interface SpecMsgBlob extends UnknownMsgBlob {
+  DATATYPE: 'SPEC';
+  DATA: {
+    TAG_ID: string;
+  };
+}
+export type SpecMsg = SocketMsg<SpecMsgBlob>;
