@@ -1,5 +1,8 @@
+import { IAllModels } from '../../../database/models/index.js';
 import { primaryKeyOf } from '../../../helpers.js';
-import { SocketMsg, CrewmemberMsgBlob } from '../socket_interfaces.js';
+import { SpecMsg } from '../socketInterfaces.js';
+import { CrewmemberMsgBlob, SocketMsg } from '../socket_interfaces.js';
+import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import User from './user.class.js';
 
 class Parser {
@@ -46,6 +49,43 @@ class Parser {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async handleSpecData(spec_msg: SpecMsg, _model: Pick<IAllModels, 'geo' | 'room'>): Promise<void> {
+    // 1. Map rfid ID -> spec data (either through db or just an object)
+    const tag_id = spec_msg.BLOB.DATA.TAG_ID;
+    if (!isValidRockId(tag_id)) {
+      console.log(`"${tag_id}" is not a valid rfid tag id`);
+      return;
+    }
+
+    const room_in_geo = await _model.room.findOne({ where: { station_name: 'GEO' } });
+    if (room_in_geo == null) {
+      console.log('No room is in the geology task');
+      return;
+    }
+
+    // 2. Add scan to record for the room currently in GEO
+    _model.geo.update(
+      {
+        rock_tag_id: tag_id,
+        rock_data: JSON.stringify(spec_data_map[tag_id]),
+      },
+      {
+        where: {
+          room_id: room_in_geo.id,
+        },
+      }
+    );
+
+    console.log(
+      `Recording: ${{
+        rock_tag_id: tag_id,
+        rock_data: JSON.stringify(spec_data_map[tag_id]),
+      }} under room ${room_in_geo.name}`
+    );
+
+    // TODO: Log tag_id and scan_time to logs db
   }
 
   parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {
