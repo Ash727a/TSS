@@ -21,8 +21,9 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 @Table({ tableName: 'gpsMsg', underscored: true })
 export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreationAttributes<gpsMsg>> {
   // User GUID (The Vision Kit's ID) (FK)
+  @PrimaryKey
   @AllowNull(true)
-  @Column(DataType.STRING)
+  @Column(DataType.UUIDV4)
   declare user_guid: string;
 
   // Mode

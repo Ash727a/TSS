@@ -22,7 +22,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreationAttributes<imuMsg>> {
   // GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.UUIDV4)
   declare user_guid: string;
 
