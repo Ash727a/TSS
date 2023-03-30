@@ -20,7 +20,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
-@Table({ tableName: 'uia', underscored: true })
+@Table({ tableName: 'geo', underscored: true })
 export default class geo extends Model<InferAttributes<geo>, InferCreationAttributes<geo>> {
   // Room ID (PK => room.id)
   @PrimaryKey
