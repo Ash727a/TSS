@@ -26,7 +26,7 @@ export class TSSWebSocketServer {
   readonly _server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
   readonly _wss: WebSocket.Server;
 
-  constructor(_models: IAllModels, socket_port: string) {
+  constructor(_models: IAllModels, socket_port: number) {
     this._server = http.createServer();
     this._wss = new WebSocket.Server({ server: this._server });
 
