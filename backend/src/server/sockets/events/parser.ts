@@ -82,27 +82,27 @@ class Parser {
     // TODO: Log tag_id and scan_time to logs db
   }
 
-  parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {
-    const room_id = msg.BLOB.DATA.room_id;
-    const username = msg.BLOB.DATA.username;
-    const client_id = msg.BLOB.DATA.client_id;
+  // parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {
+  //   const room_id = msg.BLOB.DATA.room_id;
+  //   const username = msg.BLOB.DATA.username;
+  //   const client_id = msg.BLOB.DATA.client_id;
 
-    const user = new User(username, client_id, room_id);
-    if (user) {
-      // Register the user in the database and assign them to room
-      duplicate = await user.registerUser(msg.BLOB.DATA, _models);
-    }
+  //   const user = new User(username, client_id, room_id);
+  //   if (user) {
+  //     // Register the user in the database and assign them to room
+  //     duplicate = await user.registerUser(msg.BLOB.DATA, _models);
+  //   }
 
-    // Add the client to the room
-    if (!duplicate) {
-      ws.roomId = room_id;
-      setInterval(() => sendData(), HMD_UPDATE_INTERVAL);
-    } else {
-      ws.send('Connection failed, duplicate sign on attempt.');
-      ws.close(1008, 'Duplicate user');
-      console.log(`Connection Failed: Duplicate User.`);
-    }
-  }
+  //   // Add the client to the room
+  //   if (!duplicate) {
+  //     ws.roomId = room_id;
+  //     setInterval(() => sendData(), HMD_UPDATE_INTERVAL);
+  //   } else {
+  //     ws.send('Connection failed, duplicate sign on attempt.');
+  //     ws.close(1008, 'Duplicate user');
+  //     console.log(`Connection Failed: Duplicate User.`);
+  //   }
+  // }
 }
 
 export default Parser;
