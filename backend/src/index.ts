@@ -6,6 +6,7 @@ import Database from './database/Database.class.js';
 import { ILiveModels, ILogModels } from './database/models';
 import { liveModels, logModels } from './database/models/index.js';
 import ExpressApp from './server/express/app.js';
+import { TSSWebSocketServer } from './server/sockets/TSSWebSocketServer.js';
 
 // Environment variables
 dotenv.config();
@@ -39,6 +40,11 @@ async function init(): Promise<void> {
   await assertDatabaseConnectionOk();
 
   console.log(`Starting Sequelize + Express example on port ${API_PORT}...`);
+
+  const socket_server = new TSSWebSocketServer(
+    { ...LiveDatabase.getModels(), ...LogDatabase.getModels() },
+    SOCKET_PORT ?? 3001
+  );
 
   express.app.listen(API_PORT, () => {
     console.log(`Express server started on port ${API_PORT}. Try some routes, such as '/api/users'.`);
