@@ -60,17 +60,11 @@ class Parser {
     }
 
     // 2. Add scan to record for the room currently in GEO
-    _model.geo.update(
-      {
-        rock_tag_id: tag_id,
-        rock_data: JSON.stringify(spec_data_map[tag_id]),
-      },
-      {
-        where: {
-          room_id: room_in_geo.id,
-        },
-      }
-    );
+    _model.geo.upsert({
+      room_id: room_in_geo.id,
+      rock_tag_id: tag_id,
+      rock_data: JSON.stringify(spec_data_map[tag_id]),
+    });
 
     console.log(
       `Recording: ${{
