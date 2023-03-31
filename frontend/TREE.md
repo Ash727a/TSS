@@ -1,5 +1,4 @@
 - __frontend__
-   - [README.md](README.md)
    - [TREE.md](TREE.md)
    - [angular.json](angular.json)
    - [node\_modules](node_modules)
