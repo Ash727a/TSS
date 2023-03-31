@@ -23,7 +23,7 @@
 ```
 git clone https://github.com/NASA-SUITS-techteam/TSS.git
 ```
-3. Navigate to the `/frontend` or `/backend` folder
+3. Navigate to `/frontend`
 4. Run...
 ```
 npm i
@@ -31,6 +31,15 @@ npm i
 5. Run...
 ```
 npm start
+```
+6. In another terminal navigate to `/backend`
+7. Run...
+```
+npm i
+```
+8. Run...
+```
+npm run dev
 ```
 6. Open in your browser
 ```
