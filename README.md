@@ -41,7 +41,7 @@ npm i
 ```
 npm run dev
 ```
-6. Open in your browser
+9. Open in your browser
 ```
 localhost:4200
 ```
