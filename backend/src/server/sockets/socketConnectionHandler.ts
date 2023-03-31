@@ -51,7 +51,7 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
       }
       case 'SPEC': {
         const specMsg = parsedMsg as SpecMsg;
-        console.log(`Received spec data: ${specMsg.BLOB.DATA}`);
+        console.log(`Received spec data: ${JSON.stringify(specMsg.BLOB.DATA)}`);
         await parser.handleSpecData(specMsg, _models);
       }
     }
