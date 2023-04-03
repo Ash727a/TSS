@@ -34,67 +34,67 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   // Time
   @AllowNull(true)
   @Column(DataType.STRING)
-  declare time: string;
+  declare time?: string;
 
   // EPT
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare ept: number;
+  declare ept?: number;
 
   // Latitude
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare lat: number;
+  declare lat?: number;
 
   // Longitude
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare lon: number;
+  declare lon?: number;
 
   // Altitude
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare alt: number;
+  declare alt?: number;
 
   // EPX
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare epx: number;
+  declare epx?: number;
 
   // EPY
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare epy: number;
+  declare epy?: number;
 
   // EPV
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare epv: number;
+  declare epv?: number;
 
   // Track
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare track: number;
+  declare track?: number;
 
   // Speed
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare speed: number;
+  declare speed?: number;
 
   // Climb
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare climb: number;
+  declare climb?: number;
 
   // EPS
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare eps: number;
+  declare eps?: number;
 
   // EPC
   @AllowNull(true)
   @Column(DataType.DOUBLE)
-  declare epc: number;
+  declare epc?: number;
 }
 
 export type GpsAttributes = InferCreationAttributes<gpsMsg>;
