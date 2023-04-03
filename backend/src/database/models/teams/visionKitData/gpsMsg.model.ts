@@ -1,4 +1,4 @@
-import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { CreationAttributes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: gpsMsg
@@ -96,3 +96,5 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   @Column(DataType.DOUBLE)
   declare epc: number;
 }
+
+export type GpsAttributes = InferCreationAttributes<gpsMsg>;
