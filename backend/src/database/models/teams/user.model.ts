@@ -23,6 +23,10 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.STRING)
   declare username: string;
 
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare university: string;
+
   // Room ID (FK)
   // @ForeignKey(() => room)
   @AllowNull(true)
