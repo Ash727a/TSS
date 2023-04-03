@@ -6,17 +6,18 @@ import { CrewmemberMsg } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
-type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState'>;
+type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo'>;
 class User {
   // private room_id: number;
   private readonly username: string;
   private readonly guid: string;
+  private readonly university: string;
   private _models: ModelsForUser;
   private _ws: WebSocket;
   private user_record: user;
 
   private constructor(
-    { username, user_guid }: CrewmemberMsg['BLOB']['DATA'],
+    { username, user_guid, university }: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     user_record: user,
     _ws: WebSocket,
@@ -24,6 +25,7 @@ class User {
   ) {
     this.username = username;
     this.guid = user_guid;
+    this.university = university;
     this._models = _models;
     this.user_record = user_record;
     this._ws = _ws;
@@ -44,7 +46,7 @@ class User {
   // TODO: CHANGE TO ACTUAL FK, BUT NULLABLE
   // TODO: VALIDATE GUID AND USERNAME - MAYBE JUST USE AN OBJECT AS A MAP
   public static async build(
-    { username, user_guid }: CrewmemberMsg['BLOB']['DATA'],
+    { username, user_guid, university }: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     _ws: WebSocket,
     hmd_update_interval: number
@@ -75,12 +77,13 @@ class User {
         user_record = await user.create({
           username: username,
           user_guid: user_guid,
+          university: university,
           room_id: empty_room.id,
           is_connected: true,
         });
         console.log(`${username} assigned to room ${empty_room.name}`);
       }
-      return new User({ username, user_guid }, _models, user_record, _ws, hmd_update_interval);
+      return new User({ username, user_guid, university }, _models, user_record, _ws, hmd_update_interval);
 
       //check if assigned room is vacant
       // if (assigned_room) {
@@ -114,14 +117,18 @@ class User {
       //   where: { id: this.room_id },
       // });
 
+      const spec_data = await this._models.geo.findOne({
+        where: {
+          room_id: this.user_record.room_id,
+        },
+      });
+
       const data = {
         //gpsMsg: gps_val,
         //imuMsg: imu_val,
         simulationStates: sim_state,
-        /*
-          add spectrometer data
-          add rover data 
-        */
+        specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
+        // add rover data
       };
 
       if (sim_state?.is_running) {
