@@ -14,7 +14,8 @@ ws.on('open', () => {
       DATATYPE: 'CREWMEMBER',
       DATA: {
         username: teamName,
-        guid: vkguid,
+        user_guid: vkguid,
+        university: 'Some Uni',
       },
     },
   };
@@ -23,5 +24,6 @@ ws.on('open', () => {
 });
 
 ws.on('message', (message) => {
+  console.log('Message Received');
   console.log(message.toString());
 });
