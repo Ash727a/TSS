@@ -175,6 +175,9 @@ class simulationControl extends ModelRoute {
     simInst.sim.setFailure(simInst.failure);
     res.status(200).json(simInst.failure);
   }
+
+  public updateSimulationStation(): Promise<void> {
+    
 }
 
 export default simulationControl;

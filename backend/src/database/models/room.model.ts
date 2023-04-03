@@ -8,7 +8,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey,
  * @column session_log_id: Telemetry session ID (FK)
  * @column user_guid: User GUID
  * @column station_name: Station name
- * @column station_id: Station Log ID (FK)
+ * @column station_log_id: Station Log ID (FK)
  */
 
 // We export a function that defines the model.
@@ -49,5 +49,5 @@ export default class room extends Model<InferAttributes<room>, InferCreationAttr
   @AllowNull(false)
   @Default('')
   @Column(DataType.STRING)
-  declare station_id: string;
+  declare station_log_id: string;
 }
