@@ -1,75 +1,88 @@
 import type { Subset } from '../../database/models/interfaceHelpers';
 import type { UserCreationAttributes } from '../../database/models/teams/user.model';
+import { GpsAttributes } from '../../database/models/teams/visionKitData/gpsMsg.model';
 
-export interface SocketMsg<T> {
+interface SocketMsg {
   MSGTYPE: 'DATA';
-  BLOB: T;
+  // BLOB: SomeType
 }
 
-export interface UnknownMsgBlob {
+export interface UnknownMsg extends SocketMsg {
+  BLOB: UnknownMsgBlob;
+}
+
+interface UnknownMsgBlob {
   DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'SPEC';
 }
-export type UnknownMsg = SocketMsg<UnknownMsgBlob>;
 
-export interface CrewmemberBlob {
+export interface CrewmemberMsg extends SocketMsg {
+  BLOB: CrewmemberBlob;
+}
+
+interface CrewmemberBlob {
   DATATYPE: 'CREWMEMBER';
-  DATA: Subset<
-    UserCreationAttributes,
-    {
-      username: string;
-      user_guid: string;
-    }
-  >;
+  DATA: CrewmemberData;
 }
-export type CrewmemberMsg = SocketMsg<CrewmemberBlob>;
 
-export interface IMUMsgBlob {
+type CrewmemberData = Subset<
+  UserCreationAttributes,
+  {
+    username: string;
+    user_guid: string;
+    university: string;
+  }
+>;
+
+export interface IMUMsg {
+  MACADDRESS: string;
+  BLOB: ImuMsgBlob;
+}
+
+interface ImuMsgBlob {
   DATATYPE: 'IMU';
-  DATA: ImuData;
+  DATA: ImuMsgData;
 }
-export type IMUMsg = SocketMsg<IMUMsgBlob>;
 
-interface GPSMsg<T extends GPSMsgDataBase> {
+interface ImuMsgData {
+  accel_x: number;
+}
+
+export interface GpsMsg extends SocketMsg {
+  MACADDRESS: string;
+  BLOB: GPSMsgBlob;
+}
+
+interface GPSMsgBlob {
   DATATYPE: 'GPS';
-  DATA: T;
+  DATA: GPSMsgData;
 }
 
-interface GPSMsgDataBase {
-  class: 'TPV';
-  device: string;
-  mode: 0 | 1 | 2 | 3;
+interface GPSMsgData {
+  class?: 'TPV';
+  device?: string;
+  mode: number;
+  time?: string;
+  alt?: number;
+  climb?: number;
+  epx?: number;
+  epv?: number;
+  ept?: number;
+  eps?: number;
+  lat?: number;
+  lon?: number;
+  speed?: number;
+  track?: number;
+  epc?: number;
+  epy?: number;
 }
-export type GPSMsgBase = SocketMsg<GPSMsg<GPSMsgDataBase>>;
 
-interface GPSMsgDataNoFix extends GPSMsgDataBase {
-  mode: 1;
-  time: string;
-  ept: number;
+export interface SpecMsg extends SocketMsg {
+  BLOB: SpecMsgBlob;
 }
-export type GPSMsgNoFix = SocketMsg<GPSMsg<GPSMsgDataNoFix>>;
 
-interface GPSMsgDataFix extends GPSMsgDataBase {
-  mode: 2;
-  time: string;
-  alt: string;
-  climb: number;
-  epx: number;
-  epv: number;
-  ept: number;
-  eps: number;
-  lat: number;
-  lon: number;
-  speed: number;
-  track: number;
-  epc: number;
-  epy: number;
-}
-export type GPSMsgFix = SocketMsg<GPSMsg<GPSMsgDataFix>>;
-
-interface SpecMsgBlob extends UnknownMsgBlob {
+interface SpecMsgBlob {
   DATATYPE: 'SPEC';
   DATA: {
     TAG_ID: string;
   };
 }
-export type SpecMsg = SocketMsg<SpecMsgBlob>;
