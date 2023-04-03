@@ -16,14 +16,14 @@ class User {
   private user_record: user;
 
   private constructor(
-    { username, guid }: CrewmemberMsg['BLOB']['DATA'],
+    { username, user_guid }: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     user_record: user,
     _ws: WebSocket,
     hmd_update_interval: number
   ) {
     this.username = username;
-    this.guid = guid;
+    this.guid = user_guid;
     this._models = _models;
     this.user_record = user_record;
     this._ws = _ws;
@@ -44,7 +44,7 @@ class User {
   // TODO: CHANGE TO ACTUAL FK, BUT NULLABLE
   // TODO: VALIDATE GUID AND USERNAME - MAYBE JUST USE AN OBJECT AS A MAP
   public static async build(
-    { username, guid }: CrewmemberMsg['BLOB']['DATA'],
+    { username, user_guid }: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     _ws: WebSocket,
     hmd_update_interval: number
@@ -53,7 +53,7 @@ class User {
     const room = await _models.room;
 
     try {
-      let user_record = await user.findOne({ where: { user_guid: guid, username: username } });
+      let user_record = await user.findOne({ where: { user_guid: user_guid, username: username } });
 
       if (user_record) {
         console.log(`Found existing user with username: ${username}`);
@@ -70,17 +70,17 @@ class User {
           console.log(`No empty room found to assign the following user to:\nUsername: ${username}`);
           return null;
         }
-        empty_room.update({ user_guid: guid });
+        empty_room.update({ user_guid: user_guid });
         empty_room.save();
         user_record = await user.create({
           username: username,
-          user_guid: guid,
+          user_guid: user_guid,
           room_id: empty_room.id,
           is_connected: true,
         });
         console.log(`${username} assigned to room ${empty_room.name}`);
       }
-      return new User({ username, guid }, _models, user_record, _ws, hmd_update_interval);
+      return new User({ username, user_guid }, _models, user_record, _ws, hmd_update_interval);
 
       //check if assigned room is vacant
       // if (assigned_room) {
