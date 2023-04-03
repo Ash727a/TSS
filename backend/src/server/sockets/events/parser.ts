@@ -1,9 +1,9 @@
-import { IAllModels } from '../../../database/models/index.js';
-import { IMUData } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
+import { IAllModels, ILiveModels } from '../../../database/models/index.js';
+import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
 import { primaryKeyOf } from '../../../helpers.js';
-import { IMUMsg, SocketMsg, SpecMsg } from '../socketInterfaces.js';
+import { GpsMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
-import User from './user.class.js';
+import * as util from 'node:util';
 
 class Parser {
   // constructor() {}
@@ -11,8 +11,10 @@ class Parser {
   async parseMessageIMU(messageObject: any, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
     const imuMsg = await models.imuMsg;
 
+    delete messageObject.id;
+
     try {
-      const existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: messageObject.guid } });
+      const existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: messageObject.MACADDRESS } });
       if (!existing_imu) {
         imuMsg.create(messageObject);
       } else {
@@ -26,20 +28,50 @@ class Parser {
     }
   }
 
-  async parseMessageGPS(messageObject: any, models: { [x: string]: any; gpsMsg?: any }): Promise<void> {
+  // static setMissingToNull(obj: { [key: string]: any }): typeof obj {
+  //   for (const key of Object.keys(obj)) {
+  //     obj[key] = obj[key] || null;
+  //   }
+
+  //   return obj;
+  // }
+
+  static setMissingToNull(obj: { [key: string]: any }): void {
+    for (const key of Object.keys(obj)) {
+      obj[key] = obj[key] || null;
+    }
+  }
+
+  async parseMessageGPS(msgObj: GpsMsg, models: Pick<ILiveModels, 'gpsMsg'>): Promise<void> {
     const gpsMsg = await models.gpsMsg;
+    const msgData = msgObj.BLOB.DATA;
+
+    // These are sent by the vision kit but not used later
+
+    Parser.setMissingToNull(msgData);
+
+    delete msgObj.BLOB.DATA.device;
+
+    const newGpsRecord: Pick<GpsAttributes, 'user_guid' | 'mode'> & Partial<GpsAttributes> = {
+      user_guid: msgObj.MACADDRESS,
+      ...msgData,
+    };
+
+    if (newGpsRecord.user_guid == undefined) {
+      console.log(`GPS message's user_guid missing, discarding message`); // Should not happen
+      return;
+    }
 
     try {
-      const existing_gps = await gpsMsg.findOne({ where: { [primaryKeyOf(gpsMsg)]: messageObject.guid } });
+      const existing_gps = await gpsMsg.findOne({ where: { user_guid: newGpsRecord.user_guid } });
       if (!existing_gps) {
         console.log('GPS RECORD CREATED');
-        gpsMsg.create(messageObject);
+        gpsMsg.create(newGpsRecord);
       } else {
-        gpsMsg.update(messageObject, {
-          where: { [primaryKeyOf(gpsMsg)]: messageObject.guid },
+        await gpsMsg.update(newGpsRecord, {
+          where: { user_guid: newGpsRecord.user_guid },
         });
       }
-      return gpsMsg;
     } catch (e) {
       console.log(e);
     }
