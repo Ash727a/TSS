@@ -5,9 +5,15 @@ const rock_1_data = {
   // ... so on and so forth
 } as const;
 
+const rock_2_data = {
+  GOUDA: 12.53,
+  CHEDDAR: 59.13,
+  MOZZARELLA: 28.34,
+};
+
 export const spec_data_map = {
-  'id-1': rock_1_data,
-  'id-2': {},
+  '333030303237424545303439': rock_1_data,
+  '333030303332433934413831': rock_2_data,
   'id-3': {},
   'id-4': {},
 } as const;
