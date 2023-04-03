@@ -16,7 +16,8 @@
     "clear": "[[ -f src/database/local-sqlite-database/suits.sqlite ]] && rm src/database/local-sqlite-database/suits.sqlite && echo 'Successfully deleted database!' || echo 'No database to delete'",
     "refresh": "npm run clear && npm run populate",
     "test_user": "npx ts-node-esm src/server/sockets/test_clients/user_client.ts",
-    "test_spec": "npx ts-node-esm src/server/sockets/test_clients/spec_client.ts"
+    "test_spec": "npx ts-node-esm src/server/sockets/test_clients/spec_client.ts",
+    "tree": "echo 'Generating new README.md directory tree...\n' && npx md-file-tree . > README.md && echo 'Done!\n'"
   },
   "name": "backend",
   "version": "1.0.0",
