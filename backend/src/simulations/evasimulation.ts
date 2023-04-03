@@ -41,13 +41,8 @@ class EVASimulation {
     this.seedInstances();
   }
 
-  async seedInstances(): Promise<void> {
-    // Get the instances for the room
-    // const state = await models.simulationState.findOne({ where: { id: parseInt(this.room) } });
-    // const control = await models.simulationControl.findOne({ where: { room: parseInt(this.room) } });
-    // const failure = await models.simulationFailure.findOne({ where: { room: parseInt(this.room) } });
-    // Seed the states on start
-
+  private async seedInstances(): Promise<void> {
+    // Seed the simulation state
     await this.models.simulationState.update(INIT_TELEMETRY_DATA, {
       where: { [primaryKeyOf(this.models.simulationState)]: parseInt(this.room) },
     });
@@ -86,12 +81,6 @@ class EVASimulation {
     }
     // Update is_running
     this.simState.is_running = true;
-
-    // await models.simulationControl.findAll({ where: { room: roomid } }).then((data) => {
-    //   // console.log(data);
-    //   this.simControls = data[0].dataValues;
-    // });
-
     await this.models.simulationFailure
       .findAll({ where: { [primaryKeyOf(this.models.simulationFailure)]: roomid } })
       .then((data: any) => {
