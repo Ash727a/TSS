@@ -16,12 +16,11 @@ interface SimulationModels {
   telemetryErrorLog: any;
 }
 
+const VERBOSE = true;
 class EVASimulation {
   private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
   simStateID!: number;
-  simControlID!: number;
-  simFailureID!: number;
   holdID = null;
   lastTimestamp: number | null = null;
   session_log_id: string | null = null;
@@ -50,54 +49,54 @@ class EVASimulation {
     await this.models.simulationFailure.update(simFailureSeed, {
       where: { [primaryKeyOf(this.models.simulationFailure)]: parseInt(this.room) },
     });
-    console.log('Seed Completed');
+    if (VERBOSE) console.log('Seed Completed');
   }
 
-  // is_running(): boolean {
-  //   return this.simStateID !== null && this.simControlID !== null && this.simFailureID !== null;
-  // }
-
-  async start(roomid: any, sessionLogID: any): Promise<void | boolean> {
-    console.log('Starting Sim');
+  async start(roomID: any, sessionLogID: any): Promise<void | boolean> {
+    if (VERBOSE) console.log('Starting Sim');
     this.simState = INIT_TELEMETRY_DATA; // Clear data
     this.simControls = {};
     this.simFailure = {};
 
-    // The sim started. Update the session id for the current room
+    // Assign the UUIDV4 session log ID to the room
     await this.models.room.update(
       { session_log_id: sessionLogID },
-      { where: { [primaryKeyOf(this.models.room)]: roomid } }
+      { where: { [primaryKeyOf(this.models.room)]: roomID } }
     );
-    // TODO
 
+    // Fetch, then set the simulation state to the current EVASimulation instance
     await this.models.simulationState
-      .findAll({ where: { [primaryKeyOf(this.models.simulationState)]: roomid } })
+      .findAll({ where: { [primaryKeyOf(this.models.simulationState)]: roomID } })
       .then((data: any) => {
         this.simState = data[0].dataValues;
       });
 
+    // Check if the simulation is already running. This should never happen, but just in case
     if (this.simState.is_running) {
-      return false;
+      throw new Error('Simulation is already running');
     }
-    // Update is_running
+
+    // Set the current instance to running
     this.simState.is_running = true;
+
+    // Fetch, then set the simulation failures to the current EVASimulation instance
     await this.models.simulationFailure
-      .findAll({ where: { [primaryKeyOf(this.models.simulationFailure)]: roomid } })
+      .findAll({ where: { [primaryKeyOf(this.models.simulationFailure)]: roomID } })
       .then((data: any) => {
         this.simFailure = data[0].dataValues;
       });
 
+    // Create a new telemetry session log in the logs DB
     await this.models.telemetrySessionLog.create({
       session_log_id: sessionLogID,
-      room_id: roomid,
+      room_id: roomID,
       start_time: Date.now(),
     });
 
+    // Set the state id
     this.simStateID = Number.parseInt(this.simState[primaryKeyOf(this.models.simulationState)] as string);
-    // this.simControlID = this.simControls[primaryKeyOf(this.models.simulationControl)]];
-    this.simFailureID = this.simFailure[primaryKeyOf(this.models.simulationFailure)];
 
-    console.log('--------------Simulation Starting--------------');
+    if (VERBOSE) console.log('--------------Simulation Starting--------------');
     this.lastTimestamp = Date.now();
     this.simTimer = setInterval(() => {
       this.step();
@@ -112,7 +111,7 @@ class EVASimulation {
     if (!this.simState.is_running) {
       throw new Error('Cannot pause: simulation is not running or it is running and is already paused');
     }
-    console.log('--------------Simulation Paused-------------');
+    if (VERBOSE) console.log('--------------Simulation Paused-------------');
 
     clearInterval(this.simTimer);
     this.simTimer = undefined;
@@ -131,7 +130,7 @@ class EVASimulation {
       throw new Error('Cannot unpause: simulation is not running or it is running and is not paused');
     }
 
-    console.log('--------------Simulation Resumed-------------');
+    if (VERBOSE) console.log('--------------Simulation Resumed-------------');
     this.lastTimestamp = Date.now();
     this.simTimer = setInterval(() => {
       this.step();
@@ -161,7 +160,7 @@ class EVASimulation {
     clearInterval(this.simTimer);
     this.simTimer = undefined;
     this.lastTimestamp = null;
-    console.log('--------------Simulation Stopped-------------');
+    if (VERBOSE) console.log('--------------Simulation Stopped-------------');
 
     // Reseed here
     this.seedInstances();
@@ -173,13 +172,13 @@ class EVASimulation {
     return simState;
   }
   async getControls(): Promise<any> {
-    const controls = await this.models.simulationControl.findByPk(this.simControlID);
+    const controls = await this.models.simulationControl.findByPk(this.simStateID);
     //await SimulationControl.findById(controlID).exec()
     return controls;
   }
 
   async getFailure(): Promise<any> {
-    const failure = await this.models.simulationFailure.findByPk(this.simFailureID);
+    const failure = await this.models.simulationFailure.findByPk(this.simStateID);
     //await simulationFailure.findById(failureID).exec()
     return failure;
   }
@@ -187,7 +186,7 @@ class EVASimulation {
   async setFailure(newFailure: any): Promise<any> {
     const failure = await this.models.simulationFailure.update(newFailure, {
       where: {
-        [primaryKeyOf(this.models.simulationFailure)]: this.simFailureID,
+        [primaryKeyOf(this.models.simulationFailure)]: this.simStateID,
       },
     });
 
@@ -205,7 +204,7 @@ class EVASimulation {
     // const controls = await SimulationControl.findByIdAndUpdate(controlID, newControls, {new: true}).exec()
     const controls = await this.models.simulationControl.update(newControls, {
       where: {
-        [primaryKeyOf(this.models.simulationControl)]: this.simControlID,
+        [primaryKeyOf(this.models.simulationControl)]: this.simStateID,
       },
     });
 
@@ -218,20 +217,14 @@ class EVASimulation {
   }
 
   async step(): Promise<void> {
-    console.log(`StateID: ${this.simStateID}, ControlID: ${this.simControlID}, FailureID: ${this.simFailureID}`);
+    if (VERBOSE) console.log(`StateID: ${this.simStateID}`);
     try {
-      // const simState = await simulationState.findById(this.simStateID).exec()
-      // const controls = await simulationControl.findById(this.controlID).exec()
       const now = Date.now();
       const dt = now - (this.lastTimestamp || 0);
       this.lastTimestamp = now;
-      // Get all simulation failures (new data) and udpate the simFailure object
-      this.simStateID = this.simFailureID;
-
       const failureData = await this.models.simulationFailure.findAll({
-        where: { [primaryKeyOf(this.models.simulationFailure)]: this.simFailureID },
+        where: { [primaryKeyOf(this.models.simulationFailure)]: this.simStateID },
       });
-      console.log('stepping...');
       const newSimFailure = failureData[0].dataValues;
       this.simFailure = { ...this.simFailure, ...newSimFailure };
       // this.updateTelemetryErrorLogs();
@@ -251,7 +244,7 @@ class EVASimulation {
           },
         })
         .then(() => {
-          console.log('Updated');
+          if (VERBOSE) console.log('Updated');
         });
     } catch (error: any) {
       console.error('Caught failed error');
@@ -313,7 +306,6 @@ class EVASimulation {
     // TODO: Edge case when one room's station is still assigned when the TSS stops -- this will cause the station in logs to never be completed
     const roomData = await this.models.room.findOne({ where: { [primaryKeyOf(this.models.room)]: this.room } });
     const room = roomData?.dataValues;
-    console.log(room);
     // If the room's station name is different than the current station name, it means a new station has been assigned to this room
     if (this.station_name !== room.station_name) {
       // If the previous station's id is not null, then we should end the previous station's log
