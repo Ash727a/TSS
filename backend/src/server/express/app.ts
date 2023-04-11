@@ -157,9 +157,9 @@ class ExpressApp {
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.failureSim(req, res))
         );
         // For updating station
-        this.app.get(
+        this.app.put(
           `/api/${routeName}/sim/:room/station/:station`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.commandSim(req, res))
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateSimStation(req, res))
         );
       }
     }

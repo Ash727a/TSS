@@ -176,7 +176,7 @@ class simulationControl extends ModelRoute {
     res.status(200).json(simInst.failure);
   }
 
-  public async updateSim(req: APIRequest, res: APIResult): Promise<void> {
+  public async updateSimStation(req: APIRequest, res: APIResult): Promise<void> {
     const simInst: SimulationInstance | undefined = this.sims.find(
       (_sim: SimulationInstance) => _sim.room === req.params.room
     );
