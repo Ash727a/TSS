@@ -250,6 +250,7 @@ class EVASimulation {
       console.error('Caught failed error');
       console.error(error.toString());
     }
+    this.printState();
   }
 
   updateTelemetryErrorLogs(): void {
@@ -349,6 +350,20 @@ class EVASimulation {
     // Update the current instances values
     this.station_name = room.station_name;
     this.station_log_id = room.station_log_id;
+  }
+
+  /**
+   * Prints the current state of the simulation
+   */
+  private printState(): void {
+    console.log('Current State:');
+    console.log(this.simState);
+    console.log('Current Controls:');
+    console.log(this.simControls);
+    console.log('Current Failure:');
+    console.log(this.simFailure);
+    console.log('Current Station:');
+    console.log(this.station_name, this.station_log_id, '\n');
   }
 }
 

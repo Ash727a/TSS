@@ -175,6 +175,19 @@ class simulationControl extends ModelRoute {
     simInst.sim.setFailure(simInst.failure);
     res.status(200).json(simInst.failure);
   }
+
+  public async updateSim(req: APIRequest, res: APIResult): Promise<void> {
+    const simInst: SimulationInstance | undefined = this.sims.find(
+      (_sim: SimulationInstance) => _sim.room === req.params.room
+    );
+
+    if (!simInst) {
+      console.warn(`UPDATE No Sim Found of ${this.sims.length} sims`);
+      res.status(400).send('No sim found to update. Have you started the simulation?');
+      return;
+    }
+    console.log('🚀 ~ file: simulationControl.class.ts:190 ~ simulationControl ~ updateSim ~ req:', req);
+  }
 }
 
 export default simulationControl;
