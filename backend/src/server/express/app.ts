@@ -158,7 +158,7 @@ class ExpressApp {
         );
         // For updating station
         this.app.put(
-          `/api/${routeName}/sim/:room/station/:station`,
+          `/api/${routeName}/sim/:room/station`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateSimStation(req, res))
         );
       }

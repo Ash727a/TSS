@@ -186,7 +186,7 @@ class simulationControl extends ModelRoute {
       res.status(400).send('No sim found to update. Have you started the simulation?');
       return;
     }
-    console.log('🚀 ~ file: simulationControl.class.ts:190 ~ simulationControl ~ updateSim ~ req:', req);
+    simInst.sim.station_name = req.body.station;
   }
 }
 

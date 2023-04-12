@@ -70,9 +70,13 @@ export class RoomsService {
    * @param roomID The ID of the room to update
    */
   async updateEVASimulationRoomStation(roomID: number, newStation: string): Promise<any> {
-    const BACKEND_PATH = `${BACKEND_URL}/api/simulationControl/sim/${roomID}/station/${newStation}`;
+    let station = newStation;
+    const body = {
+      station: station ?? ''
+    }
+    const BACKEND_PATH = `${BACKEND_URL}/api/simulationControl/sim/${roomID}/station`;
     try {
-      await firstValueFrom(this.http.put(BACKEND_PATH, newStation));
+      await firstValueFrom(this.http.put(BACKEND_PATH, body));
       // PUT returns null on success, so return a custom ok object
       return { ok: true };
     } catch (e) {

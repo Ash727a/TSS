@@ -250,7 +250,7 @@ class EVASimulation {
       console.error('Caught failed error');
       console.error(error.toString());
     }
-    this.printState();
+    // this.printState();
   }
 
   updateTelemetryErrorLogs(): void {
@@ -309,8 +309,9 @@ class EVASimulation {
     const room = roomData?.dataValues;
     // If the room's station name is different than the current station name, it means a new station has been assigned to this room
     if (this.station_name !== room.station_name) {
+      console.log('found', this.station_name, room.station_name);
       // If the previous station's id is not null, then we should end the previous station's log
-      if (this.station_log_id !== null && this.station_log_id !== undefined && this.station_log_id !== '') {
+      if ([null, undefined, ''].includes(this.station_log_id) === false) {
         // End the previous station's log
         this.models.telemetryStationLog.update(
           {
@@ -325,18 +326,19 @@ class EVASimulation {
         );
       }
       // If the room was assigned to a new station, we want to create a new station log
-      if (room.station_name !== undefined && room.station_name !== null && room.station_name !== '') {
+      if ([null, undefined, ''].includes(this.station_name) === false) {
         this.station_log_id = uuidv4();
         this.models.telemetryStationLog.create({
           station_log_id: this.station_log_id,
           session_log_id: this.session_log_id,
           room_id: this.room,
-          station_name: room.station_name,
+          station_name: this.station_name,
           start_time: Date.now(),
         });
-        // Update the room's station id with the new id
+        // Update the room's station id with the new id and station name
         this.models.room.update(
           {
+            station_name: this.station_name,
             station_log_id: this.station_log_id,
           },
           {
@@ -345,11 +347,25 @@ class EVASimulation {
             },
           }
         );
+      } else {
+        // Case for unassigning a station from a room
+        this.models.room.update(
+          {
+            station_name: '',
+            station_log_id: '',
+          },
+          {
+            where: {
+              [primaryKeyOf(this.models.room)]: this.room,
+            },
+          }
+        );
       }
+    } else {
+      // Update the current instances values
+      this.station_name = room.station_name;
+      this.station_log_id = room.station_log_id;
     }
-    // Update the current instances values
-    this.station_name = room.station_name;
-    this.station_log_id = room.station_log_id;
   }
 
   /**
