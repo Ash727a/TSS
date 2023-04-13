@@ -64,4 +64,23 @@ export class RoomsService {
       }
     });
   }
+
+  /**
+   * This doesn't directly update the DB, it connects with the backend to update the simulation, which updates the DB
+   * @param roomID The ID of the room to update
+   */
+  async updateEVASimulationRoomStation(roomID: number, newStation: string): Promise<any> {
+    let station = newStation;
+    const body = {
+      station: station ?? ''
+    }
+    const BACKEND_PATH = `${BACKEND_URL}/api/simulationControl/sim/${roomID}/station`;
+    try {
+      await firstValueFrom(this.http.put(BACKEND_PATH, body));
+      // PUT returns null on success, so return a custom ok object
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, err: e };
+    }
+  }
 }

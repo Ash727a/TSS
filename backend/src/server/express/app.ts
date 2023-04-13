@@ -156,6 +156,16 @@ class ExpressApp {
           `/api/${routeName}/sim/:room/:failure`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.failureSim(req, res))
         );
+        // For updating station
+        this.app.put(
+          `/api/${routeName}/sim/:room/station`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateSimStation(req, res))
+        );
+        // For restoring sims after disconnection
+        this.app.put(
+          `/api/${routeName}/sim/restore`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.restoreSimulations(req, res))
+        );
       }
     }
   }

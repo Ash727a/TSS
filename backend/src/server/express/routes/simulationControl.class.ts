@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
@@ -176,8 +177,62 @@ class simulationControl extends ModelRoute {
     res.status(200).json(simInst.failure);
   }
 
-  public updateSimulationStation(): Promise<void> {
-    
+  public async updateSimStation(req: APIRequest, res: APIResult): Promise<void> {
+    const simInst: SimulationInstance | undefined = this.sims.find(
+      (_sim: SimulationInstance) => _sim.room === req.params.room
+    );
+
+    if (!simInst) {
+      console.warn(`UPDATE No Sim Found of ${this.sims.length} sims`);
+      res.status(400).send('No sim found to update. Have you started the simulation?');
+      return;
+    }
+    simInst.sim.station_name = req.body.station;
+  }
+
+  public async restoreSimulations(req: APIRequest, res: APIResult): Promise<void> {
+    const sims = await this.dependentModels.simulationState.findAll({
+      where: {
+        [Op.or]: [
+          {
+            is_running: 1,
+          },
+          {
+            is_paused: 1,
+          },
+        ],
+      },
+    });
+
+    //   sims.forEach((sim: SimulationControl) => {
+    //     const simInst: SimulationInstance = {
+    //       room: sim.room,
+    //       sim: new EVASimulation(this.dependentModels, sim.room, sim.session_log_id),
+    //       controls: {
+    //         fan_switch: sim.fan_switch,
+    //         suit_power: sim.suit_power,
+    //         o2_switch: sim.o2_switch,
+    //         aux: sim.aux,
+    //         rca: sim.rca,
+    //         pump: sim.pump,
+    //       },
+    //       failure: {
+    //         o2_error: sim.o2_error,
+    //         pump_error: sim.pump_error,
+    //         power_error: sim.power_error,
+    //         fan_error: sim.fan_error,
+    //       },
+    //     };
+
+    //     this.sims.push(simInst);
+
+    //     if (sim.status === 'running') {
+    //       simInst.sim.start(simInst.room, simInst.sim.session_log_id);
+    //     } else {
+    //       simInst.sim.pause();
+    //     }
+    //   });
+  }
 }
 
 export default simulationControl;

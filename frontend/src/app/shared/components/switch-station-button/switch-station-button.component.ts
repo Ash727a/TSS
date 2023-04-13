@@ -105,14 +105,15 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     if (!this.selectedRoom) {
       return;
     }
-    // Prevents multiple rooms being assigned to the same station
-    this.roomsService.unassignPreviouslyAssignedRoom(station_name);
-    // Assign the room to the station
-    const payload = {
-      ...this.selectedRoom,
-      station_name,
-    };
-    this.roomsService.updateRoomById(this.selectedRoom.id, payload);
+    // // Prevents multiple rooms being assigned to the same station
+    // this.roomsService.unassignPreviouslyAssignedRoom(station_name);
+    // // Assign the room to the station
+    // const payload = {
+    //   ...this.selectedRoom,
+    //   station_name,
+    // };
+    // this.roomsService.updateRoomById(this.selectedRoom.id, payload);
+    this.roomsService.updateEVASimulationRoomStation(this.selectedRoom.id, station_name);
   }
 
   ngOnDestroy(): void {
