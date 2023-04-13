@@ -4,9 +4,9 @@ import Parser from './events/parser.js';
 import User from './events/user.class.js';
 
 import type { IAllModels } from '../../database/models/index.js';
-import type { CrewmemberMsg, IMUMsg, SpecMsg, UnknownMsg, GpsMsg } from './socketInterfaces.js';
 
-import * as utils from 'node:util';
+import type { CrewmemberMsg, GPSMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
+import { DATATYPE } from './enums/socket.enum';
 
 export default function handleSocketConnection(_ws: WebSocket, _models: IAllModels, hmd_update_interval: number): void {
   const parser = new Parser();
@@ -29,7 +29,7 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
     }
 
     switch (parsedMsg.BLOB.DATATYPE) {
-      case 'CREWMEMBER': {
+      case DATATYPE.CREWMEMBER: {
         const crewMemberMsg = parsedMsg as CrewmemberMsg;
         const user = await User.build(crewMemberMsg.BLOB.DATA, _models, _ws, hmd_update_interval);
 
@@ -40,18 +40,17 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
         break;
       }
 
-      case 'IMU': {
-        const imuMsg = parsedMsg as unknown as IMUMsg;
+      case DATATYPE.IMU: {
+        const imuMsg = parsedMsg as IMUMsg;
         parser.parseMessageIMU(imuMsg, _models);
         break;
       }
-
-      case 'GPS': {
-        const gpsMsg = parsedMsg as unknown as GpsMsg;
+      case DATATYPE.GPS: {
+        const gpsMsg = parsedMsg as GPSMsg;
         parser.parseMessageGPS(gpsMsg, _models);
         break;
       }
-      case 'SPEC': {
+      case DATATYPE.SPEC: {
         const specMsg = parsedMsg as SpecMsg;
         await parser.handleSpecData(specMsg, _models);
         break;

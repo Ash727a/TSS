@@ -45,6 +45,7 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
       // Prevents multiple rooms being assigned to the same station
       this.roomsService.unassignPreviouslyAssignedRoom(station_name);
     }
+    // Update the station with the new station name
     const payload = {
       ...this.selectedRoom,
       station_name,
