@@ -46,4 +46,4 @@ function connect_user(test_user: TestUser): void {
   });
 }
 
-connect_user(test_user_2);
+connect_user(test_user_1);

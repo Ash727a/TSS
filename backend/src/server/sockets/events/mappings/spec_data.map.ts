@@ -11,6 +11,7 @@
 // |  CaO       | 10.64                     | 8.22                                  | 8.12                        | 14.22                                 | 11.11                               | 9.37                                   | 10.52                                |
 // |  K2O       | -0.11                     | -0.13                                 | -0.12                       | 0.43                                  | -0.02                               | -0.08                                  | 0.28                                 |
 // |  P2O3      | 0.34                      | 0.29                                  | 0.28                        | 0.65                                  | 0.38                                | 0.34                                   | 0.44                                 |
+
 const mare_basalt = {
   SiO2: 40.58,
   TiO2: 12.83,
@@ -102,10 +103,10 @@ const rock_2_data = {
 } as const;
 
 export const spec_data_map = {
-  '333030303237424545303439': rock_1_data,
-  '333030303332433934413831': rock_2_data,
-  'id-3': {},
-  'id-4': {},
+  '333030303237424545303439': mare_basalt,
+  '333030303332433934413831': vesicular_basalt,
+  'id-3': olivine_basalt_1,
+  'id-4': feldspathic_basalt,
 } as const;
 
 type ValidRockId = keyof typeof spec_data_map;

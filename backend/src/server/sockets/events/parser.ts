@@ -1,28 +1,59 @@
+import { where } from 'sequelize';
 import { IAllModels, ILiveModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
 import { primaryKeyOf } from '../../../helpers.js';
 import { GpsMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import * as util from 'node:util';
+import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 
 class Parser {
   // constructor() {}
 
-  async parseMessageIMU(messageObject: any, models: { [x: string]: any; imuMsg?: any }): Promise<void> {
+  async parseMessageIMU(messageObject: any, models: Pick<ILiveModels, 'imuMsg' | 'user'>): Promise<void> {
     const imuMsg = await models.imuMsg;
+    const msgData = messageObject.BLOB.DATA;
 
     delete messageObject.id;
 
+    const matching_user = models.user.findOne({
+      where: {
+        user_guid: msgData.MACADDRESS,
+      },
+    });
+
+    if (!matching_user) {
+      console.log(`No user found with guid: ${msgData.MACADDRESS}. Dropping imu message`);
+      return;
+    }
+
+    const newImuRecord: Pick<IMUAttributes, 'user_guid'> & Partial<IMUAttributes> = {
+      user_guid: messageObject.MACADDRESS,
+      ...msgData,
+    };
+
     try {
-      const existing_imu = await imuMsg.findOne({ where: { [primaryKeyOf(imuMsg)]: messageObject.MACADDRESS } });
-      if (!existing_imu) {
-        imuMsg.create(messageObject);
+      const i: string = messageObject.MACADDRESS;
+      if (i == undefined) {
+        return;
       } else {
+        console.log('i is defined');
+      }
+
+      //IDEK WHAT'S GOING ON
+      console.log(`Finding: ${i}, type: ${typeof i}`);
+      const existing_imu = await models.imuMsg.findOne({ where: { user_guid: i } });
+
+      if (!existing_imu) {
+        console.log('creatin');
+        imuMsg.create(newImuRecord as any);
+      } else {
+        console.log('updating');
         imuMsg.update(messageObject, {
-          where: { [primaryKeyOf(imuMsg)]: messageObject.guid },
+          where: { user_guid: messageObject.MACADDRESS },
         });
       }
-      return imuMsg;
+      return;
     } catch (e) {
       console.log(e);
     }
@@ -42,7 +73,7 @@ class Parser {
     }
   }
 
-  async parseMessageGPS(msgObj: GpsMsg, models: Pick<ILiveModels, 'gpsMsg'>): Promise<void> {
+  async parseMessageGPS(msgObj: GpsMsg, models: Pick<ILiveModels, 'gpsMsg' | 'user'>): Promise<void> {
     const gpsMsg = await models.gpsMsg;
     const msgData = msgObj.BLOB.DATA;
 
@@ -59,6 +90,18 @@ class Parser {
 
     if (newGpsRecord.user_guid == undefined) {
       console.log(`GPS message's user_guid missing, discarding message`); // Should not happen
+      return;
+    }
+
+    // TEMPORARY WORKAROUND - DROPS MESSAGES IF NO USER RECORD HAS MATCHING GUID
+    const matching_user = models.user.findOne({
+      where: {
+        user_guid: msgObj.MACADDRESS,
+      },
+    });
+
+    if (!matching_user) {
+      console.log(`No user found with guid: ${msgObj.MACADDRESS}. Dropping message`);
       return;
     }
 

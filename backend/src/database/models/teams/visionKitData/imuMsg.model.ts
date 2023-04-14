@@ -78,3 +78,4 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
 }
 
 export type IMUData = Omit<InferCreationAttributes<imuMsg>, keyof Model>;
+export type IMUAttributes = InferCreationAttributes<imuMsg>;
