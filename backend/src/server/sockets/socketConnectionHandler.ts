@@ -5,8 +5,8 @@ import User from './events/user.class.js';
 
 import type { IAllModels } from '../../database/models/index.js';
 
-import type { CrewmemberMsg, GPSMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
-import { DATATYPE } from './enums/socket.enum';
+import type { CrewmemberMsg, GpsMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
+import { DATATYPE } from './enums/socket.enum.js';
 
 export default function handleSocketConnection(_ws: WebSocket, _models: IAllModels, hmd_update_interval: number): void {
   const parser = new Parser();
@@ -41,12 +41,12 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
       }
 
       case DATATYPE.IMU: {
-        const imuMsg = parsedMsg as IMUMsg;
+        const imuMsg = parsedMsg as unknown as IMUMsg;
         parser.parseMessageIMU(imuMsg, _models);
         break;
       }
       case DATATYPE.GPS: {
-        const gpsMsg = parsedMsg as GPSMsg;
+        const gpsMsg = parsedMsg as GpsMsg;
         parser.parseMessageGPS(gpsMsg, _models);
         break;
       }
