@@ -6,7 +6,7 @@ import { CrewmemberMsg } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
-type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg'>;
+type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia'>;
 class User {
   // private room_id: number;
   private readonly username: string;
@@ -123,10 +123,14 @@ class User {
         },
       });
 
+      // Assumes UIA PK is just the room id
+      const uiaMsg = await this._models.uia.findByPk(room_id);
+
       const data = {
         gpsMsg: gps_val,
         imuMsg: imu_val,
         simulationStates: sim_state,
+        uiaMsg: uiaMsg,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : null,
         // add rover data
       };
