@@ -6,7 +6,7 @@ import { CrewmemberMsg } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
-type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo'>;
+type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg'>;
 class User {
   // private room_id: number;
   private readonly username: string;
@@ -30,7 +30,7 @@ class User {
     this.user_record = user_record;
     this._ws = _ws;
 
-    setInterval(() => this.sendData(), hmd_update_interval);
+    const send_data_interval = setInterval(() => this.sendData(), hmd_update_interval);
 
     this._ws.on('close', async () => {
       console.log(`*** USER: ${this.user_record.username} DISCONNECTED ***`);
@@ -39,6 +39,7 @@ class User {
       // http.get(STOP_SIM_URL + `${session_room_id}/stop`);
 
       this.user_record.update({ is_connected: false });
+      clearInterval(send_data_interval);
       this._ws.terminate();
     });
   }
@@ -103,31 +104,30 @@ class User {
 
   async sendData(): Promise<void> {
     try {
+      const room_id = this.user_record.room_id;
+
       const sim_state_res = await this._models.simulationState.findOne({
-        where: { room_id: this.user_record.room_id },
+        where: { room_id: room_id },
       });
 
       const sim_state = sim_state_res?.get({ plain: true });
       if (sim_state == undefined) {
         return;
       }
-      // let gps_val  = await models.gpsMsg.findAll({ where: { user_guid: guid }});
-      // let imu_val  = await models.imuMsg.findAll({ where: { room_id: room_id }});
-      // const telem_val = await this._models.simulationState.findAll({
-      //   where: { id: this.room_id },
-      // });
+      const gps_val = await this._models.gpsMsg.findOne({ where: { user_guid: this.guid } });
+      const imu_val = await this._models.imuMsg.findOne({ where: { user_guid: this.guid } });
 
       const spec_data = await this._models.geo.findOne({
         where: {
-          room_id: this.user_record.room_id,
+          room_id: room_id,
         },
       });
 
       const data = {
-        //gpsMsg: gps_val,
-        //imuMsg: imu_val,
+        gpsMsg: gps_val,
+        imuMsg: imu_val,
         simulationStates: sim_state,
-        specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
+        specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : null,
         // add rover data
       };
 
