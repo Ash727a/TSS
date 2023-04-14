@@ -11,9 +11,8 @@ class Parser {
   // constructor() {}
 
   async parseMessageIMU(messageObject: any, models: Pick<ILiveModels, 'imuMsg' | 'user'>): Promise<void> {
-    const imuMsg = await models.imuMsg;
-    const msgData = messageObject.BLOB.DATA;
 
+    const msgData = messageObject.BLOB.DATA;
     delete messageObject.id;
 
     const matching_user = models.user.findOne({
@@ -33,25 +32,18 @@ class Parser {
     };
 
     try {
-      const i: string = messageObject.MACADDRESS;
-      if (i == undefined) {
-        return;
-      } else {
-        console.log('i is defined');
-      }
-
-      //IDEK WHAT'S GOING ON
-      console.log(`Finding: ${i}, type: ${typeof i}`);
-      const existing_imu = await models.imuMsg.findOne({ where: { user_guid: i } });
+      const existing_imu = await models.imuMsg.findOne({ where: { user_guid: "fdbee7e5-9887-495e-aabb-f10d1386a7e9" }});
 
       if (!existing_imu) {
         console.log('creatin');
-        imuMsg.create(newImuRecord as any);
+        // models.imuMsg.create(newImuRecord as any);
+        models.imuMsg.create(newImuRecord as IMUAttributes);
+
       } else {
         console.log('updating');
-        imuMsg.update(messageObject, {
-          where: { user_guid: messageObject.MACADDRESS },
-        });
+        // models.imuMsg.update(newImuRecord, {
+        //   where: { user_guid: "fdbee7e5-9887-495e-aabb-f10d1386a7e9" },
+        // });
       }
       return;
     } catch (e) {

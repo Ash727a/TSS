@@ -23,8 +23,8 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     await models.simulationFailure.create(simRow);
     await models.simulationState.create(simRow);
     await models.uia.create(simRow);
-    await models.gpsMsg.create(simRow);
-    await models.imuMsg.create(simRow);
+    // await models.gpsMsg.create(simRow);
+    // await models.imuMsg.create(simRow);
   });
 
   console.log('Done!');

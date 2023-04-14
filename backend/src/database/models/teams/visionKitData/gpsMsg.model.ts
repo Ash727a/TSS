@@ -23,8 +23,8 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   // User GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
   @AllowNull(true)
-  @Column(DataType.UUIDV4)
-  declare user_guid: string;
+  @Column(DataType.STRING)
+  declare user_guid?: string;
 
   // Mode
   @AllowNull(true)
