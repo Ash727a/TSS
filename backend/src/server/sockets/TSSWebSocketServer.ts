@@ -13,10 +13,16 @@ export class TSSWebSocketServer {
     this._server = http.createServer();
     this._wss = new WebSocketServer({ server: this._server });
 
-    this._wss.on('connection', (ws: WebSocket, req) => {
+    this._wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
       console.log(`*** USER CONNECTED ***`);
 
       handleSocketConnection(ws, _models, HMD_UPDATE_INTERVAL);
+    });
+
+    this._wss.on('close', () => {
+      for (const ws of this._wss.clients) {
+        ws.close();
+      }
     });
 
     this._server.listen(socket_port, () => {
