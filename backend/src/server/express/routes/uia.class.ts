@@ -1,3 +1,4 @@
+import { IAllModels } from '../../../database/models/index.js';
 import { primaryKeyOf } from '../../../helpers.js';
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import ModelRoute from './ModelRoute.class.js';
@@ -9,23 +10,31 @@ import ModelRoute from './ModelRoute.class.js';
  * @returns {uia} - The uia object.
  */
 class uia extends ModelRoute {
-  constructor(_model: SequelizeModel) {
+  private room_model: SequelizeModel;
+  constructor(_model: SequelizeModel, room_model: SequelizeModel) {
     super(_model);
+    this.room_model = room_model;
   }
 
   async updateUIA(req: APIRequest, res: APIResult): Promise<void> {
-    const roomInUIA = await this.model.findOne({
-      attributes: ['id'],
-      where: {
-        station_name: 'UIA',
-      },
-    });
+    const roomInUIA = await this.room_model
+      .findOne({
+        attributes: ['id'],
+        where: {
+          station_name: 'UIA',
+        },
+      })
+      .catch((e) => {
+        console.log(e);
+      });
 
     if (roomInUIA === null) {
+      res.status(200).send('No room in UIA');
+      console.log('No room in UIA');
       return;
     }
 
-    const id = roomInUIA.get('id');
+    const id = roomInUIA?.get('id');
 
     await this.model.update(req.body, {
       where: {
