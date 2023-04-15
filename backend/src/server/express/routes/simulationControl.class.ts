@@ -2,7 +2,7 @@ import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
-import EVASimulation from '../../../simulations/evasimulation.js';
+import EVASimulation from '../../../simulations/EVASimulation.js';
 import ModelRoute from './ModelRoute.class.js';
 
 /** CLASS: simulationControl
