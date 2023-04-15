@@ -41,13 +41,13 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
       }
 
       case DATATYPE.IMU: {
-        console.log('IMU');
+        // console.log('IMU');
         const imuMsg = parsedMsg as unknown as IMUMsg;
         parser.parseMessageIMU(imuMsg, _models);
         break;
       }
       case DATATYPE.GPS: {
-        console.log('GPS');
+        // console.log('GPS');
         const gpsMsg = parsedMsg as GpsMsg;
         parser.parseMessageGPS(gpsMsg, _models);
         break;

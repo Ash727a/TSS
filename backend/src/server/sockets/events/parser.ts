@@ -11,13 +11,16 @@ class Parser {
   // constructor() {}
 
   async parseMessageIMU(messageObject: any, models: Pick<ILiveModels, 'imuMsg' | 'user'>): Promise<void> {
-
     const msgData = messageObject.BLOB.DATA;
     delete messageObject.id;
 
+    // console.log(util.inspect(messageObject));
+
+    const user_guid = messageObject.MACADDRESS;
+
     const matching_user = models.user.findOne({
       where: {
-        user_guid: msgData.MACADDRESS,
+        user_guid: user_guid,
       },
     });
 
@@ -27,23 +30,24 @@ class Parser {
     }
 
     const newImuRecord: Pick<IMUAttributes, 'user_guid'> & Partial<IMUAttributes> = {
-      user_guid: messageObject.MACADDRESS,
+      user_guid: user_guid,
       ...msgData,
     };
 
     try {
-      const existing_imu = await models.imuMsg.findOne({ where: { user_guid: "fdbee7e5-9887-495e-aabb-f10d1386a7e9" }});
+      const existing_imu = await models.imuMsg.findOne({
+        where: { user_guid: user_guid },
+      });
 
       if (!existing_imu) {
-        console.log('creatin');
+        // console.log('creatin');
         // models.imuMsg.create(newImuRecord as any);
         models.imuMsg.create(newImuRecord as IMUAttributes);
-
       } else {
-        console.log('updating');
-        // models.imuMsg.update(newImuRecord, {
-        //   where: { user_guid: "fdbee7e5-9887-495e-aabb-f10d1386a7e9" },
-        // });
+        // console.log('updating');
+        models.imuMsg.update(newImuRecord, {
+          where: { user_guid: user_guid },
+        });
       }
       return;
     } catch (e) {
