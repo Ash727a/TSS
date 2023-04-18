@@ -21,7 +21,7 @@ class EVASimulation {
   private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
   simStateID!: number;
-  holdID = null;
+  // holdID = null;
   lastTimestamp: number | null = null;
   session_log_id: string | null = null;
   private readonly room;
@@ -33,11 +33,14 @@ class EVASimulation {
   station_log_id: string | null | undefined;
   station_name: string | undefined;
 
-  constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null) {
+  constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null, _restore_flag: boolean) {
     this.models = _models;
     this.room = _room_id;
     this.session_log_id = _session_log_id;
-    this.seedInstances();
+    // If the restore flag is true, it is initializing a sim that is being restored, so don't seed the database row
+    if (!_restore_flag) {
+      this.seedInstances();
+    }
   }
 
   private async seedInstances(): Promise<void> {

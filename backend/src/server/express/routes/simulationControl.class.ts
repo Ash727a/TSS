@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import EVASimulation from '../../../simulations/EVASimulation.js';
 import ModelRoute from './ModelRoute.class.js';
+import { primaryKeyOf } from '../../../helpers.js';
 
 /** CLASS: simulationControl
  * @description: This class matches with the simulationControl model in the DB.
@@ -17,7 +18,7 @@ type SimulationInstance = {
   room: string;
   sim: EVASimulation;
   controls: { [key: string]: boolean };
-  failure: { [key: string]: boolean };
+  // failure: { [key: string]: boolean };
 };
 class simulationControl extends ModelRoute {
   private sims: SimulationInstance[] = [];
@@ -53,7 +54,7 @@ class simulationControl extends ModelRoute {
             if (!existingSim) {
               simInst = {
                 room: req.params.room,
-                sim: new EVASimulation(simModels, req.params.room, session_log_id),
+                sim: new EVASimulation(simModels, req.params.room, session_log_id, false),
                 controls: {
                   fan_switch: false,
                   suit_power: false,
@@ -61,12 +62,6 @@ class simulationControl extends ModelRoute {
                   aux: false,
                   rca: false,
                   pump: false,
-                },
-                failure: {
-                  o2_error: false,
-                  pump_error: false,
-                  power_error: false,
-                  fan_error: false,
                 },
               };
             } else {
@@ -123,28 +118,28 @@ class simulationControl extends ModelRoute {
 
     switch (req.params.control) {
       case 'fan_switch':
-        simInst.controls.fan_switch = !simInst.controls.fan_switch;
+        simInst.sim.simControls.fan_switch = !simInst.sim.simControls.fan_switch;
         break;
       case 'suit_power':
         console.log(`Instance Room: ${simInst.room} `);
-        simInst.controls.suit_power = !simInst.controls.suit_power;
+        simInst.sim.simControls.suit_power = !simInst.sim.simControls.suit_power;
         break;
       case 'o2_switch':
-        simInst.controls.o2_switch = !simInst.controls.o2_switch;
+        simInst.sim.simControls.o2_switch = !simInst.sim.simControls.o2_switch;
         break;
       case 'aux':
-        simInst.controls.aux = !simInst.controls.aux;
+        simInst.sim.simControls.aux = !simInst.sim.simControls.aux;
         break;
       case 'rca':
-        simInst.controls.rca = !simInst.controls.rca;
+        simInst.sim.simControls.rca = !simInst.sim.simControls.rca;
         break;
       case 'pump':
-        simInst.controls.pump = !simInst.controls.pump;
+        simInst.sim.simControls.pump = !simInst.sim.simControls.pump;
         break;
     }
 
-    simInst.sim.setControls(simInst.controls);
-    res.status(200).json(simInst.controls);
+    simInst.sim.setControls(simInst.sim.simControls);
+    res.status(200).json(simInst.sim.simControls);
   }
 
   public async failureSim(req: APIRequest, res: APIResult): Promise<void> {
@@ -160,21 +155,21 @@ class simulationControl extends ModelRoute {
 
     switch (req.params.failure) {
       case 'o2_error':
-        simInst.failure.o2_error = !simInst.failure.o2_error;
+        simInst.sim.simFailure.o2_error = !simInst.sim.simFailure.o2_error;
         break;
       case 'pump_error':
-        simInst.failure.pump_error = !simInst.failure.pump_error;
+        simInst.sim.simFailure.pump_error = !simInst.sim.simFailure.pump_error;
         break;
       case 'power_error':
-        simInst.failure.power_error = !simInst.failure.power_error;
+        simInst.sim.simFailure.power_error = !simInst.sim.simFailure.power_error;
         break;
       case 'fan_error':
-        simInst.failure.fan_error = !simInst.failure.fan_error;
+        simInst.sim.simFailure.fan_error = !simInst.sim.simFailure.fan_error;
         break;
     }
 
-    simInst.sim.setFailure(simInst.failure);
-    res.status(200).json(simInst.failure);
+    simInst.sim.setFailure(simInst.sim.simFailure);
+    res.status(200).json(simInst.sim.simFailure);
   }
 
   public async updateSimStation(req: APIRequest, res: APIResult): Promise<void> {
@@ -204,8 +199,8 @@ class simulationControl extends ModelRoute {
         ],
       },
     });
-    console.log(sims[0]);
-    sims.forEach((sim: any) => {
+    console.log('Found sims', sims);
+    sims.forEach(async (sim: any) => {
       const simModels = {
         simulationState: this.dependentModels.simulationState,
         simulationControl: this.dependentModels.simulationControl,
@@ -216,15 +211,39 @@ class simulationControl extends ModelRoute {
         telemetryErrorLog: this.dependentModels.telemetryErrorLog,
       };
       const _savedStateValues = sim.dataValues;
+      let _session_log_id;
+      let _station_log_id;
+      let _station_name;
+      let _errors = {};
       // TODO
       /**
-       * - restore session log id
-       * - restore controls
-       * - restore failure
+       * - restore failure ID
        */
+      // Restore the session log id (& station log id if it exists)
+      const _room = await this.dependentModels.room.findOne({
+        where: {
+          [primaryKeyOf(this.dependentModels.room)]: _savedStateValues.room_id,
+        },
+      });
+      if (_room) {
+        _session_log_id = _room.dataValues.session_log_id;
+        _station_log_id = _room.dataValues.station_log_id;
+        _station_name = _room.dataValues.station_name;
+        const failure_res = await this.dependentModels.simulationFailure.findOne({
+          where: {
+            [primaryKeyOf(this.dependentModels.simulationFailure)]: _savedStateValues.room_id,
+          },
+        });
+        if (failure_res) {
+          _errors = failure_res.dataValues;
+        }
+      } else {
+        console.log(`Error: Room ${_savedStateValues.room_id}'s session_log_id was not found.}`);
+      }
+
       const simInst: SimulationInstance = {
         room: _savedStateValues.room_id,
-        sim: new EVASimulation(simModels, _savedStateValues.room_id, sim.session_log_id),
+        sim: new EVASimulation(simModels, _savedStateValues.room_id, _session_log_id, true),
         controls: {
           fan_switch: sim.fan_switch,
           suit_power: sim.suit_power,
@@ -233,14 +252,14 @@ class simulationControl extends ModelRoute {
           rca: sim.rca,
           pump: sim.pump,
         },
-        failure: {
-          o2_error: sim.o2_error,
-          pump_error: sim.pump_error,
-          power_error: sim.power_error,
-          fan_error: sim.fan_error,
-        },
       };
+      console.log('station', _station_log_id, _station_name);
+      simInst.sim.station_log_id = _station_log_id;
+      simInst.sim.station_name = _station_name;
+      simInst.sim.simFailure = _errors;
       delete _savedStateValues.room_id;
+      delete _savedStateValues.session_log_id;
+      delete _savedStateValues.station_log_id;
       simInst.sim.simState = _savedStateValues;
 
       this.sims.push(simInst);
@@ -250,9 +269,10 @@ class simulationControl extends ModelRoute {
       // } else {
       //   simInst.sim.pause();
       // }
-      console.log('NEW SIMS LIST');
-      console.log(this.sims);
-      console.log('state', this.sims[0].sim.simState);
+      // console.log('NEW SIMS LIST');
+      // console.log(this.sims);
+      // console.log('state', this.sims[0].sim.simState);
+      console.log('CREATED', simInst);
     });
   }
 }
