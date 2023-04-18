@@ -46,9 +46,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
       console.log(status)
       const previouslyConnected = status.previous;
       if (this.backendConnected) {
-        // If not previously connected, then restore simulations by reinitializing the ones "running" in the DB
+        // If not previously connected, then restore simulations by re-initializing the ones "running" in the DB
         if (!previouslyConnected) {
-          
+          console.log('not previously connected...')
+          this.telemetryService.restoreSimulations().then((res) => {
+            if (res.ok) {
+              console.log('Restored simulations');
+            }
+          });
         }
         this.roomsService
           .getRooms()

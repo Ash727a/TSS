@@ -191,6 +191,7 @@ class simulationControl extends ModelRoute {
   }
 
   public async restoreSimulations(req: APIRequest, res: APIResult): Promise<void> {
+    console.log('resotring sims...');
     const sims = await this.dependentModels.simulationState.findAll({
       where: {
         [Op.or]: [
@@ -203,35 +204,56 @@ class simulationControl extends ModelRoute {
         ],
       },
     });
+    console.log(sims[0]);
+    sims.forEach((sim: any) => {
+      const simModels = {
+        simulationState: this.dependentModels.simulationState,
+        simulationControl: this.dependentModels.simulationControl,
+        simulationFailure: this.dependentModels.simulationFailure,
+        room: this.dependentModels.room,
+        telemetrySessionLog: this.dependentModels.telemetrySessionLog,
+        telemetryStationLog: this.dependentModels.telemetryStationLog,
+        telemetryErrorLog: this.dependentModels.telemetryErrorLog,
+      };
+      const _savedStateValues = sim.dataValues;
+      // TODO
+      /**
+       * - restore session log id
+       * - restore controls
+       * - restore failure
+       */
+      const simInst: SimulationInstance = {
+        room: _savedStateValues.room_id,
+        sim: new EVASimulation(simModels, _savedStateValues.room_id, sim.session_log_id),
+        controls: {
+          fan_switch: sim.fan_switch,
+          suit_power: sim.suit_power,
+          o2_switch: sim.o2_switch,
+          aux: sim.aux,
+          rca: sim.rca,
+          pump: sim.pump,
+        },
+        failure: {
+          o2_error: sim.o2_error,
+          pump_error: sim.pump_error,
+          power_error: sim.power_error,
+          fan_error: sim.fan_error,
+        },
+      };
+      delete _savedStateValues.room_id;
+      simInst.sim.simState = _savedStateValues;
 
-    //   sims.forEach((sim: SimulationControl) => {
-    //     const simInst: SimulationInstance = {
-    //       room: sim.room,
-    //       sim: new EVASimulation(this.dependentModels, sim.room, sim.session_log_id),
-    //       controls: {
-    //         fan_switch: sim.fan_switch,
-    //         suit_power: sim.suit_power,
-    //         o2_switch: sim.o2_switch,
-    //         aux: sim.aux,
-    //         rca: sim.rca,
-    //         pump: sim.pump,
-    //       },
-    //       failure: {
-    //         o2_error: sim.o2_error,
-    //         pump_error: sim.pump_error,
-    //         power_error: sim.power_error,
-    //         fan_error: sim.fan_error,
-    //       },
-    //     };
+      this.sims.push(simInst);
 
-    //     this.sims.push(simInst);
-
-    //     if (sim.status === 'running') {
-    //       simInst.sim.start(simInst.room, simInst.sim.session_log_id);
-    //     } else {
-    //       simInst.sim.pause();
-    //     }
-    //   });
+      // if (sim.status === 'running') {
+      //   simInst.sim.start(simInst.room, simInst.sim.session_log_id);
+      // } else {
+      //   simInst.sim.pause();
+      // }
+      console.log('NEW SIMS LIST');
+      console.log(this.sims);
+      console.log('state', this.sims[0].sim.simState);
+    });
   }
 }
 
