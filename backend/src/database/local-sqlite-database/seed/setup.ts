@@ -1,4 +1,4 @@
-import { liveDatabaseName, teams, visionKits } from '../../../config.js';
+import { liveDatabaseName, teams } from '../../../config.js';
 import { SequelizeModel } from '../../../interfaces.js';
 import Database from '../../Database.class.js';
 import { ILiveModels } from '../../models';

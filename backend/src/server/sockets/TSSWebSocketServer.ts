@@ -30,27 +30,3 @@ export class TSSWebSocketServer {
     });
   }
 }
-
-// function unassignAllRooms(): void {
-//   try {
-//     models.room
-//       .update({ client_id: null }, { where: { client_id: { [Op.ne]: null } } })
-//       .then(() => {
-//         console.log('All rooms unassigned');
-//       })
-//       .catch((err: any) => {
-//         console.error('Error unassigning rooms:', err);
-//       });
-//   } catch (e) {
-//     console.log(e);
-//   }
-// }
-
-// process.on('SIGINT', () => {
-//   console.log('Received SIGINT signal, shutting down server...');
-//   unassignAllRooms();
-//   server.close(() => {
-//     console.log('Server has been gracefully shutdown.');
-//     process.exit(0);
-//   });
-// });
