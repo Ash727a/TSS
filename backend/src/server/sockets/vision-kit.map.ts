@@ -9,6 +9,6 @@ const visionKitMap = {
   '66b6f3a5-63ca-4c49-95d1-e64d3a85a3a9': 'VK08',
   'af905783-78fc-465f-b965-be404b104d0f': 'VK09',
   'b16f5bff-a93a-48c1-bfd9-6d74dec1b144': 'VK10',
-};
+} as const;
 
 export default visionKitMap;
