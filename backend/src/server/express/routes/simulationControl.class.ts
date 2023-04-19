@@ -218,6 +218,8 @@ class simulationControl extends ModelRoute {
       // TODO
       /**
        * - restore failure ID
+       * - set sims as paused on restore
+       * - make sure extraneous instance vars are initialized correctly
        */
       // Restore the session log id (& station log id if it exists)
       const _room = await this.dependentModels.room.findOne({
@@ -269,10 +271,6 @@ class simulationControl extends ModelRoute {
       // } else {
       //   simInst.sim.pause();
       // }
-      // console.log('NEW SIMS LIST');
-      // console.log(this.sims);
-      // console.log('state', this.sims[0].sim.simState);
-      console.log('CREATED', simInst);
     });
   }
 }
