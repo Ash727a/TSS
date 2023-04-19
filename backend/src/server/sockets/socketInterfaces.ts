@@ -1,6 +1,12 @@
 import type { Subset } from '../../database/models/interfaceHelpers';
 import type { UserCreationAttributes } from '../../database/models/teams/user.model';
-import { GpsAttributes } from '../../database/models/teams/visionKitData/gpsMsg.model';
+
+export const enum DATATYPE {
+  'HMD' = 'HMD',
+  'IMU' = 'IMU',
+  'GPS' = 'GPS',
+  'SPEC' = 'SPEC',
+}
 
 interface SocketMsg {
   MSGTYPE: 'DATA';
@@ -12,7 +18,7 @@ export interface UnknownMsg extends SocketMsg {
 }
 
 interface UnknownMsgBlob {
-  DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'SPEC';
+  DATATYPE: keyof typeof DATATYPE;
 }
 
 export interface CrewmemberMsg extends SocketMsg {
@@ -20,13 +26,14 @@ export interface CrewmemberMsg extends SocketMsg {
 }
 
 interface CrewmemberBlob {
-  DATATYPE: 'CREWMEMBER';
+  DATATYPE: 'HMD';
   DATA: CrewmemberData;
 }
 
 type CrewmemberData = Subset<
   UserCreationAttributes,
   {
+    team_name: string;
     username: string;
     user_guid: string;
     university: string;
