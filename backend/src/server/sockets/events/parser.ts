@@ -77,7 +77,8 @@ class Parser {
 
     Parser.setMissingToNull(msgData);
 
-    delete msgObj.BLOB.DATA.device;
+    delete msgData.device;
+    delete msgData.class;
 
     const newGpsRecord: Pick<GpsAttributes, 'user_guid' | 'mode'> & Partial<GpsAttributes> = {
       user_guid: msgObj.MACADDRESS,
