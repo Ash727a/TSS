@@ -1,38 +1,41 @@
+import { InferCreationAttributes } from 'sequelize';
 import WebSocket from 'ws';
+import user from '../../../database/models/teams/user.model';
 
 const socketUrl = 'ws://localhost:3001';
 
 interface TestUser {
-  teamName: string;
-  vkguid: string;
+  team_name: string;
+  username: string;
   university: string;
+  user_guid: string;
 }
 
 const test_user_1: TestUser = {
-  teamName: 'Test Team 1',
-  vkguid: 'fdbee7e5-9887-495e-aabb-f10d1386a7e9',
+  team_name: 'Test Team 1',
+  username: 'User 1',
   university: 'Uni 1',
+  user_guid: 'fdbee7e5-9887-495e-aabb-f10d1386a7e9',
 };
 
 const test_user_2: TestUser = {
-  teamName: 'Test Team 2',
-  vkguid: 'some_guid',
+  team_name: 'Test Team 2',
+  username: 'User 2',
   university: 'Uni 2',
+  user_guid: 'some_guid',
 };
 
 function connect_user(test_user: TestUser): void {
   const ws = new WebSocket(socketUrl);
 
   ws.on('open', () => {
-    console.log(test_user.teamName);
+    console.log(`Attempting to register team ${test_user.team_name}`);
     const data = {
       MSGTYPE: 'DATA',
       BLOB: {
-        DATATYPE: 'CREWMEMBER',
+        DATATYPE: 'HMD',
         DATA: {
-          username: test_user.teamName,
-          user_guid: test_user.vkguid,
-          university: test_user.university,
+          ...test_user,
         },
       },
     };
@@ -41,8 +44,12 @@ function connect_user(test_user: TestUser): void {
   });
 
   ws.on('message', (message) => {
-    console.log('Message Received');
+    console.log('Message Received:');
     console.log(message.toString());
+  });
+
+  ws.on('close', (code, reason) => {
+    console.log(`ws closed with code ${code} and reason: ${reason}`);
   });
 }
 

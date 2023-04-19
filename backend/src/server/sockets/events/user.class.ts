@@ -9,6 +9,7 @@ import type user from '../../../database/models/teams/user.model.js';
 type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia'>;
 class User {
   // private room_id: number;
+  private readonly team_name: string;
   private readonly username: string;
   private readonly guid: string;
   private readonly university: string;
@@ -17,15 +18,16 @@ class User {
   private user_record: user;
 
   private constructor(
-    { username, user_guid, university }: CrewmemberMsg['BLOB']['DATA'],
+    registration_info: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     user_record: user,
     _ws: WebSocket,
     hmd_update_interval: number
   ) {
-    this.username = username;
-    this.guid = user_guid;
-    this.university = university;
+    this.team_name = registration_info.team_name;
+    this.username = registration_info.username;
+    this.guid = registration_info.user_guid;
+    this.university = registration_info.university;
     this._models = _models;
     this.user_record = user_record;
     this._ws = _ws;
@@ -47,7 +49,7 @@ class User {
   // TODO: CHANGE TO ACTUAL FK, BUT NULLABLE
   // TODO: VALIDATE GUID AND USERNAME - MAYBE JUST USE AN OBJECT AS A MAP
   public static async build(
-    { username, user_guid, university }: CrewmemberMsg['BLOB']['DATA'],
+    registration_info: CrewmemberMsg['BLOB']['DATA'],
     _models: ModelsForUser,
     _ws: WebSocket,
     hmd_update_interval: number
@@ -56,35 +58,38 @@ class User {
     const room = await _models.room;
 
     try {
-      let user_record = await user.findOne({ where: { user_guid: user_guid, username: username } });
+      let user_record = await user.findOne({
+        where: { user_guid: registration_info.user_guid, username: registration_info.username },
+      });
 
       if (user_record) {
-        console.log(`Found existing user with username: ${username}`);
+        console.log(`Found existing user with username: ${registration_info.username}`);
 
         // Reject connections if user is already connected
         if (user_record?.is_connected) {
-          console.log(`${username} is already conencted. Cannot create new instance`);
+          console.log(`${registration_info.username} is already conencted. Cannot create new instance`);
           return null;
         }
         user_record.update({ is_connected: true });
       } else {
         const empty_room = await room.findOne({ where: { user_guid: null } });
         if (empty_room === null) {
-          console.log(`No empty room found to assign the following user to:\nUsername: ${username}`);
+          console.log(`No empty room found to assign the following user to:\nUsername: ${registration_info.username}`);
           return null;
         }
-        empty_room.update({ user_guid: user_guid });
+        empty_room.update({ user_guid: registration_info.user_guid });
         empty_room.save();
         user_record = await user.create({
-          username: username,
-          user_guid: user_guid,
-          university: university,
+          team_name: registration_info.team_name,
+          username: registration_info.username,
+          user_guid: registration_info.user_guid,
+          university: registration_info.university,
           room_id: empty_room.id,
           is_connected: true,
         });
-        console.log(`${username} assigned to room ${empty_room.name}`);
+        console.log(`${registration_info.username} assigned to room ${empty_room.name}`);
       }
-      return new User({ username, user_guid, university }, _models, user_record, _ws, hmd_update_interval);
+      return new User(registration_info, _models, user_record, _ws, hmd_update_interval);
 
       //check if assigned room is vacant
       // if (assigned_room) {

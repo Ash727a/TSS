@@ -18,6 +18,10 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.UUIDV4)
   declare user_guid: string;
 
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare team_name: string;
+
   // User name
   @AllowNull(false)
   @Column(DataType.STRING)
