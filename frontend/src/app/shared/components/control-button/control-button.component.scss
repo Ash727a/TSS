@@ -15,9 +15,6 @@ button {
     text-decoration: none;
     text-transform: uppercase;
     transition: all 0.2s ease-in-out;
-    // &.light {
-    //     background-color: $primary;
-    // }
 }
 
 .gray {
@@ -40,5 +37,13 @@ button {
     &:hover {
         opacity: 0.7;
         background-color: $red;
+    }
+}
+
+.yellow {
+    background-color: $yellow;
+    &:hover {
+        opacity: 0.7;
+        background-color: $yellow;
     }
 }

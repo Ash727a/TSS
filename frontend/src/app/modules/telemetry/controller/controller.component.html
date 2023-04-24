@@ -16,11 +16,11 @@
     </h5>
     <div class="row">
       <app-shared-control-button
-        type="start"
-        [disabled]="connected == undefined || connected"
-        (click)="startTelemetry()"
+        type="{{ this.telemetryData.is_paused ? 'resume' : this.telemetryData.is_running && !this.telemetryData.is_paused ? 'pause' : 'start' }}"
+        (click)="handleLeftButtonClick()"
+        [disabled]="false"
         [variant]="variant === 'small' ? 'light' : 'default'"
-        >Start</app-shared-control-button
+        >{{ this.telemetryData.is_paused ? 'Resume' : this.telemetryData.is_running && !this.telemetryData.is_paused ? 'Pause' : 'Start' }}</app-shared-control-button
       >
       <app-shared-control-button
         type="stop"

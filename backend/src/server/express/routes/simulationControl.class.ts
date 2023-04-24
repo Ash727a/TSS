@@ -34,9 +34,9 @@ class simulationControl extends ModelRoute {
     if (req.params.event && req.params.room) {
       // Check if the sim already exists
       const existingSim: SimulationInstance | undefined = this.sims.find(
-        (_sim: SimulationInstance) => _sim.room === req.params.room
+        (_sim: SimulationInstance) => req.params.room.toString() === _sim.room.toString()
       );
-
+      console.log('exisitng sim', existingSim, 'room', req.params.room, this.sims);
       switch (req.params.event) {
         case 'start':
           {
@@ -82,13 +82,15 @@ class simulationControl extends ModelRoute {
             existingSim.sim.pause();
           } else {
             res.status(400).send('Simulation must be started before it can be paused.');
+            return;
           }
           break;
-        case 'unpause':
+        case 'resume':
           if (existingSim) {
-            existingSim.sim.unpause();
+            existingSim.sim.resume();
           } else {
-            res.status(400).send('Simulation must be paused before it can be unpaused.');
+            res.status(400).send('Simulation must be paused before it can be resumed.');
+            return;
           }
           break;
         case 'stop':
@@ -96,13 +98,16 @@ class simulationControl extends ModelRoute {
             existingSim.sim.stop();
           } else {
             res.status(400).send('Simulation must be running or paused before it can be stopped.');
+            return;
           }
           break;
       }
     } else {
       res.status(400).send('A room and event are both required.');
+      return;
     }
     res.status(200).json(req.params.event);
+    return;
   }
 
   public async controlSim(req: APIRequest, res: APIResult): Promise<void> {
@@ -140,6 +145,7 @@ class simulationControl extends ModelRoute {
 
     simInst.sim.setControls(simInst.sim.simControls);
     res.status(200).json(simInst.sim.simControls);
+    return;
   }
 
   public async failureSim(req: APIRequest, res: APIResult): Promise<void> {
@@ -170,6 +176,7 @@ class simulationControl extends ModelRoute {
 
     simInst.sim.setFailure(simInst.sim.simFailure);
     res.status(200).json(simInst.sim.simFailure);
+    return;
   }
 
   public async updateSimStation(req: APIRequest, res: APIResult): Promise<void> {
@@ -255,15 +262,19 @@ class simulationControl extends ModelRoute {
           pump: sim.pump,
         },
       };
-      console.log('station', _station_log_id, _station_name);
       simInst.sim.station_log_id = _station_log_id;
       simInst.sim.station_name = _station_name;
       simInst.sim.simFailure = _errors;
+      simInst.sim.simStateID = _savedStateValues.room_id;
       delete _savedStateValues.room_id;
       delete _savedStateValues.session_log_id;
       delete _savedStateValues.station_log_id;
       simInst.sim.simState = _savedStateValues;
-
+      // Restore the previously running sim as paused
+      if (simInst.sim.simState.is_running) {
+        await simInst.sim.pause();
+      }
+      console.log(simInst);
       this.sims.push(simInst);
 
       // if (sim.status === 'running') {
@@ -272,6 +283,8 @@ class simulationControl extends ModelRoute {
       //   simInst.sim.pause();
       // }
     });
+    res.status(200);
+    return;
   }
 }
 

@@ -18,7 +18,7 @@ export class ControllerComponent {
   private static readonly DEFAULT_ROOM_ID: number = 1;              // Default room ID if no room is selected
   private static readonly SIMULATION_FETCH_INTERVAL: number = 1000; // The rate at which the simulation data is fetched from the backend
   protected connected: boolean | undefined = undefined;             // bool for the room's simulation connection status
-  private simulationState: 'start' | 'stop' | '' = '';              // Not really used except locally, used as a string for API method
+  private simulationState: 'start' | 'stop' | 'pause' | 'resume' | '' = '';              // Not really used except locally, used as a string for API method
   protected switches: SimulationError[];                            // Array of simulation error switches the CAPCOM can throw in the sim
   private simInterval!: ReturnType<typeof setTimeout>;              // Internal simulation timer
   protected telemetryData: TelemetryData = {} as TelemetryData;     // Data passed in from the backend of the generated simulation
@@ -80,8 +80,22 @@ export class ControllerComponent {
   }
 
   /**
+   * When the user presses the button on the left, start, pause, or resume the simulation
+   */
+  protected handleLeftButtonClick(): void {
+    if (this.telemetryData.is_running) {
+      if (this.telemetryData.is_paused) {
+        this.resumeTelemetry();
+      } else {
+        this.pauseTelemetry();
+      }
+    } else {
+      this.startTelemetry();
+    }
+  }
+
+  /**
    * When the user presses the START button, start a new simulation with the selected room
-   * @returns
    */
   protected startTelemetry(): void {
     // Check if a room is selected
@@ -106,6 +120,41 @@ export class ControllerComponent {
     });
   }
 
+  protected pauseTelemetry(): void {
+    if (!this.selectedRoom?.id) {
+      return;
+    }
+    this.simulationState = 'pause';
+    this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
+      if (!res.ok) {
+        // Error
+        console.log(`An error ocurred pausing the sim!`);
+      } else {
+        // If the sim pause returns ok, let's stop the interval
+        // clearInterval(this.simInterval);
+        // this.telemetryData.is_paused = true;
+      }
+    });
+  }
+
+  protected resumeTelemetry(): void {
+    if (!this.selectedRoom?.id) {
+      return;
+    }
+    this.simulationState = 'resume';
+    console.log('resuming');
+    this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
+      if (!res.ok) {
+        // Error
+        console.log(`An error ocurred unpausing the sim!`);
+      } else {
+        // If the sim pause returns ok, let's stop the interval
+        // clearInterval(this.simInterval);
+        // this.telemetryData.is_paused = true;
+      }
+    });
+  }
+
   /**
    * Gets the telemetry simulation data from the backend by room ID
    */
@@ -117,6 +166,7 @@ export class ControllerComponent {
       .getTelemetryByRoomID(this.selectedRoom.id)
       .then((res) => {
         this.telemetryData = res;
+        // this.telemetryData.is_paused = true;
       })
       .catch((e) => {
         console.log(e);
@@ -133,7 +183,6 @@ export class ControllerComponent {
 
   /**
    * When the user presses the STOP button, stop the simulation and reset the switches to default
-   * @returns
    */
   protected stopTelemetry(): void {
     if (!this.selectedRoom?.id) {

@@ -1,4 +1,13 @@
-<button [ngClass]="{'gray': disabled, 'green': type == 'start' && !disabled, 'red': type === 'stop' && !disabled, 'light': variant === 'light'}">
+<button
+  [ngClass]="{
+    gray: disabled || type === 'pause',
+    green: type == 'start' && !disabled,
+    red: type === 'stop' && !disabled,
+    yellow: type === 'resume',
+    light: variant === 'light'
+  }"
+>
+<!-- connected == undefined || connected -->
   <h4>
     <ng-content></ng-content>
   </h4>

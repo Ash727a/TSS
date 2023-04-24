@@ -128,9 +128,9 @@ class EVASimulation {
     );
   }
 
-  async unpause(): Promise<void> {
+  async resume(): Promise<void> {
     if (!this.simState.is_running) {
-      throw new Error('Cannot unpause: simulation is not running or it is running and is not paused');
+      throw new Error('Cannot resume: simulation is not running or it is running and is not paused');
     }
 
     if (VERBOSE) console.log('--------------Simulation Resumed-------------');
@@ -145,14 +145,13 @@ class EVASimulation {
         where: { [primaryKeyOf(this.models.simulationState)]: this.simStateID },
       }
     );
+    this.printState();
   }
 
   async stop(): Promise<void> {
     if (!this.simState.is_running) {
       throw new Error('Cannot stop: simulation is not running');
     }
-    // this.simStateID = null
-    // this.controlID = null
     // Update the room's session id to null, since the session has ended
     await this.models.room.update({ session_log_id: '' }, { where: { [primaryKeyOf(this.models.room)]: this.room } });
     // Set the session's end time to now
