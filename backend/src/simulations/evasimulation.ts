@@ -31,7 +31,7 @@ class EVASimulation {
   simFailure: any = {};
 
   station_log_id: string | null | undefined;
-  station_name: string | undefined;
+  station_name = '';
 
   constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null, _restore_flag: boolean) {
     this.models = _models;
@@ -312,7 +312,6 @@ class EVASimulation {
     const room = roomData?.dataValues;
     // If the room's station name is different than the current station name, it means a new station has been assigned to this room
     if (this.station_name !== room.station_name) {
-      console.log('found', this.station_name, room.station_name);
       // If the previous station's id is not null, then we should end the previous station's log
       if ([null, undefined, ''].includes(this.station_log_id) === false) {
         // End the previous station's log
