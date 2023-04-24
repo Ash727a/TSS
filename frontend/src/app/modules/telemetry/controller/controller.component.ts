@@ -120,6 +120,9 @@ export class ControllerComponent {
     });
   }
 
+  /**
+   * When the user presses the PAUSE button, pause the simulation
+   */
   protected pauseTelemetry(): void {
     if (!this.selectedRoom?.id) {
       return;
@@ -137,20 +140,19 @@ export class ControllerComponent {
     });
   }
 
+  /**
+   * When the user presses the RESUME button, resume the simulation
+   */
   protected resumeTelemetry(): void {
     if (!this.selectedRoom?.id) {
       return;
     }
     this.simulationState = 'resume';
-    console.log('resuming');
     this.telemetryService.simulationControl(this.selectedRoom.id, this.simulationState).then((res) => {
       if (!res.ok) {
         // Error
         console.log(`An error ocurred unpausing the sim!`);
       } else {
-        // If the sim pause returns ok, let's stop the interval
-        // clearInterval(this.simInterval);
-        // this.telemetryData.is_paused = true;
       }
     });
   }
@@ -166,19 +168,10 @@ export class ControllerComponent {
       .getTelemetryByRoomID(this.selectedRoom.id)
       .then((res) => {
         this.telemetryData = res;
-        // this.telemetryData.is_paused = true;
       })
       .catch((e) => {
         console.log(e);
       });
-    // this.telemetryService
-    //   .getAllSessionLogs()
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
   }
 
   /**
