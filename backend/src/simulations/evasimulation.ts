@@ -135,16 +135,12 @@ class EVASimulation {
 
     if (VERBOSE) console.log('--------------Simulation Resumed-------------');
     this.lastTimestamp = Date.now();
+    // Set the simState to not paused so that it will update the DB in the next step() call
+    this.simState.is_paused = false;
+
     this.simTimer = setInterval(() => {
       this.step();
     }, process.env.SIM_STEP_TIME as number | undefined);
-
-    await this.models.simulationState.update(
-      { is_paused: false },
-      {
-        where: { [primaryKeyOf(this.models.simulationState)]: this.simStateID },
-      }
-    );
     this.printState();
   }
 
