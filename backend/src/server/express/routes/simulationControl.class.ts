@@ -225,7 +225,6 @@ class simulationControl extends ModelRoute {
       // TODO
       /**
        * - restore failure ID
-       * - set sims as paused on restore
        * - make sure extraneous instance vars are initialized correctly
        */
       // Restore the session log id (& station log id if it exists)
