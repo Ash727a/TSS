@@ -4,13 +4,15 @@ import Parser from './events/parser.js';
 import User from './events/user.class.js';
 
 import type { IAllModels } from '../../database/models/index.js';
-import type { CrewmemberMsg, GPSMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
-import { DATATYPE } from './enums/socket.enum';
 
-export default function handleSocketConnection(_ws: WebSocket, _models: IAllModels, hmd_update_interval: number): void {
+import type { CrewmemberMsg, GpsMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
+import { DATATYPE } from './enums/socket.enum.js';
+import visionKitMap from './vision-kit.map.js';
+
+export default function handleSocketConnection(ws: WebSocket, models: IAllModels, hmd_update_interval: number): void {
   const parser = new Parser();
 
-  _ws.on('message', async (data) => {
+  ws.on('message', async (data) => {
     console.log(`** MESSAGE RECEIVED **`);
 
     const parsedMsg = JSON.parse(data.toString('utf-8')) as UnknownMsg;
@@ -23,37 +25,58 @@ export default function handleSocketConnection(_ws: WebSocket, _models: IAllMode
     //Client messages are always DATA
     if (parsedMsg.MSGTYPE !== 'DATA') {
       console.log(`MSGTYPE !== 'DATA' in:\n${parsedMsg}`);
-      _ws.send(JSON.stringify({ ERR: "MSGTYPE isn't DATA" }));
+      ws.send(JSON.stringify({ ERR: "MSGTYPE isn't DATA" }));
       return;
     }
 
     switch (parsedMsg.BLOB.DATATYPE) {
-      case DATATYPE.CREWMEMBER: {
+      case DATATYPE.HMD: {
         const crewMemberMsg = parsedMsg as CrewmemberMsg;
-        const user = await User.build(crewMemberMsg.BLOB.DATA, _models, _ws, hmd_update_interval);
+
+        if (!(crewMemberMsg.BLOB.DATA.user_guid in visionKitMap)) {
+          console.log(`Crewmember provided invalid user_guid: ${crewMemberMsg.BLOB.DATA.user_guid}`);
+          ws.close(1008, `Invalid user_guid. Please ensure user_guid matches visionkit's guid`);
+          break;
+        }
+        const user = await User.build(crewMemberMsg.BLOB.DATA, models, ws, hmd_update_interval);
 
         if (user == null) {
-          _ws.close(1008, 'Failed to register user');
+          ws.close(1008, 'Failed to register user');
           console.log('Failed to register user');
         }
         break;
       }
 
       case DATATYPE.IMU: {
-        const imuMsg = parsedMsg as IMUMsg;
-        parser.parseMessageIMU(imuMsg, _models);
+        const imuMsg = parsedMsg as unknown as IMUMsg;
+        if (!(imuMsg.MACADDRESS in visionKitMap)) {
+          console.log(`Following guid from visionkit is invalid: ${imuMsg.MACADDRESS}`);
+          ws.close(1008, `Invalid visionkit guid. Please ensure the vkid in the visionkit's .env is correct`);
+          break;
+        }
+        parser.parseMessageIMU(imuMsg, models);
         break;
       }
-
       case DATATYPE.GPS: {
-        const gpsMsg = parsedMsg as GPSMsg;
-        parser.parseMessageGPS(gpsMsg, _models);
+        const gpsMsg = parsedMsg as GpsMsg;
+        if (!(gpsMsg.MACADDRESS in visionKitMap)) {
+          console.log(`Following guid from visionkit is invalid: ${gpsMsg.MACADDRESS}`);
+          ws.close(1008, `Invalid visionkit guid. Please ensure the vkid in the visionkit's .env is correct`);
+          break;
+        }
+
+        parser.parseMessageGPS(gpsMsg, models);
         break;
       }
       case DATATYPE.SPEC: {
         const specMsg = parsedMsg as SpecMsg;
-        console.log(`Received spec data: ${JSON.stringify(specMsg.BLOB.DATA)}`);
-        await parser.handleSpecData(specMsg, _models);
+        await parser.handleSpecData(specMsg, models);
+        break;
+      }
+      default: {
+        console.log(`Invalid parsedMsg.BLOB.DATATYPE: ${parsedMsg.BLOB.DATATYPE}`);
+        ws.close(1008, `Invalid parsedMsg.BLOB.DATATYPE: ${parsedMsg.BLOB.DATATYPE}`);
+        break;
       }
     }
   });

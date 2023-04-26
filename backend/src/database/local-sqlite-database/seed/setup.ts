@@ -1,4 +1,4 @@
-import { liveDatabaseName, teams, visionKits } from '../../../config.js';
+import { liveDatabaseName, teams } from '../../../config.js';
 import { SequelizeModel } from '../../../interfaces.js';
 import Database from '../../Database.class.js';
 import { ILiveModels } from '../../models';
@@ -23,8 +23,8 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     await models.simulationFailure.create(simRow);
     await models.simulationState.create(simRow);
     await models.uia.create(simRow);
-    await models.gpsMsg.create(simRow);
-    await models.imuMsg.create(simRow);
+    // await models.gpsMsg.create(simRow);
+    // await models.imuMsg.create(simRow);
   });
 
   console.log('Done!');

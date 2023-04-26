@@ -23,7 +23,7 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
   // GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
   @AllowNull(true)
-  @Column(DataType.UUIDV4)
+  @Column(DataType.STRING)
   declare user_guid: string;
 
   // IMU message heading
@@ -78,3 +78,4 @@ export default class imuMsg extends Model<InferAttributes<imuMsg>, InferCreation
 }
 
 export type IMUData = Omit<InferCreationAttributes<imuMsg>, keyof Model>;
+export type IMUAttributes = InferCreationAttributes<imuMsg>;

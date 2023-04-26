@@ -1,46 +1,95 @@
 import type { Subset } from '../../database/models/interfaceHelpers';
 import type { UserCreationAttributes } from '../../database/models/teams/user.model';
-import type { GpsData } from '../../database/models/teams/visionKitData/gpsMsg.model';
-import type { ImuData } from '../../database/models/teams/visionKitData/imuMsg.model';
 
-export interface SocketMsg<T> {
+export const enum DATATYPE {
+  'HMD' = 'HMD',
+  'IMU' = 'IMU',
+  'GPS' = 'GPS',
+  'SPEC' = 'SPEC',
+}
+
+interface SocketMsg {
   MSGTYPE: 'DATA';
-  BLOB: T;
+  // BLOB: SomeType
 }
 
-export interface CrewmemberBlob {
-  DATATYPE: 'CREWMEMBER';
-  DATA: Subset<
-    UserCreationAttributes,
-    {
-      username: string;
-      guid: string;
-    }
-  >;
+export interface UnknownMsg extends SocketMsg {
+  BLOB: UnknownMsgBlob;
 }
-export type CrewmemberMsg = SocketMsg<CrewmemberBlob>;
 
-export interface UnknownMsgBlob {
-  DATATYPE: 'CREWMEMBER' | 'IMU' | 'GPS' | 'SPEC';
+interface UnknownMsgBlob {
+  DATATYPE: keyof typeof DATATYPE;
 }
-export type UnknownMsg = SocketMsg<UnknownMsgBlob>;
 
-export interface IMUMsgBlob {
+export interface CrewmemberMsg extends SocketMsg {
+  BLOB: CrewmemberBlob;
+}
+
+interface CrewmemberBlob {
+  DATATYPE: 'HMD';
+  DATA: CrewmemberData;
+}
+
+type CrewmemberData = Subset<
+  UserCreationAttributes,
+  {
+    team_name: string;
+    username: string;
+    user_guid: string;
+    university: string;
+  }
+>;
+
+export interface IMUMsg {
+  MACADDRESS: string;
+  BLOB: ImuMsgBlob;
+}
+
+interface ImuMsgBlob {
   DATATYPE: 'IMU';
-  DATA: ImuData;
+  DATA: ImuMsgData;
 }
-export type IMUMsg = SocketMsg<IMUMsgBlob>;
 
-export interface GPSMsgBlob {
+interface ImuMsgData {
+  accel_x: number;
+}
+
+export interface GpsMsg extends SocketMsg {
+  MACADDRESS: string;
+  BLOB: GPSMsgBlob;
+}
+
+interface GPSMsgBlob {
   DATATYPE: 'GPS';
-  DATA: GpsData;
+  DATA: GPSMsgData;
 }
-export type GPSMsg = SocketMsg<GPSMsgBlob>;
 
-interface SpecMsgBlob extends UnknownMsgBlob {
+interface GPSMsgData {
+  class?: 'TPV';
+  device?: string;
+  mode: number;
+  time?: string;
+  alt?: number;
+  climb?: number;
+  epx?: number;
+  epv?: number;
+  ept?: number;
+  eps?: number;
+  lat?: number;
+  lon?: number;
+  speed?: number;
+  track?: number;
+  epc?: number;
+  epy?: number;
+}
+
+export interface SpecMsg extends SocketMsg {
+  BLOB: SpecMsgBlob;
+}
+
+interface SpecMsgBlob {
   DATATYPE: 'SPEC';
   DATA: {
     TAG_ID: string;
   };
 }
-export type SpecMsg = SocketMsg<SpecMsgBlob>;

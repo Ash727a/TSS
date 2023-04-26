@@ -58,29 +58,29 @@ export default class uia extends Model<InferAttributes<uia>, InferCreationAttrib
   @Column(DataType.BOOLEAN)
   declare emu1_o2_supply_switch: boolean;
 
-  // EMU2 Power Switch
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  declare emu2_pwr_switch: boolean;
+  // // EMU2 Power Switch
+  // @AllowNull(false)
+  // @Default(false)
+  // @Column(DataType.BOOLEAN)
+  // declare emu2_pwr_switch: boolean;
 
-  // EV2 Supply Switch
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  declare ev2_water_supply_switch: boolean;
+  // // EV2 Supply Switch
+  // @AllowNull(false)
+  // @Default(false)
+  // @Column(DataType.BOOLEAN)
+  // declare ev2_water_supply_switch: boolean;
 
-  // EV2 Water Waste Switch
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  declare ev2_water_waste_switch: boolean;
+  // // EV2 Water Waste Switch
+  // @AllowNull(false)
+  // @Default(false)
+  // @Column(DataType.BOOLEAN)
+  // declare ev2_water_waste_switch: boolean;
 
-  // EMU2 O2 Supply Switch
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  declare emu2_o2_supply_switch: boolean;
+  // // EMU2 O2 Supply Switch
+  // @AllowNull(false)
+  // @Default(false)
+  // @Column(DataType.BOOLEAN)
+  // declare emu2_o2_supply_switch: boolean;
 
   // O2 Vent Switch
   @AllowNull(false)
@@ -94,9 +94,9 @@ export default class uia extends Model<InferAttributes<uia>, InferCreationAttrib
   @Column(DataType.BOOLEAN)
   declare depress_pump_switch: boolean;
 
-  // Depress Pump Fault
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  declare depress_pump_fault: boolean;
+  // // Depress Pump Fault
+  // @AllowNull(false)
+  // @Default(false)
+  // @Column(DataType.BOOLEAN)
+  // declare depress_pump_fault: boolean;
 }

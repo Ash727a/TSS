@@ -16,12 +16,20 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @PrimaryKey
   @AllowNull(false)
   @Column(DataType.UUIDV4)
-  declare user_guid: CreationOptional<string>;
+  declare user_guid: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare team_name: string;
 
   // User name
   @AllowNull(false)
   @Column(DataType.STRING)
   declare username: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare university: string;
 
   // Room ID (FK)
   // @ForeignKey(() => room)
