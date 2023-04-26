@@ -113,14 +113,21 @@ class User {
 
       const sim_state_res = await this._models.simulationState.findOne({
         where: { room_id: room_id },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'] },
       });
 
       const sim_state = sim_state_res?.get({ plain: true });
       if (sim_state == undefined) {
         return;
       }
-      const gps_val = await this._models.gpsMsg.findOne({ where: { user_guid: this.guid } });
-      const imu_val = await this._models.imuMsg.findOne({ where: { user_guid: this.guid } });
+      const gps_val = await this._models.gpsMsg.findOne({
+        where: { user_guid: this.guid },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'] },
+      });
+      const imu_val = await this._models.imuMsg.findOne({
+        where: { user_guid: this.guid },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'] },
+      });
 
       const spec_data = await this._models.geo.findOne({
         where: {
@@ -136,7 +143,7 @@ class User {
         imuMsg: imu_val,
         simulationStates: sim_state,
         uiaMsg: uiaMsg,
-        specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : null,
+        specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
       };
 

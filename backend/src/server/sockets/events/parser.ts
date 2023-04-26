@@ -1,21 +1,15 @@
-import { where } from 'sequelize';
 import { IAllModels, ILiveModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
-import { primaryKeyOf } from '../../../helpers.js';
-import { GpsMsg, SpecMsg } from '../socketInterfaces.js';
+import { GpsMsg, IMUMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
-import * as util from 'node:util';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 
 class Parser {
   // constructor() {}
 
-  async parseMessageIMU(messageObject: any, models: Pick<ILiveModels, 'imuMsg' | 'user'>): Promise<void> {
+  async parseMessageIMU(messageObject: IMUMsg, models: Pick<ILiveModels, 'imuMsg' | 'user'>): Promise<void> {
     const msgData = messageObject.BLOB.DATA;
-    delete messageObject.id;
-
-    // console.log(util.inspect(messageObject));
-
+    delete (messageObject as any).id;
     const user_guid = messageObject.MACADDRESS;
 
     const matching_user = models.user.findOne({
@@ -25,7 +19,7 @@ class Parser {
     });
 
     if (!matching_user) {
-      console.log(`No user found with guid: ${msgData.MACADDRESS}. Dropping imu message`);
+      console.log(`No user found with guid: ${user_guid}. Dropping imu message`);
       return;
     }
 
