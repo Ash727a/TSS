@@ -5,6 +5,7 @@ import { INIT_TELEMETRY_DATA, TelemetryData } from '../interfaces.js';
 import simControlSeed from './seed/simcontrol.js';
 import simFailureSeed from './seed/simfailure.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
+import { VERBOSE } from '../config.js';
 
 interface SimulationModels {
   simulationState: any;
@@ -16,7 +17,6 @@ interface SimulationModels {
   telemetryErrorLog: any;
 }
 
-const VERBOSE = true;
 class EVASimulation {
   private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -225,7 +225,7 @@ class EVASimulation {
       });
       const newSimFailure = failureData[0].dataValues;
       this.simFailure = { ...this.simFailure, ...newSimFailure };
-      // this.updateTelemetryErrorLogs();
+      this.updateTelemetryErrorLogs();
       this.updateTelemetryStation();
       const newSimState: TelemetryData = evaTelemetry.simulationStep(
         dt,
@@ -251,8 +251,8 @@ class EVASimulation {
     // this.printState();
   }
 
-  updateTelemetryErrorLogs(): void {
-    const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'battery_error'];
+  async updateTelemetryErrorLogs(): Promise<void> {
+    const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'power_error'];
     const updatedErrors: any = {};
     // Loop through the keys to check for new error state changes
     failureKeys.forEach((key) => {

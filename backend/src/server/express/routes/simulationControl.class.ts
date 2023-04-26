@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { VERBOSE } from '../../../config.js';
 
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
 import EVASimulation from '../../../simulations/EVASimulation.js';
@@ -30,13 +31,11 @@ class simulationControl extends ModelRoute {
   }
 
   public async commandSim(req: APIRequest, res: APIResult): Promise<void> {
-    console.log(`Room: ${req.params.room} Event: ${req.params.event}`);
     if (req.params.event && req.params.room) {
       // Check if the sim already exists
       const existingSim: SimulationInstance | undefined = this.sims.find(
         (_sim: SimulationInstance) => req.params.room.toString() === _sim.room.toString()
       );
-      console.log('exisitng sim', existingSim, 'room', req.params.room, this.sims);
       switch (req.params.event) {
         case 'start':
           {
@@ -126,7 +125,6 @@ class simulationControl extends ModelRoute {
         simInst.sim.simControls.fan_switch = !simInst.sim.simControls.fan_switch;
         break;
       case 'suit_power':
-        console.log(`Instance Room: ${simInst.room} `);
         simInst.sim.simControls.suit_power = !simInst.sim.simControls.suit_power;
         break;
       case 'o2_switch':
@@ -193,7 +191,6 @@ class simulationControl extends ModelRoute {
   }
 
   public async restoreSimulations(req: APIRequest, res: APIResult): Promise<void> {
-    console.log('resotring sims...');
     const sims = await this.dependentModels.simulationState.findAll({
       where: {
         [Op.or]: [
@@ -206,7 +203,6 @@ class simulationControl extends ModelRoute {
         ],
       },
     });
-    console.log('Found sims', sims);
     sims.forEach(async (sim: any) => {
       const simModels = {
         simulationState: this.dependentModels.simulationState,
@@ -224,10 +220,8 @@ class simulationControl extends ModelRoute {
       let _errors = {};
       // TODO
       /**
-       * - restore failure ID
        * - make sure extraneous instance vars are initialized correctly
        */
-      // Restore the session log id (& station log id if it exists)
       const _room = await this.dependentModels.room.findOne({
         where: {
           [primaryKeyOf(this.dependentModels.room)]: _savedStateValues.room_id,
@@ -273,15 +267,11 @@ class simulationControl extends ModelRoute {
       if (simInst.sim.simState.is_running) {
         await simInst.sim.pause();
       }
-      console.log(simInst);
       this.sims.push(simInst);
-
-      // if (sim.status === 'running') {
-      //   simInst.sim.start(simInst.room, simInst.sim.session_log_id);
-      // } else {
-      //   simInst.sim.pause();
-      // }
     });
+    if (VERBOSE) {
+      console.log(`Restored ${sims.length} simulations`);
+    }
     res.status(200);
     return;
   }
