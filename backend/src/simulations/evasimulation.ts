@@ -2,13 +2,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { primaryKeyOf } from '../helpers.js';
 import { INIT_TELEMETRY_DATA, TelemetryData } from '../interfaces.js';
-import simControlSeed from './seed/simcontrol.js';
 import simFailureSeed from './seed/simfailure.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
+import { VERBOSE } from '../config.js';
 
 interface SimulationModels {
   simulationState: any;
-  simulationControl: any;
   simulationFailure: any;
   room: any;
   telemetrySessionLog: any;
@@ -16,28 +15,29 @@ interface SimulationModels {
   telemetryErrorLog: any;
 }
 
-const VERBOSE = true;
 class EVASimulation {
   private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
   simStateID!: number;
-  holdID = null;
+  // holdID = null;
   lastTimestamp: number | null = null;
   session_log_id: string | null = null;
   private readonly room;
   // Data Objects
   simState: TelemetryData = INIT_TELEMETRY_DATA;
-  simControls: any = {};
   simFailure: any = {};
 
   station_log_id: string | null | undefined;
-  station_name: string | undefined;
+  station_name = '';
 
-  constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null) {
+  constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null, _restore_flag: boolean) {
     this.models = _models;
     this.room = _room_id;
     this.session_log_id = _session_log_id;
-    this.seedInstances();
+    // If the restore flag is true, it is initializing a sim that is being restored, so don't seed the database row
+    if (!_restore_flag) {
+      this.seedInstances();
+    }
   }
 
   private async seedInstances(): Promise<void> {
@@ -55,7 +55,6 @@ class EVASimulation {
   async start(roomID: any, sessionLogID: any): Promise<void | boolean> {
     if (VERBOSE) console.log('Starting Sim');
     this.simState = INIT_TELEMETRY_DATA; // Clear data
-    this.simControls = {};
     this.simFailure = {};
 
     // Assign the UUIDV4 session log ID to the room
@@ -125,31 +124,26 @@ class EVASimulation {
     );
   }
 
-  async unpause(): Promise<void> {
+  async resume(): Promise<void> {
     if (!this.simState.is_running) {
-      throw new Error('Cannot unpause: simulation is not running or it is running and is not paused');
+      throw new Error('Cannot resume: simulation is not running or it is running and is not paused');
     }
 
     if (VERBOSE) console.log('--------------Simulation Resumed-------------');
     this.lastTimestamp = Date.now();
+    // Set the simState to not paused so that it will update the DB in the next step() call
+    this.simState.is_paused = false;
+
     this.simTimer = setInterval(() => {
       this.step();
     }, process.env.SIM_STEP_TIME as number | undefined);
-
-    await this.models.simulationState.update(
-      { is_paused: false },
-      {
-        where: { [primaryKeyOf(this.models.simulationState)]: this.simStateID },
-      }
-    );
+    this.printState();
   }
 
   async stop(): Promise<void> {
     if (!this.simState.is_running) {
       throw new Error('Cannot stop: simulation is not running');
     }
-    // this.simStateID = null
-    // this.controlID = null
     // Update the room's session id to null, since the session has ended
     await this.models.room.update({ session_log_id: '' }, { where: { [primaryKeyOf(this.models.room)]: this.room } });
     // Set the session's end time to now
@@ -170,11 +164,6 @@ class EVASimulation {
     const simState = await this.models.simulationState.findByPk(this.simStateID);
     // await simulationState.findById(simStateID).exec()
     return simState;
-  }
-  async getControls(): Promise<any> {
-    const controls = await this.models.simulationControl.findByPk(this.simStateID);
-    //await SimulationControl.findById(controlID).exec()
-    return controls;
   }
 
   async getFailure(): Promise<any> {
@@ -200,22 +189,6 @@ class EVASimulation {
     return failure;
   }
 
-  async setControls(newControls: any): Promise<any> {
-    // const controls = await SimulationControl.findByIdAndUpdate(controlID, newControls, {new: true}).exec()
-    const controls = await this.models.simulationControl.update(newControls, {
-      where: {
-        [primaryKeyOf(this.models.simulationControl)]: this.simStateID,
-      },
-    });
-
-    // Update Controls Object
-    // await models.simulationControl.findAll({ where: { room: this.room } }).then((data) => {
-    //   this.simControls = data[0].dataValues;
-    // });
-
-    return controls;
-  }
-
   async step(): Promise<void> {
     if (VERBOSE) console.log(`StateID: ${this.simStateID}`);
     try {
@@ -227,14 +200,9 @@ class EVASimulation {
       });
       const newSimFailure = failureData[0].dataValues;
       this.simFailure = { ...this.simFailure, ...newSimFailure };
-      // this.updateTelemetryErrorLogs();
+      this.updateTelemetryErrorLogs();
       this.updateTelemetryStation();
-      const newSimState: TelemetryData = evaTelemetry.simulationStep(
-        dt,
-        this.simControls,
-        this.simFailure,
-        this.simState
-      );
+      const newSimState: TelemetryData = evaTelemetry.simulationStep(dt, this.simFailure, this.simState);
       Object.assign(this.simState, newSimState);
       // await simState.save()
       await this.models.simulationState
@@ -253,8 +221,8 @@ class EVASimulation {
     // this.printState();
   }
 
-  updateTelemetryErrorLogs(): void {
-    const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'battery_error'];
+  async updateTelemetryErrorLogs(): Promise<void> {
+    const failureKeys = ['o2_error', 'pump_error', 'fan_error', 'power_error'];
     const updatedErrors: any = {};
     // Loop through the keys to check for new error state changes
     failureKeys.forEach((key) => {
@@ -309,7 +277,6 @@ class EVASimulation {
     const room = roomData?.dataValues;
     // If the room's station name is different than the current station name, it means a new station has been assigned to this room
     if (this.station_name !== room.station_name) {
-      console.log('found', this.station_name, room.station_name);
       // If the previous station's id is not null, then we should end the previous station's log
       if ([null, undefined, ''].includes(this.station_log_id) === false) {
         // End the previous station's log
@@ -374,8 +341,6 @@ class EVASimulation {
   private printState(): void {
     console.log('Current State:');
     console.log(this.simState);
-    console.log('Current Controls:');
-    console.log(this.simControls);
     console.log('Current Failure:');
     console.log(this.simFailure);
     console.log('Current Station:');

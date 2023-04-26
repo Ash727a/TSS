@@ -1,13 +1,5 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import {
-  AllowNull,
-  AutoIncrement,
-  Column,
-  DataType,
-  Default, Model,
-  PrimaryKey,
-  Table
-} from 'sequelize-typescript';
+import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 /** MODEL: simulationState
  * This is the model for the simulation state.
@@ -35,7 +27,7 @@ import {
  * @column o2_time_left: O2 time left
  * @column h2o_time_left: H2O time left
  * @column battery_percentage: Battery percentage
- * @column battery_outputput: Battery output
+ * @column battery_output: Battery output
  * @column oxygen_primary_time: Oxygen primary time
  * @column oxygen_secondary_time: Oxygen secondary time
  * @column water_capacity: Water capacity
@@ -44,7 +36,10 @@ import {
 // We export a function that defines the model.
 // This function will automatically receive as parameter the Sequelize connection object.
 @Table({ tableName: 'simulationState', underscored: true })
-export default class simulationState extends Model<InferAttributes<simulationState>, InferCreationAttributes<simulationState>> {
+export default class simulationState extends Model<
+  InferAttributes<simulationState>,
+  InferCreationAttributes<simulationState>
+> {
   // Room ID (PK)
   @PrimaryKey
   @AllowNull(false)

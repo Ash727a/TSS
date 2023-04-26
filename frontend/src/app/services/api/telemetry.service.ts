@@ -81,7 +81,7 @@ export class TelemetryService {
    * If the backend disconnected, restore the simulations (create new sim instances) from the data in the live database
    */
   async restoreSimulations(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/simulationControl/restore`))
+    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/simulationControl/sim/restore`, { restore: true }))
       .then((result) => {
         let res: Object[] = result as Object[];
         return res;
@@ -102,5 +102,5 @@ export class TelemetryService {
         return { ok: false, err: e };
       });
   }
-  
+
 }

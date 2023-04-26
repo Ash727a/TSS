@@ -3,6 +3,11 @@
  */
 
 /**
+ * If you'd like verbose console logs, set this to true.
+ */
+export const VERBOSE = false;
+
+/**
  * The list of teams. Used to populate the database.
  * @type {Array<{name: string}>}
  * @constant teams

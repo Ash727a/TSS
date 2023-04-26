@@ -1,4 +1,3 @@
-import simulationControl from './simulationControl.model.js';
 import simulationFailure from './simulationFailure.model.js';
 import simulationState from './simulationState.model.js';
 
@@ -10,7 +9,6 @@ import simulationState from './simulationState.model.js';
  */
 
 export default {
-  simulationControl,
   simulationFailure,
   simulationState,
 };
