@@ -18,8 +18,6 @@ import { primaryKeyOf } from '../../../helpers.js';
 type SimulationInstance = {
   room: string;
   sim: EVASimulation;
-  controls: { [key: string]: boolean };
-  // failure: { [key: string]: boolean };
 };
 class simulationControl extends ModelRoute {
   private sims: SimulationInstance[] = [];
@@ -54,14 +52,6 @@ class simulationControl extends ModelRoute {
               simInst = {
                 room: req.params.room,
                 sim: new EVASimulation(simModels, req.params.room, session_log_id, false),
-                controls: {
-                  fan_switch: false,
-                  suit_power: false,
-                  o2_switch: false,
-                  aux: false,
-                  rca: false,
-                  pump: false,
-                },
               };
             } else {
               // There is an existing simulation, but the session is different. Set the session_id to the new generated id
@@ -110,39 +100,7 @@ class simulationControl extends ModelRoute {
   }
 
   public async controlSim(req: APIRequest, res: APIResult): Promise<void> {
-    const simInst: SimulationInstance | undefined = this.sims.find(
-      (_sim: SimulationInstance) => _sim.room === req.params.room
-    );
-
-    if (!simInst) {
-      console.warn(`CTRL No Sim Found of ${this.sims.length} sims`);
-      res.status(400).send('No sim found to command. Have you started the simulation?');
-      return;
-    }
-
-    switch (req.params.control) {
-      case 'fan_switch':
-        simInst.sim.simControls.fan_switch = !simInst.sim.simControls.fan_switch;
-        break;
-      case 'suit_power':
-        simInst.sim.simControls.suit_power = !simInst.sim.simControls.suit_power;
-        break;
-      case 'o2_switch':
-        simInst.sim.simControls.o2_switch = !simInst.sim.simControls.o2_switch;
-        break;
-      case 'aux':
-        simInst.sim.simControls.aux = !simInst.sim.simControls.aux;
-        break;
-      case 'rca':
-        simInst.sim.simControls.rca = !simInst.sim.simControls.rca;
-        break;
-      case 'pump':
-        simInst.sim.simControls.pump = !simInst.sim.simControls.pump;
-        break;
-    }
-
-    simInst.sim.setControls(simInst.sim.simControls);
-    res.status(200).json(simInst.sim.simControls);
+    res.status(200);
     return;
   }
 
@@ -206,7 +164,6 @@ class simulationControl extends ModelRoute {
     sims.forEach(async (sim: any) => {
       const simModels = {
         simulationState: this.dependentModels.simulationState,
-        simulationControl: this.dependentModels.simulationControl,
         simulationFailure: this.dependentModels.simulationFailure,
         room: this.dependentModels.room,
         telemetrySessionLog: this.dependentModels.telemetrySessionLog,
@@ -246,14 +203,6 @@ class simulationControl extends ModelRoute {
       const simInst: SimulationInstance = {
         room: _savedStateValues.room_id,
         sim: new EVASimulation(simModels, _savedStateValues.room_id, _session_log_id, true),
-        controls: {
-          fan_switch: sim.fan_switch,
-          suit_power: sim.suit_power,
-          o2_switch: sim.o2_switch,
-          aux: sim.aux,
-          rca: sim.rca,
-          pump: sim.pump,
-        },
       };
       simInst.sim.station_log_id = _station_log_id;
       simInst.sim.station_name = _station_name;

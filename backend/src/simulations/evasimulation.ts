@@ -2,14 +2,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { primaryKeyOf } from '../helpers.js';
 import { INIT_TELEMETRY_DATA, TelemetryData } from '../interfaces.js';
-import simControlSeed from './seed/simcontrol.js';
 import simFailureSeed from './seed/simfailure.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
 import { VERBOSE } from '../config.js';
 
 interface SimulationModels {
   simulationState: any;
-  simulationControl: any;
   simulationFailure: any;
   room: any;
   telemetrySessionLog: any;
@@ -27,7 +25,6 @@ class EVASimulation {
   private readonly room;
   // Data Objects
   simState: TelemetryData = INIT_TELEMETRY_DATA;
-  simControls: any = {};
   simFailure: any = {};
 
   station_log_id: string | null | undefined;
@@ -58,7 +55,6 @@ class EVASimulation {
   async start(roomID: any, sessionLogID: any): Promise<void | boolean> {
     if (VERBOSE) console.log('Starting Sim');
     this.simState = INIT_TELEMETRY_DATA; // Clear data
-    this.simControls = {};
     this.simFailure = {};
 
     // Assign the UUIDV4 session log ID to the room
@@ -169,11 +165,6 @@ class EVASimulation {
     // await simulationState.findById(simStateID).exec()
     return simState;
   }
-  async getControls(): Promise<any> {
-    const controls = await this.models.simulationControl.findByPk(this.simStateID);
-    //await SimulationControl.findById(controlID).exec()
-    return controls;
-  }
 
   async getFailure(): Promise<any> {
     const failure = await this.models.simulationFailure.findByPk(this.simStateID);
@@ -198,22 +189,6 @@ class EVASimulation {
     return failure;
   }
 
-  async setControls(newControls: any): Promise<any> {
-    // const controls = await SimulationControl.findByIdAndUpdate(controlID, newControls, {new: true}).exec()
-    const controls = await this.models.simulationControl.update(newControls, {
-      where: {
-        [primaryKeyOf(this.models.simulationControl)]: this.simStateID,
-      },
-    });
-
-    // Update Controls Object
-    // await models.simulationControl.findAll({ where: { room: this.room } }).then((data) => {
-    //   this.simControls = data[0].dataValues;
-    // });
-
-    return controls;
-  }
-
   async step(): Promise<void> {
     if (VERBOSE) console.log(`StateID: ${this.simStateID}`);
     try {
@@ -227,12 +202,7 @@ class EVASimulation {
       this.simFailure = { ...this.simFailure, ...newSimFailure };
       this.updateTelemetryErrorLogs();
       this.updateTelemetryStation();
-      const newSimState: TelemetryData = evaTelemetry.simulationStep(
-        dt,
-        this.simControls,
-        this.simFailure,
-        this.simState
-      );
+      const newSimState: TelemetryData = evaTelemetry.simulationStep(dt, this.simFailure, this.simState);
       Object.assign(this.simState, newSimState);
       // await simState.save()
       await this.models.simulationState
@@ -371,8 +341,6 @@ class EVASimulation {
   private printState(): void {
     console.log('Current State:');
     console.log(this.simState);
-    console.log('Current Controls:');
-    console.log(this.simControls);
     console.log('Current Failure:');
     console.log(this.simFailure);
     console.log('Current Station:');

@@ -19,7 +19,6 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
   // Create a new row of data for each room in each model's table
   teams.forEach(async (room, idx) => {
     const simRow = { room: idx + 1 }; // Adding 1 because we want to start at 1, not 0
-    await models.simulationControl.create(simRow);
     await models.simulationFailure.create(simRow);
     await models.simulationState.create(simRow);
     await models.uia.create(simRow);
