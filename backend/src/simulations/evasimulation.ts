@@ -275,10 +275,86 @@ class EVASimulation {
     // TODO: Edge case when one room's station is still assigned when the TSS stops -- this will cause the station in logs to never be completed
     const roomData = await this.models.room.findOne({ where: { [primaryKeyOf(this.models.room)]: this.room } });
     const room = roomData?.dataValues;
-    // If the room's station name is different than the current station name, it means a new station has been assigned to this room
-    if (this.station_name !== room.station_name) {
+    // No station change
+    if (this.station_name === room.station_name) {
+      this.station_name = room.station_name;
+      this.station_log_id = room.station_log_id;
+      return;
+    }
+    // If the station had a previous station, end the log of the previous station
+    if (room.station_name && room.station_log_id) {
+      this.models.telemetryStationLog.update(
+        {
+          end_time: Date.now(),
+          completed: true,
+        },
+        {
+          where: {
+            [primaryKeyOf(this.models.telemetryStationLog)]: room.station_log_id,
+          },
+        }
+      );
+    }
+    // Station changed, check whether it was assigned to a new station (1) or unassigned (2)
+    // (1) New Station
+    if (this.station_name) {
+      // If the new station was assigned to a previous room, unassign it & finish the log
+      this.unassignPreviouslyAssignedRoomStation(this.station_name);
+      // Create a new station log and set it to the DB
+      this.station_log_id = uuidv4();
+      this.models.telemetryStationLog.create({
+        station_log_id: this.station_log_id,
+        session_log_id: this.session_log_id,
+        room_id: this.room,
+        station_name: this.station_name,
+        start_time: Date.now(),
+      });
+      // Update the room's station id with the new id and station name
+      this.models.room.update(
+        {
+          station_name: this.station_name,
+          station_log_id: this.station_log_id,
+        },
+        {
+          where: {
+            [primaryKeyOf(this.models.room)]: this.room,
+          },
+        }
+      );
+    } else {
+      // (2) Unassigned Station
+      this.models.room.update(
+        {
+          station_name: '',
+          station_log_id: '',
+        },
+        {
+          where: {
+            [primaryKeyOf(this.models.room)]: this.room,
+          },
+        }
+      );
+    }
+  }
+
+  /**
+   * Takes a station and unassigns the station from the room, if a room is assigned to it and isn't this current station
+   */
+  async unassignPreviouslyAssignedRoomStation(station_name: string): Promise<void> {
+    console.log('looking for ', station_name);
+    // const roomData = await this.models.room.findOne({ where: { [primaryKeyOf(this.models.room)]: this.room } });
+    // const room = roomData?.dataValues;
+    const returnedRooms = await this.models.room.findAll({ where: { station_name: station_name } });
+    for (const _room of returnedRooms) {
+      const { id, station_log_id } = _room.dataValues;
+      // Don't unassign the current room, only the others
+      console.log('id', id, this.room);
+      if (id.toString() === this.room.toString()) {
+        continue;
+      }
+      console.log('got here');
       // If the previous station's id is not null, then we should end the previous station's log
-      if ([null, undefined, ''].includes(this.station_log_id) === false) {
+      if ([null, undefined, ''].includes(station_log_id) === false) {
         // End the previous station's log
         this.models.telemetryStationLog.update(
           {
@@ -287,51 +363,24 @@ class EVASimulation {
           },
           {
             where: {
-              [primaryKeyOf(this.models.telemetryStationLog)]: this.station_log_id,
+              [primaryKeyOf(this.models.telemetryStationLog)]: station_log_id,
             },
           }
         );
       }
-      // If the room was assigned to a new station, we want to create a new station log
-      if ([null, undefined, ''].includes(this.station_name) === false) {
-        this.station_log_id = uuidv4();
-        this.models.telemetryStationLog.create({
-          station_log_id: this.station_log_id,
-          session_log_id: this.session_log_id,
-          room_id: this.room,
-          station_name: this.station_name,
-          start_time: Date.now(),
-        });
-        // Update the room's station id with the new id and station name
-        this.models.room.update(
-          {
-            station_name: this.station_name,
-            station_log_id: this.station_log_id,
+
+      // Case for unassigning a station from a room
+      this.models.room.update(
+        {
+          station_name: '',
+          station_log_id: '',
+        },
+        {
+          where: {
+            [primaryKeyOf(this.models.room)]: id,
           },
-          {
-            where: {
-              [primaryKeyOf(this.models.room)]: this.room,
-            },
-          }
-        );
-      } else {
-        // Case for unassigning a station from a room
-        this.models.room.update(
-          {
-            station_name: '',
-            station_log_id: '',
-          },
-          {
-            where: {
-              [primaryKeyOf(this.models.room)]: this.room,
-            },
-          }
-        );
-      }
-    } else {
-      // Update the current instances values
-      this.station_name = room.station_name;
-      this.station_log_id = room.station_log_id;
+        }
+      );
     }
   }
 
