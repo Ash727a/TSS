@@ -15,6 +15,8 @@ interface SimulationModels {
   telemetryErrorLog: any;
 }
 
+const UNASSIGN_MARKER = 'UNASSIGN';
+
 class EVASimulation {
   private readonly models: SimulationModels;
   simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
@@ -275,6 +277,13 @@ class EVASimulation {
     // TODO: Edge case when one room's station is still assigned when the TSS stops -- this will cause the station in logs to never be completed
     const roomData = await this.models.room.findOne({ where: { [primaryKeyOf(this.models.room)]: this.room } });
     const room = roomData?.dataValues;
+    // Check type, make sure comparing '' to '' rather than '' to null
+    if (!this.station_name) {
+      this.station_name = '';
+    }
+    if (!room.station_name) {
+      room.station_name = '';
+    }
     // No station change
     if (this.station_name === room.station_name) {
       this.station_name = room.station_name;
@@ -297,7 +306,7 @@ class EVASimulation {
     }
     // Station changed, check whether it was assigned to a new station (1) or unassigned (2)
     // (1) New Station
-    if (this.station_name) {
+    if (this.station_name && room.station_name !== UNASSIGN_MARKER) {
       // If the new station was assigned to a previous room, unassign it & finish the log
       this.unassignPreviouslyAssignedRoomStation(this.station_name);
       // Create a new station log and set it to the DB
@@ -334,6 +343,8 @@ class EVASimulation {
           },
         }
       );
+      this.station_log_id = '';
+      this.station_name = '';
     }
   }
 
@@ -341,18 +352,15 @@ class EVASimulation {
    * Takes a station and unassigns the station from the room, if a room is assigned to it and isn't this current station
    */
   async unassignPreviouslyAssignedRoomStation(station_name: string): Promise<void> {
-    console.log('looking for ', station_name);
     // const roomData = await this.models.room.findOne({ where: { [primaryKeyOf(this.models.room)]: this.room } });
     // const room = roomData?.dataValues;
     const returnedRooms = await this.models.room.findAll({ where: { station_name: station_name } });
     for (const _room of returnedRooms) {
       const { id, station_log_id } = _room.dataValues;
       // Don't unassign the current room, only the others
-      console.log('id', id, this.room);
       if (id.toString() === this.room.toString()) {
         continue;
       }
-      console.log('got here');
       // If the previous station's id is not null, then we should end the previous station's log
       if ([null, undefined, ''].includes(station_log_id) === false) {
         // End the previous station's log
@@ -369,10 +377,10 @@ class EVASimulation {
         );
       }
 
-      // Case for unassigning a station from a room
+      // Case for marking a station to be unassigned from a room
       this.models.room.update(
         {
-          station_name: '',
+          station_name: UNASSIGN_MARKER,
           station_log_id: '',
         },
         {

@@ -106,7 +106,7 @@ class simulationControl extends ModelRoute {
 
   public async failureSim(req: APIRequest, res: APIResult): Promise<void> {
     const simInst: SimulationInstance | undefined = this.sims.find(
-      (_sim: SimulationInstance) => _sim.room === req.params.room
+      (_sim: SimulationInstance) => req.params.room.toString() === _sim.room.toString()
     );
 
     if (!simInst) {
@@ -137,7 +137,7 @@ class simulationControl extends ModelRoute {
 
   public async updateSimStation(req: APIRequest, res: APIResult): Promise<void> {
     const simInst: SimulationInstance | undefined = this.sims.find(
-      (_sim: SimulationInstance) => _sim.room === req.params.room
+      (_sim: SimulationInstance) => req.params.room.toString() === _sim.room.toString()
     );
 
     if (!simInst) {
