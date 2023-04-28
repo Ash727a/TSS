@@ -11,13 +11,71 @@
 
 <h5 align="center">
   <a href="https://microgravityuniversity.jsc.nasa.gov/nasasuits">NASA SUITS Website</a> •
-  <a href="#computer-for-devs">For Developers</a>
+  <a href="#earth_americas-for-suits-teams">For SUITS Teams</a> •
+  <a href="#computer-for-nasa-team">For NASA Team</a>
 </h5>
 
 ---
 <br>
 
-## :computer: For Devs
+## :earth_americas: For SUITS Teams
+1. Clone the repository...
+```
+git clone https://github.com/SUITS-Techteam/TSS.git
+```
+2. Navigate into the root of the repository
+3. Navigate to `/backend`
+7. Run...
+```
+npm i
+```
+8. Run...
+```
+npm run dev
+```
+In another terminal, start the simulation through an http GET request:
+```
+curl http://localhost:8080/api/simulationControl/sim/1/start
+```
+8. Power up your VISION Kit
+    * If you haven't already, be sure to change the host URL in your VISION Kit (see [VISION Kit Setup](#vision-kit-setup) below).  
+    * If everything is connected correctly, you will begin generating data from your VISION Kit, and it will be sent to the server.
+## VISION Kit Setup
+### Adding Network to VISION Kit and Updating Host IP
+Once you have your test environment set up and your server host established you will need to go into your VK and change the SUITS_TSSHOST environment variable to 
+your server host IP. 
+
+1. Connect a monitor and keyboard to your VK. 
+2. Once the system is running and you have a prompt, you must connect the VK to the wifi network you'll run the test server on. Start by entering the following command:
+    ``` bash
+    sudo raspi-config
+    ```
+    Navigate to `Network Options` with the arrow keys and press enter
+    
+    Select `Wi-Fi` and follow the steps to add your ssid and password
+    
+    Select finish to close raspi-config
+
+3. Next you need to update the SUITS_TSSHOST file on the vision kit. Enter the following commands:
+    ``` bash
+    cd TSS_Client
+    nano .env
+    ```
+    Then add your server host IP address to the right side of `SUITS_TSSHOST=`.
+    
+    Press Ctrl + o to save then Ctrl + x to exit
+
+4. Now restart your VK by running:
+    ``` bash
+    sudo reboot
+    ```
+    If your server is running and your SUITS_TSSHOST address is correct your VK should automatically start sending GPS data to the server!
+
+### You're good to go! 🎉
+
+<br>
+
+## :computer: For NASA Team
 
 1. Clone the repository...
 ```
