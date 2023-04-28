@@ -10,7 +10,6 @@
        - [Database.class.ts](src/database/Database.class.ts)
        - [index.ts](src/database/index.ts)
        - __local\-sqlite\-database__
-         - [logs.sqlite](src/database/local-sqlite-database/logs.sqlite)
          - __seed__
            - [extraSetup.ts](src/database/local-sqlite-database/seed/extraSetup.ts)
            - [helpers.ts](src/database/local-sqlite-database/seed/helpers.ts)
@@ -42,7 +41,6 @@
              - [visionKit.model.ts](src/database/models/teams/visionKitData/visionKit.model.ts)
          - __telemetry__
            - [index.ts](src/database/models/telemetry/index.ts)
-           - [simulationControl.model.ts](src/database/models/telemetry/simulationControl.model.ts)
            - [simulationFailure.model.ts](src/database/models/telemetry/simulationFailure.model.ts)
            - [simulationState.model.ts](src/database/models/telemetry/simulationState.model.ts)
      - [helpers.ts](src/helpers.ts)
@@ -71,12 +69,13 @@
            - [users.class.ts](src/server/express/routes/users.class.ts)
        - __sockets__
          - [TSSWebSocketServer.ts](src/server/sockets/TSSWebSocketServer.ts)
+         - __enums__
+           - [socket.enum.ts](src/server/sockets/enums/socket.enum.ts)
          - __events__
            - __mappings__
              - [spec\_data.map.ts](src/server/sockets/events/mappings/spec_data.map.ts)
            - [parser.ts](src/server/sockets/events/parser.ts)
            - [user.class.ts](src/server/sockets/events/user.class.ts)
-         - [server.ts](src/server/sockets/server.ts)
          - [socketConnectionHandler.ts](src/server/sockets/socketConnectionHandler.ts)
          - [socketInterfaces.ts](src/server/sockets/socketInterfaces.ts)
          - __test\_clients__
@@ -84,10 +83,9 @@
            - [user\_client.ts](src/server/sockets/test_clients/user_client.ts)
          - [vision\-kit.map.ts](src/server/sockets/vision-kit.map.ts)
      - __simulations__
-       - [EVASimulation.ts](src/simulations/EVASimulation.ts)
+       - [evasimulation.ts](src/simulations/evasimulation.ts)
        - __seed__
          - [README.md](src/simulations/seed/README.md)
-         - [simcontrol.ts](src/simulations/seed/simcontrol.ts)
          - [simfailure.ts](src/simulations/seed/simfailure.ts)
        - __telemetry__
          - [eva\_telemetry.ts](src/simulations/telemetry/eva_telemetry.ts)
