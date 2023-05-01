@@ -41,22 +41,17 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     let station_name: any = stationString;
     if (eventType === 'UNASSIGN') {
       station_name = '';
-    } else {
-      // Prevents multiple rooms being assigned to the same station
-      this.roomsService.unassignPreviouslyAssignedRoom(station_name);
     }
-    // Update the station with the new station name
-    const payload = {
-      ...this.selectedRoom,
-      station_name,
-    };
-    this.roomsService.updateRoomById(this.selectedRoom.id, payload).then((result) => {
-      if (result.ok && this.selectedRoom) {
-        this.roomsService.getRoomById(this.selectedRoom.id).then((room) => {
-          this.selectedRoom = room;
-          this.setStationStatusData();
-        });
-      }
+    this.roomsService.updateEVASimulationRoomStation(this.selectedRoom.id, station_name).then((result) => {
+      // Give it time to update the DB
+      setTimeout(() => {
+        if (result.ok && this.selectedRoom) {
+          this.roomsService.getRoomById(this.selectedRoom.id).then((room) => {
+            this.selectedRoom = room;
+            this.setStationStatusData();
+          });
+        }
+      }, 1000);
     });
   }
 

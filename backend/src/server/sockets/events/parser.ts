@@ -34,7 +34,7 @@ class Parser {
       });
 
       if (!existing_imu) {
-        // console.log('creatin');
+        // console.log('creating');
         // models.imuMsg.create(newImuRecord as any);
         models.imuMsg.create(newImuRecord as IMUAttributes);
       } else {

@@ -16,7 +16,6 @@ export class RoomsService {
       const rooms = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms`));
       return { ok: true, payload: rooms };
     } catch (e) {
-      console.log('err caught', e);
       return { ok: false, err: e };
     }
   }
@@ -76,7 +75,7 @@ export class RoomsService {
     }
     const BACKEND_PATH = `${BACKEND_URL}/api/simulationControl/sim/${roomID}/station`;
     try {
-      await firstValueFrom(this.http.put(BACKEND_PATH, body));
+      const res = await firstValueFrom(this.http.put(BACKEND_PATH, body));
       // PUT returns null on success, so return a custom ok object
       return { ok: true };
     } catch (e) {
