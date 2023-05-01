@@ -25,6 +25,7 @@ import { SwitchStationButtonComponent } from './shared/components/switch-station
 import { SwitchRoomButtonComponent } from './shared/components/switch-room-button/switch-room-button.component';
 import { StationSwitchCardComponent } from './modules/rooms/station-switch-card/station-switch-card.component';
 import { StatusIconTextDisplayComponent } from './modules/rooms/station-switch-card/status-icon-text-display/status-icon-text-display.component';
+import { TooltipComponent } from './shared/components/tooltip/tooltip.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { StatusIconTextDisplayComponent } from './modules/rooms/station-switch-c
     SwitchRoomButtonComponent,
     StationSwitchCardComponent,
     StatusIconTextDisplayComponent,
+    TooltipComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],

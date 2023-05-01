@@ -4,14 +4,16 @@
       <div *ngIf="loaded && !rooms?.length"><h4>No Rooms</h4></div>
       <div class="rooms-row" *ngFor="let room of rooms" (click)="openModal(room)">
         <div class="item left">
-          <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
+          <app-shared-tooltip text="Telemetry is{{ room.status === 'green' || room.status === 'yellow' ? ' ' :  ' not' }} {{ room.status === 'yellow' ? 'paused' : 'running' }}">
+            <app-shared-status-indicator status="{{ room.status }}"></app-shared-status-indicator>
+          </app-shared-tooltip>
           <div class="fixed-width">
             <h5>{{ room.name }}</h5>
           </div>
           <div class="room-row">
-            <div class="tooltip connection-indicator" [ngClass]="room.userConnected ? 'green' : 'gray'">
-              <span class="tooltiptext">User is{{ room.userConnected ? ' ' : 'not' }} connected</span>
-            </div>
+            <app-shared-tooltip text="User is{{ room.userConnected ? ' ' : ' not' }} connected">
+              <div class="connection-indicator" [ngClass]="room.userConnected ? 'green' : 'gray'"></div>
+            </app-shared-tooltip>
             <h5>Room {{ room.id }}</h5>
           </div>
           <div *ngFor="let error of room.errors" class="fixed-width small">
