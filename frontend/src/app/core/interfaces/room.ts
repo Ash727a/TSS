@@ -5,6 +5,7 @@ export interface Room {
   session_log_id: string,
   name: string;
   status: string;
+  userConnected: boolean;
   station: string;
   updatedAt: Date;
   createdAt: Date;

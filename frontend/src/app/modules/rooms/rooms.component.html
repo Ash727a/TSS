@@ -8,7 +8,12 @@
           <div class="fixed-width">
             <h5>{{ room.name }}</h5>
           </div>
-          <h5>Room {{ room.id }}</h5>
+          <div class="room-row">
+            <div class="tooltip connection-indicator" [ngClass]="room.userConnected ? 'green' : 'gray'">
+              <span class="tooltiptext">User is{{ room.userConnected ? ' ' : 'not' }} connected</span>
+            </div>
+            <h5>Room {{ room.id }}</h5>
+          </div>
           <div *ngFor="let error of room.errors" class="fixed-width small">
             <h5 class="error-label">{{ error.value ? error.name : '' }}</h5>
           </div>

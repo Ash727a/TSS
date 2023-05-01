@@ -121,6 +121,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
               }
               room.errors = errors;
               room.status = isRunning ? 'green' : 'gray';
+              room.userConnected = true; // TODO: Check socket connection
               room.station_name = station_name;
               return room;
             });
