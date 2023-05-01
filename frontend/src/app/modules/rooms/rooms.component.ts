@@ -105,6 +105,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
             this.rooms = this.rooms.map((room: Room): Room => {
               const station_name: string = roomsResult.filter((data: Room) => data.id === room.id)[0].station_name;
               const isRunning: boolean = telemetryResult.filter((data: TelemetryData) => data.room_id === room.id)[0].is_running;
+              const isPaused: boolean = telemetryResult.filter((data: TelemetryData) => data.room_id === room.id)[0].is_paused;
               let errors: SimulationError[] = [
                 { key: SimulationErrorKey.O2_ERROR, name: 'O2', value: false },
                 { key: SimulationErrorKey.PUMP_ERROR, name: 'PUMP', value: false },
@@ -120,7 +121,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
                 }
               }
               room.errors = errors;
-              room.status = isRunning ? 'green' : 'gray';
+              room.status = isPaused ? 'yellow' : isRunning ? 'green' : 'gray';
               room.userConnected = true; // TODO: Check socket connection
               room.station_name = station_name;
               return room;

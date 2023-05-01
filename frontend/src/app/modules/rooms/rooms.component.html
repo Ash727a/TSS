@@ -25,6 +25,7 @@
             room.station_name
           }}</app-shared-station-tag>
           <app-shared-switch-station-button
+            *ngIf="room.status === 'green'"
             (click)="$event.stopPropagation()"
             [rooms]="rooms"
             [room]="room"
