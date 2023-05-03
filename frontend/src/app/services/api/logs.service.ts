@@ -21,4 +21,16 @@ export class LogsService {
         return { ok: false, err: e };
       });
   }
+
+  // Station Logs
+  async getStationLogByID(station_id: string) {
+    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/telemetryStationLog/${station_id}`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return { ok: true, payload: res };
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

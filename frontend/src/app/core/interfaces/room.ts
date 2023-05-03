@@ -7,6 +7,7 @@ export interface Room {
   status: string;
   userConnected: boolean;
   station: string;
+  station_log_id: string,
   updatedAt: Date;
   createdAt: Date;
   users: number;

@@ -2,21 +2,24 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Room } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
+import { LogsService } from '@services/api/logs.service';
+
 
 @Component({
   selector: 'app-rooms-station-switch-card',
   templateUrl: './station-switch-card.component.html',
   styleUrls: ['./station-switch-card.component.scss'],
+  providers: [LogsService],
 })
 export class StationSwitchCardComponent implements OnInit, OnDestroy {
   @Input() selectedRoom: Room | null = null;
 
-  constructor(private roomsService: RoomsService) {}
+  constructor(private roomsService: RoomsService, private logsService: LogsService) {}
 
-  protected stations: any = [
-    { value: 'UIA', isActive: false },
-    { value: 'GEO', isActive: false },
-    { value: 'ROV', isActive: false },
+  protected stations: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed' }[] = [
+    { value: 'UIA', isActive: false, status: 'incomplete' },
+    { value: 'GEO', isActive: false, status: 'incomplete' },
+    { value: 'ROV', isActive: false, status: 'incomplete' },
   ];
 
   ngOnInit(): void {
@@ -29,6 +32,25 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
       if (this.selectedRoom?.station_name === this.stations[i].value) {
         this.stations[i].isActive = true;
         this.stations[i].status = 'current';
+        // This is the current assigned station, fetch the station log to get the time
+        if (this.selectedRoom?.station_log_id) {
+          this.logsService.getStationLogByID(this.selectedRoom.station_log_id).then((result: any) => {
+            if (result.ok) {
+              const stationLog = result.payload;
+              if (stationLog.end_time) {
+                console.log('Skipping station assignment heartbeat because station log already has an end time');
+                return;
+              }
+              const time = new Date(stationLog.start_time).getTime();
+              const now = new Date().getTime();
+              const timeDiff = now - time;
+              // Change to slice(11,19) if you want HH:MM:SS, or slice(14,19) if you want MM:SS
+              const durationDisplay = new Date(timeDiff).toISOString().slice(14,19);
+              this.stations[i].time = durationDisplay;
+              console.log(durationDisplay);
+            }
+          });
+        }
       } else {
         this.stations[i].isActive = false;
         this.stations[i].status = 'incomplete';
