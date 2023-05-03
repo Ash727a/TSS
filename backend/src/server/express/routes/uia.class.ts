@@ -33,9 +33,28 @@ class uia extends ModelRoute {
       console.log('No room in UIA');
       return;
     }
-
     const id = roomInUIA?.get('id');
+    // Check if the UIA is a new assignment, or it has already been assigned
+    const _uia: any = await this.model.findOne({
+      where: {
+        [primaryKeyOf(this.model)]: id,
+      },
+    });
 
+    if (_uia === null) {
+      res.status(200).send('No UIA in DB');
+      console.log('No UIA in DB');
+      return;
+    }
+
+    // If it's a new connection, there's no started_at
+    if (!_uia.started_at) {
+      req.body.started_at = new Date();
+    }
+    console.log(_uia);
+
+    console.log('here');
+    console.log(req.body);
     await this.model.update(req.body, {
       where: {
         [primaryKeyOf(this.model)]: id,

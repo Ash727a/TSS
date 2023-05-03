@@ -27,7 +27,7 @@ import { ModalEvent } from '@core/interfaces';
 
 
 export class LogsComponent {
-  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm:ss A';
+  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm A';
 
   logs!: any[];
   protected selectedLog!: any;

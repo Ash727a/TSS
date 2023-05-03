@@ -6,7 +6,7 @@ export interface UIAData {
   ev1_water_waste_switch: boolean;
   emu1_o2_supply_switch: boolean;
   emu2_pwr_switch: boolean;
-  ev2_water_supply_switch: boolean;
+  ev2_supply_switch: boolean;
   ev2_water_waste_switch: boolean;
   emu2_o2_supply_switch: boolean;
   o2_vent_switch: boolean;
@@ -18,5 +18,5 @@ export interface UIAData {
 
 export interface StatusSensor {
   name: string;
-  status: boolean;
+  status: boolean | undefined;
 }
