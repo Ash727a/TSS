@@ -41,6 +41,17 @@ export class UIAComponent {
         if (result.ok) {
           this.uiaData = result.data;
           this.connected = Boolean(this.uiaData?.started_at);
+          // Check time since the last update time, and if greater than 5 seconds, set connected to false in frontend and database
+          if (this.connected && this.uiaData?.updatedAt) {
+            const lastUpdate = new Date(this.uiaData.updatedAt);
+            const now = new Date();
+            const diff = now.getTime() - lastUpdate.getTime();
+            if (diff > 5000) {
+              this.connected = false;
+              // Set started_at to null in database. This will mark the UIA as not connected to the room
+              this.uiaService.updateByRoomID(roomID, { ...result.data, started_at: null })
+            }
+          }
           this.sensors1 = [
             { name: 'EMU1 POWER', status: this.setSwitchStatus(this.uiaData?.emu1_pwr_switch) },
             { name: 'EV1 SUPPLY', status: this.setSwitchStatus(this.uiaData?.ev1_supply_switch) },

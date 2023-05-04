@@ -19,4 +19,14 @@ export class UIAService {
         return { ok: false, err: e };
       });
   }
+
+  async updateByRoomID(roomID: number, uiaState: object): Promise<any> {
+    return await firstValueFrom(this.http.put(`${BACKEND_URL}/api/uia/${roomID}`, uiaState))
+      .then((result) => {
+        return { ok: true, data: result }
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

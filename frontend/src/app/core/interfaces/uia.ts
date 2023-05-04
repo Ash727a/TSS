@@ -12,8 +12,8 @@ export interface UIAData {
   o2_vent_switch: boolean;
   depress_pump_switch: boolean;
   depress_pump_fault: boolean;
-  created_at: Date,
-  updated_at: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export interface StatusSensor {
