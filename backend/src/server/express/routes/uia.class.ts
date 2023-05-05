@@ -51,10 +51,7 @@ class uia extends ModelRoute {
     if (!_uia.started_at) {
       req.body.started_at = new Date();
     }
-    console.log(_uia);
 
-    console.log('here');
-    console.log(req.body);
     await this.model.update(req.body, {
       where: {
         [primaryKeyOf(this.model)]: id,

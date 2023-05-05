@@ -64,7 +64,6 @@ export class LogsComponent {
           }
         }
         this.logs = result.payload;
-        console.log(this.logs);
       };
     }).catch(e => {
       console.log(e);
