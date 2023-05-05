@@ -1,8 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import config from '@app/config';
 
-const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class ServerService {
   constructor(private http: HttpClient) {}
 
   async getServerConnection(): Promise<any> {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/conntest`))
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/conntest`))
       .then((res) => {
         // Detect if it was previously disconnected
         if (this.connectionStatus === false) {

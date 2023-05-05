@@ -1,5 +1,6 @@
 const config = {
     VERBOSE: true,
+    BACKEND_URL: 'http://localhost:8080',
     /**
      * For each station, there's a timer that counts how long the station has been assigned for
      * Timer starts from 00:00 in MM:SS (Minutes:Seconds) format

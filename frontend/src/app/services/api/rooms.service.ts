@@ -1,10 +1,9 @@
 import { firstValueFrom } from 'rxjs';
-
+import config from '@app/config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Room } from '@app/core/interfaces';
 
-const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()
@@ -13,7 +12,7 @@ export class RoomsService {
 
   async getRooms(): Promise<any> {
     try {
-      const rooms = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms`));
+      const rooms = await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/rooms`));
       return { ok: true, payload: rooms };
     } catch (e) {
       return { ok: false, err: e };
@@ -22,7 +21,7 @@ export class RoomsService {
 
   async getRoomById(roomID: number): Promise<any> {
     try {
-      const room = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms/${roomID}`));
+      const room = await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/rooms/${roomID}`));
       return room;
     } catch (e) {
       return { ok: false, err: e };
@@ -31,7 +30,7 @@ export class RoomsService {
 
   async getRoomByStationName(station_name: string): Promise<any> {
     try {
-      const result = await firstValueFrom(this.http.get(`${BACKEND_URL}/api/rooms/station/${station_name}`));
+      const result = await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/rooms/station/${station_name}`));
       let res: Object[] = result as Object[];
       return res[0];
     } catch (e) {
@@ -43,7 +42,7 @@ export class RoomsService {
     room.session_log_id = undefined;
 
     try {
-      await firstValueFrom(this.http.put(`${BACKEND_URL}/api/rooms/${roomID}`, room));
+      await firstValueFrom(this.http.put(`${config.BACKEND_URL}/api/rooms/${roomID}`, room));
       // PUT returns null on success, so return a custom ok object
       return { ok: true };
     } catch (e) {
@@ -73,7 +72,7 @@ export class RoomsService {
     const body = {
       station: station ?? ''
     }
-    const BACKEND_PATH = `${BACKEND_URL}/api/simulationControl/sim/${roomID}/station`;
+    const BACKEND_PATH = `${config.BACKEND_URL}/api/simulationControl/sim/${roomID}/station`;
     try {
       const res = await firstValueFrom(this.http.put(BACKEND_PATH, body));
       // PUT returns null on success, so return a custom ok object
