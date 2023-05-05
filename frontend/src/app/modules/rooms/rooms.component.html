@@ -11,7 +11,7 @@
             <h5>{{ room.name }}</h5>
           </div>
           <div class="room-row">
-            <app-shared-tooltip text="User is{{ room.userConnected ? ' ' : ' not' }} connected">
+            <app-shared-tooltip text="User HMD is{{ room.userConnected ? ' ' : ' not' }} connected">
               <div class="connection-indicator" [ngClass]="room.userConnected ? 'green' : 'gray'"></div>
             </app-shared-tooltip>
             <h5>Room {{ room.id }}</h5>

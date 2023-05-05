@@ -4,8 +4,12 @@ import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey,
 /** MODEL: user
  * This is the model for the users.
  * @column user_guid: User GUID (PK)
- * @column name: User name
- * @column room: Room ID (FK)
+ * @column team_name: Team name
+ * @column username: User name
+ * @column university: University
+ * @column room_id: Room ID (FK)
+ * @column hmd_is_connected: HMD is Connected
+ * @column vk_is_connected: VK is Connected
  */
 
 // We export a function that defines the model.
@@ -18,6 +22,7 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.UUIDV4)
   declare user_guid: string;
 
+  // Team name
   @AllowNull(false)
   @Column(DataType.STRING)
   declare team_name: string;
@@ -27,6 +32,7 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.STRING)
   declare username: string;
 
+  // University
   @AllowNull(false)
   @Column(DataType.STRING)
   declare university: string;
@@ -37,10 +43,17 @@ export default class user extends Model<InferAttributes<user>, InferCreationAttr
   @Column(DataType.INTEGER)
   declare room_id: number;
 
+  // HMD is Connected
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare is_connected: boolean;
+  declare hmd_is_connected: boolean;
+
+  // VK is Connected
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare vk_is_connected: boolean;
 }
 
 export type UserCreationAttributes = InferCreationAttributes<user>;

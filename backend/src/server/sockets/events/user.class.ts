@@ -40,7 +40,7 @@ class User {
       // stop sim
       // http.get(STOP_SIM_URL + `${session_room_id}/stop`);
 
-      this.user_record.update({ is_connected: false });
+      this.user_record.update({ hmd_is_connected: false });
       clearInterval(send_data_interval);
       this._ws.terminate();
     });
@@ -59,18 +59,15 @@ class User {
 
     try {
       let user_record = await user.findOne({
-        where: { user_guid: registration_info.user_guid, username: registration_info.username },
+        where: { user_guid: registration_info.user_guid },
       });
-
       if (user_record) {
-        console.log(`Found existing user with username: ${registration_info.username}`);
-
         // Reject connections if user is already connected
-        if (user_record?.is_connected) {
-          console.log(`${registration_info.username} is already conencted. Cannot create new instance`);
+        if (user_record?.hmd_is_connected) {
+          console.log(`${registration_info.username} is already connected. Cannot create new instance`);
           return null;
         }
-        user_record.update({ is_connected: true });
+        user_record.update({ hmd_is_connected: true });
       } else {
         const empty_room = await room.findOne({ where: { user_guid: null } });
         if (empty_room === null) {
@@ -85,7 +82,8 @@ class User {
           user_guid: registration_info.user_guid,
           university: registration_info.university,
           room_id: empty_room.id,
-          is_connected: true,
+          hmd_is_connected: true,
+          vk_is_connected: false,
         });
         console.log(`${registration_info.username} assigned to room ${empty_room.name}`);
       }
