@@ -64,7 +64,6 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
           ws.close(1008, `Invalid visionkit guid. Please ensure the vkid in the visionkit's .env is correct`);
           break;
         }
-
         parser.parseMessageGPS(gpsMsg, models);
         break;
       }
