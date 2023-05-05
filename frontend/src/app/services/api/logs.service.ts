@@ -1,9 +1,8 @@
 import { firstValueFrom } from 'rxjs';
-
+import config from '@app/config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-const BACKEND_URL: string = 'http://localhost:8080';
 // const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()
@@ -12,7 +11,19 @@ export class LogsService {
 
   // Logging
   async getAllTelemetrySessionLogs() {
-    return await firstValueFrom(this.http.get(`${BACKEND_URL}/api/telemetrySessionLog`))
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/telemetrySessionLog`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return { ok: true, payload: res };
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
+
+  // Station Logs
+  async getStationLogByID(station_id: string) {
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/telemetryStationLog/${station_id}`))
       .then((result) => {
         let res: Object[] = result as Object[];
         return { ok: true, payload: res };

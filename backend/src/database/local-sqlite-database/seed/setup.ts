@@ -15,14 +15,25 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
 
   // Create the rooms
   await models.room.bulkCreate(teams);
-
   // Create a new row of data for each room in each model's table
-  teams.forEach(async (room, idx) => {
-    const simRow = { room: idx + 1 }; // Adding 1 because we want to start at 1, not 0
+  teams.forEach(async (teamData, idx) => {
+    const roomIdx = idx + 1; // Adding 1 because we want to start at 1, not 0
+    const simRow = { room: roomIdx };
     await models.simulationFailure.create(simRow);
     await models.simulationState.create(simRow);
-    await models.uia.create(simRow);
-    // await models.gpsMsg.create(simRow);
+    await models.uia.create(teamData);
+    // Create a new row of data for each user
+    const userRow = {
+      team_name: teamData.name,
+      room_id: roomIdx,
+      ...teamData,
+    };
+    await models.user.create(userRow);
+    // Create a new row of data for each gpsMsg for user guid
+    const gpsRow = {
+      user_guid: teamData.user_guid,
+    };
+    await models.gpsMsg.create(gpsRow);
     // await models.imuMsg.create(simRow);
   });
 

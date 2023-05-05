@@ -99,11 +99,6 @@ class simulationControl extends ModelRoute {
     return;
   }
 
-  public async controlSim(req: APIRequest, res: APIResult): Promise<void> {
-    res.status(200);
-    return;
-  }
-
   public async failureSim(req: APIRequest, res: APIResult): Promise<void> {
     const simInst: SimulationInstance | undefined = this.sims.find(
       (_sim: SimulationInstance) => req.params.room.toString() === _sim.room.toString()
@@ -146,6 +141,8 @@ class simulationControl extends ModelRoute {
       return;
     }
     simInst.sim.station_name = req.body.station;
+    res.status(200).json(simInst.sim.station_name);
+    return;
   }
 
   public async restoreSimulations(req: APIRequest, res: APIResult): Promise<void> {

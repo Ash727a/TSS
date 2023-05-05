@@ -1,5 +1,5 @@
 import { CreationAttributes, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
 
 /** MODEL: gpsMsg
  * This model is for the GPS messages received from the Vision Kit.
@@ -22,77 +22,76 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } 
 export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreationAttributes<gpsMsg>> {
   // User GUID (The Vision Kit's ID) (FK)
   @PrimaryKey
-  @AllowNull(true)
   @Column(DataType.STRING)
   declare user_guid?: string;
 
   // Mode
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.INTEGER)
   declare mode: number;
 
   // Time
-  @AllowNull(true)
+  @Default('')
   @Column(DataType.STRING)
   declare time?: string;
 
   // EPT
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare ept?: number;
 
   // Latitude
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare lat?: number;
 
   // Longitude
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare lon?: number;
 
   // Altitude
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare alt?: number;
 
   // EPX
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare epx?: number;
 
   // EPY
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare epy?: number;
 
   // EPV
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare epv?: number;
 
   // Track
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare track?: number;
 
   // Speed
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare speed?: number;
 
   // Climb
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare climb?: number;
 
   // EPS
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare eps?: number;
 
   // EPC
-  @AllowNull(true)
+  @Default(0)
   @Column(DataType.DOUBLE)
   declare epc?: number;
 }

@@ -31,8 +31,8 @@ export default class uia extends Model<InferAttributes<uia>, InferCreationAttrib
 
   // Current simulation start time
   @AllowNull(true)
-  @Column(DataType.STRING)
-  declare started_at: string;
+  @Column(DataType.DATE)
+  declare started_at: Date;
 
   // EMU1 Power Switch
   @AllowNull(false)

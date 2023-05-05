@@ -7,12 +7,12 @@
     <app-rooms-station-switch-card-status-icon-text-display
       [status]="station.status"
     ></app-rooms-station-switch-card-status-icon-text-display>
-    <h5 [ngClass]="station.status">{{ station.time }}</h5>
-    <app-shared-outlined-button ngClass="button" *ngIf="station.status === 'current'"
+    <h5 [ngClass]="station.durationColor">{{ station.time }}</h5>
+    <app-shared-outlined-button ngClass="button" *ngIf="selectedRoom?.status === 'green' && station.status === 'current'"
     (click)="handleStationChange('UNASSIGN', station.value)"
       >UNASSIGN</app-shared-outlined-button
     >
-    <app-shared-outlined-button *ngIf="station.status === 'incomplete'"
+    <app-shared-outlined-button *ngIf="selectedRoom?.status === 'green' && station.status === 'incomplete'"
     (click)="handleStationChange('ASSIGN', station.value)"
       >ASSIGN</app-shared-outlined-button
     >

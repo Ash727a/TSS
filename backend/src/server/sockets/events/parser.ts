@@ -34,7 +34,7 @@ class Parser {
       });
 
       if (!existing_imu) {
-        // console.log('creatin');
+        // console.log('creating');
         // models.imuMsg.create(newImuRecord as any);
         models.imuMsg.create(newImuRecord as IMUAttributes);
       } else {
@@ -115,7 +115,7 @@ class Parser {
     // 1. Map rfid ID -> spec data (either through db or just an object)
     const tag_id = spec_msg.BLOB.DATA.TAG_ID;
     if (!isValidRockId(tag_id)) {
-      console.log(`"${tag_id}" is not a valid rfid tag`);
+      console.log(`"${tag_id}" is not a valid RFID tag`);
       return;
     }
 

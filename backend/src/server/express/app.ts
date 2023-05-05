@@ -149,10 +149,6 @@ class ExpressApp {
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.commandSim(req, res))
         );
         this.app.get(
-          `/api/${routeName}/sim/:room/:control`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.controlSim(req, res))
-        );
-        this.app.get(
           `/api/${routeName}/sim/:room/:failure`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.failureSim(req, res))
         );

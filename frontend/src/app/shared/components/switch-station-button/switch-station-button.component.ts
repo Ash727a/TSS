@@ -53,9 +53,9 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
 
   @ViewChild('dropdown') private dropdownContentRef!: TemplateRef<any>;
 
-  constructor(private modalService: ModalService, private roomsService: RoomsService) {}
+  constructor(private modalService: ModalService, private roomsService: RoomsService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   protected openDropdown(room: Room | null) {
     if (!room || this.disabledDropdown) return;
@@ -104,14 +104,6 @@ export class SwitchStationButtonComponent implements OnInit, OnDestroy {
     if (!this.selectedRoom) {
       return;
     }
-    // Prevents multiple rooms being assigned to the same station
-    // this.roomsService.unassignPreviouslyAssignedRoom(station_name);
-    // // Assign the room to the station
-    // const payload = {
-    //   ...this.selectedRoom,
-    //   station_name,
-    // };
-    // this.roomsService.updateRoomById(this.selectedRoom.id, payload);
     this.roomsService.updateEVASimulationRoomStation(this.selectedRoom.id, station_name);
   }
 

@@ -139,7 +139,7 @@ class EVASimulation {
     this.simTimer = setInterval(() => {
       this.step();
     }, process.env.SIM_STEP_TIME as number | undefined);
-    this.printState();
+    // this.printState();
   }
 
   async stop(): Promise<void> {
@@ -346,6 +346,7 @@ class EVASimulation {
       this.station_log_id = '';
       this.station_name = '';
     }
+    // this.printState();
   }
 
   /**

@@ -27,7 +27,7 @@ import { ModalEvent } from '@core/interfaces';
 
 
 export class LogsComponent {
-  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm:ss A';
+  private static readonly TIMESTAMP_FORMAT = 'MMMM Do YYYY, h:mm A';
 
   logs!: any[];
   protected selectedLog!: any;
@@ -64,7 +64,6 @@ export class LogsComponent {
           }
         }
         this.logs = result.payload;
-        console.log(this.logs);
       };
     }).catch(e => {
       console.log(e);
