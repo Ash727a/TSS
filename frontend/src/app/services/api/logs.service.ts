@@ -32,4 +32,15 @@ export class LogsService {
         return { ok: false, err: e };
       });
   }
+
+  async getCompletedStationsBySessionLogID(session_log_id: string) {
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/telemetryStationLog/completed/${session_log_id}`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return { ok: true, payload: res };
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

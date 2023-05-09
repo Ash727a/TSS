@@ -163,6 +163,14 @@ class ExpressApp {
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.restoreSimulations(req, res))
         );
       }
+
+      // If it's an instance of telemetryStationLog, we define its endpoints.
+      if (routeController instanceof routes.telemetryStationLog) {
+        this.app.get(
+          `/api/${routeName}/completed/:session_log_id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.findCompletedStations(req, res))
+        );
+      }
     }
   }
 

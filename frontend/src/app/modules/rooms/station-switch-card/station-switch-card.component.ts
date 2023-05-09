@@ -8,7 +8,7 @@ import { LogsService } from '@services/api/logs.service';
 const POLLING_STATION_DURATION_INTERVAL: number = 1000;
 const STATION_TIME_THRESHOLDS = config.stationTimes;
 
-const STATIONS_DEFAULT: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' }[] = [
+const STATIONS_DEFAULT: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' | 'green' }[] = [
   { value: 'UIA', isActive: false, status: 'incomplete', durationColor: 'white' },
   { value: 'GEO', isActive: false, status: 'incomplete', durationColor: 'white' },
   { value: 'ROV', isActive: false, status: 'incomplete', durationColor: 'white' },
@@ -28,9 +28,11 @@ const STATIONS_DEFAULT: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?
 export class StationSwitchCardComponent implements OnInit, OnDestroy {
   @Input() selectedRoom: Room | null = null;
 
+  private pollTimer!: ReturnType<typeof setTimeout>;
+
   constructor(private roomsService: RoomsService, private logsService: LogsService) { }
 
-  protected stations: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' }[] = STATIONS_DEFAULT;
+  protected stations: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' | 'green' }[] = STATIONS_DEFAULT;
 
   ngOnInit(): void {
     this.setStationStatusData();
@@ -41,21 +43,29 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     this.stations = STATIONS_DEFAULT;
   }
 
-  private setStationStatusData(): void {
+  private async setStationStatusData(): Promise<void> {
+    // Get the station logs in the DB that have the same simulation_log_id as the current room
+    let loggedStations: any[] = await this.getLoggedStations();
     for (let i: number = 0; i < this.stations.length; i++) {
       this.stations[i].time = '00:00';
-      if (this.selectedRoom?.station_name === this.stations[i].value) {
+      const _stationName = this.selectedRoom?.station_name;
+      if (_stationName === this.stations[i].value) {
         this.stations[i].isActive = true;
         this.stations[i].status = 'current';
       } else {
         this.stations[i].isActive = false;
-        this.stations[i].status = 'incomplete';
+        // The station isn't active, so check if the station is completed or not
+        if (this.stationIsCompleted(i, this.stations[i].value, loggedStations)) {
+          this.stations[i].status = 'completed';
+        } else {
+          this.stations[i].status = 'incomplete';
+        }
       }
     }
   }
 
   private pollStationDurationInterval(): void {
-    setInterval(() => {
+    this.pollTimer = setInterval(() => {
       // Fetch the station log of the current assigned station to get the time
       if (this.selectedRoom?.station_log_id) {
         this.logsService.getStationLogByID(this.selectedRoom.station_log_id).then((result: any) => {
@@ -67,43 +77,56 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
               }
               return;
             }
-            const time = new Date(stationLog.start_time).getTime();
-            const now = new Date().getTime();
-            const timeDiff = now - time;
-            // Change to slice(11,19) if you want HH:MM:SS, or slice(14,19) if you want MM:SS
-            const durationDisplay = new Date(timeDiff).toISOString().slice(14, 19);
-            // Change the color of the duration if it is over the threshold
-            let _durationColor: any = 'white';
-            if (this.selectedRoom) {
-              const thresholds: any = STATION_TIME_THRESHOLDS[this.selectedRoom.station_name];
-              // Check red first, since it's the greater threshold
-              if (this.shouldColor(thresholds.red, durationDisplay)) {
-                _durationColor = 'red';
-                // Check yellow next, since it's the lesser threshold
-              } else if (this.shouldColor(thresholds.yellow, durationDisplay)) {
-                _durationColor = 'yellow';
-              }
+            if (!this.selectedRoom) {
+              return;
             }
-            // Find the station that is currently active and update the time
-            for (let i: number = 0; i < this.stations.length; i++) {
-              if (this.stations[i].status === 'current') {
-                this.stations[i].time = durationDisplay;
-                this.stations[i].durationColor = _durationColor;
-              } else {
-                this.stations[i].durationColor = 'white';
-              }
-            }
+            // Update the current station's duration
+            const currentStationIndex = this.stations.findIndex((station) => station.status === 'current');
+            this.updateDurationText(currentStationIndex, new Date(stationLog.start_time), new Date());
           }
         });
       }
     }, POLLING_STATION_DURATION_INTERVAL);
   }
 
+  private updateDurationText(_index: number, startTime: Date, endTime: Date, isCompleted: boolean = false) {
+    const durationDisplay = this.getDurationDisplay(startTime, endTime);
+    // Change the color of the duration if it is over the threshold
+    const durationColor = this.getDurationTextColor(this.stations[_index].value, durationDisplay, isCompleted);
+    this.stations[_index].time = durationDisplay;
+    this.stations[_index].durationColor = durationColor as any;
+  }
+
+  private getDurationDisplay(time1: Date, time2: Date): string {
+    const timeDiff = time2.getTime() - time1.getTime();
+    const durationDisplay = new Date(timeDiff).toISOString().slice(14, 19);
+    return durationDisplay;
+  }
+
+  private getDurationTextColor(_stationName: string, durationDisplay: string, isCompleted: boolean): string {
+    let _durationColor: any = 'white';
+    if (this.selectedRoom) {
+      const thresholds: any = STATION_TIME_THRESHOLDS[_stationName];
+      // Check red first, since it's the greater threshold
+      if (this.shouldColor(thresholds.red, durationDisplay)) {
+        _durationColor = 'red';
+        // Check yellow next, since it's the lesser threshold
+      } else if (this.shouldColor(thresholds.yellow, durationDisplay)) {
+        _durationColor = 'yellow';
+      } else if (isCompleted) {
+        _durationColor = 'green';
+      }
+    }
+    return _durationColor;
+  }
+
   private shouldColor(threshold: string, timeDisplay: string): boolean {
+    // The below parses from MM:SS format
     const currentMinutes = parseInt(timeDisplay.slice(0, 2));
     const currentSeconds = parseInt(timeDisplay.slice(3, 5));
     const thresholdMinutes = parseInt(threshold.slice(0, 2));
     const thresholdSeconds = parseInt(threshold.slice(3, 5));
+
     // If it's the same minute, check the seconds, if it's greater than the threshold, return true
     if (currentMinutes === thresholdMinutes && currentSeconds >= thresholdSeconds) {
       return true;
@@ -141,5 +164,32 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { }
+  async getLoggedStations(): Promise<any[]> {
+    if (!this.selectedRoom) {
+      return [];
+    }
+    const res: any = await this.logsService.getCompletedStationsBySessionLogID(this.selectedRoom.session_log_id);
+    if (res.ok) {
+      const completedStations = res.payload;
+      return completedStations;
+    } else {
+      console.log('Error checking for completed stations in this room', res.err);
+    }
+    return [];
+  }
+
+  private stationIsCompleted(stationIndex: number, stationName: string, loggedStations: any[]): boolean {
+    for (let i: number = 0; i < loggedStations.length; i++) {
+      if (loggedStations[i].station_name === stationName) {
+        const isCompleted = Boolean(loggedStations[i].completed);
+        this.updateDurationText(stationIndex, new Date(loggedStations[i].start_time), new Date(loggedStations[i].end_time), isCompleted);
+        return isCompleted;
+      }
+    }
+    return false;
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.pollTimer);
+  }
 }

@@ -10,12 +10,13 @@ import * as moment from 'moment';
 })
 export class AppComponent {
   private static readonly DATETIME_FORMAT = 'MM-DD-YYYY hh:mm:ss A';
+  private interval!: ReturnType<typeof setTimeout>;
   protected lastConnectionTime = moment().format(AppComponent.DATETIME_FORMAT);
   protected connectionStatus: string = 'pending';
   constructor(private serverService: ServerService) {}
 
   ngOnInit() {
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.serverService.getServerConnection().then((res) => {
         if (res.ok) {
           this.connectionStatus = 'connected';
@@ -25,5 +26,9 @@ export class AppComponent {
         }
       });
     }, 2000);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 }

@@ -83,7 +83,7 @@
            - [user\_client.ts](src/server/sockets/test_clients/user_client.ts)
          - [vision\-kit.map.ts](src/server/sockets/vision-kit.map.ts)
      - __simulations__
-       - [evasimulation.ts](src/simulations/evasimulation.ts)
+       - [EVASimulation.ts](src/simulations/EVASimulation.ts)
        - __seed__
          - [README.md](src/simulations/seed/README.md)
          - [simfailure.ts](src/simulations/seed/simfailure.ts)
