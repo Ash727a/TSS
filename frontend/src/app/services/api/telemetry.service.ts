@@ -25,7 +25,7 @@ export class TelemetryService {
     return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/simulationState/${roomID}`))
       .then((result) => {
         let res: TelemetryData = result as TelemetryData;
-        return res;
+        return { ok: true, payload: res };
       })
       .catch((e) => {
         return { ok: false, err: e };

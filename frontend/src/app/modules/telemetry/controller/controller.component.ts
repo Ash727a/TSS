@@ -43,12 +43,15 @@ export class ControllerComponent {
       });
     }
     // Get the telemetry data for the room
-    this.telemetryService.getTelemetryByRoomID(roomID).then((result: TelemetryData) => {
-      // If the simulation is running, then start fetching and emitting that data from the running simulation
-      if (result?.is_running) {
-        this.fetchAndEmitDataOnInterval();
-      } else {
-        this.connected = false;
+    this.telemetryService.getTelemetryByRoomID(roomID).then((result) => {
+      if (result.ok) {
+        const data: TelemetryData = result.payload;
+        // If the simulation is running, then start fetching and emitting that data from the running simulation
+        if (data?.is_running) {
+          this.fetchAndEmitDataOnInterval();
+        } else {
+          this.connected = false;
+        }
       }
     });
 
@@ -167,7 +170,9 @@ export class ControllerComponent {
     this.telemetryService
       .getTelemetryByRoomID(this.selectedRoom.id)
       .then((res) => {
-        this.telemetryData = res;
+        if (res.ok) {
+          this.telemetryData = res.payload;
+        }
       })
       .catch((e) => {
         console.log(e);

@@ -1,9 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Room } from '@app/core/interfaces';
 import config from '@app/config';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { LogsService } from '@services/api/logs.service';
+import { TelemetryService } from '@services/api/telemetry.service';
+
 
 const POLLING_STATION_DURATION_INTERVAL: number = 1000;
 const STATION_TIME_THRESHOLDS = config.stationTimes;
@@ -30,17 +32,20 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
 
   private pollTimer!: ReturnType<typeof setTimeout>;
 
-  constructor(private roomsService: RoomsService, private logsService: LogsService) { }
+  constructor(private roomsService: RoomsService, private logsService: LogsService, private telemetryService: TelemetryService) { }
 
-  protected stations: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' | 'green' }[] = STATIONS_DEFAULT;
+  protected stations: { value: 'UIA' | 'GEO' | 'ROV', isActive: boolean, time?: string, status: 'current' | 'incomplete' | 'completed', durationColor: 'white' | 'red' | 'yellow' | 'green' }[] = [];
 
   ngOnInit(): void {
+    this.refreshData();
     this.setStationStatusData();
-    this.pollStationDurationInterval();
+    if (!this.pollTimer) {
+      this.pollStationDurationInterval();
+    }
   }
 
   private refreshData(): void {
-    this.stations = STATIONS_DEFAULT;
+    this.stations = structuredClone(STATIONS_DEFAULT);
   }
 
   private async setStationStatusData(): Promise<void> {
@@ -66,6 +71,19 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
 
   private pollStationDurationInterval(): void {
     this.pollTimer = setInterval(() => {
+      if (!this.selectedRoom) {
+        return;
+      };
+      // If the room isn't running, check if the room running state has changed
+      this.telemetryService.getTelemetryByRoomID(this.selectedRoom.id).then((result) => {
+        if (result.ok && this.selectedRoom) {
+          if (result.payload.is_running && !result.payload.is_paused) {
+            this.selectedRoom.status = 'green';
+          } else {
+            this.selectedRoom.status = '';
+          }
+        }
+      });
       // Fetch the station log of the current assigned station to get the time
       if (this.selectedRoom?.station_log_id) {
         this.logsService.getStationLogByID(this.selectedRoom.station_log_id).then((result: any) => {
@@ -89,7 +107,10 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
     }, POLLING_STATION_DURATION_INTERVAL);
   }
 
-  private updateDurationText(_index: number, startTime: Date, endTime: Date, isCompleted: boolean = false) {
+  private updateDurationText(_index: number, startTime: Date, endTime: Date, isCompleted: boolean = false): void {
+    if (!this.stations[_index]) {
+      return;
+    }
     const durationDisplay = this.getDurationDisplay(startTime, endTime);
     // Change the color of the duration if it is over the threshold
     const durationColor = this.getDurationTextColor(this.stations[_index].value, durationDisplay, isCompleted);
@@ -142,7 +163,6 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
   protected handleStationChange(eventType: 'ASSIGN' | 'UNASSIGN', stationString: 'UIA' | 'GEO' | 'ROV') {
     if (!this.selectedRoom) return;
     // Refresh the frontend component on station change
-    this.refreshData();
     let station_name: any = stationString;
     if (eventType === 'UNASSIGN') {
       station_name = '';
@@ -166,7 +186,7 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
   }
 
   async getLoggedStations(): Promise<any[]> {
-    if (!this.selectedRoom) {
+    if (!this.selectedRoom || !this.selectedRoom.session_log_id) {
       return [];
     }
     const res: any = await this.logsService.getCompletedStationsBySessionLogID(this.selectedRoom.session_log_id);
@@ -192,5 +212,11 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.pollTimer);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedRoom']) {
+      this.selectedRoom = changes['selectedRoom'].currentValue;
+    }
   }
 }

@@ -106,7 +106,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
     const _errors: SimulationErrorData[] = await this.telemetryService.getAllSimulationErrors();
     const _telemetry: TelemetryData[] = await this.telemetryService.getAllRoomTelemetry();
     // Update all the room data with the latest data from the backend
-    const newRooms = this.rooms.map(async (room: Room): Promise<Room> => {
+    const newRooms = _rooms.map(async (room: Room): Promise<Room> => {
       const station_name: string = _rooms.filter((data: Room) => data.id === room.id)[0].station_name;
       const isRunning: boolean = _telemetry.filter((data: TelemetryData) => data.room_id === room.id)[0].is_running;
       const isPaused: boolean = _telemetry.filter((data: TelemetryData) => data.room_id === room.id)[0].is_paused;
@@ -139,18 +139,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
       return res;
     });
     this.rooms = await Promise.all(newRooms);
-
-    // TODO: Separate Later
-    // Update the simulator errors
-    // this.telemetryService.getAllSimulationErrors().then((result) => {
-    // console.log('Errors', result);
-    // this.simulationErrorData = result;
-    // this.rooms = this.rooms.map((room: any) => {
-    //   let station_name = result.filter((data: any) => data.id === room.id)[0].station_name;
-    //   room.station_name = station_name;
-    //   return room;
-    // });
-    // });
   }
 
   protected openModal(room: Room): void {
