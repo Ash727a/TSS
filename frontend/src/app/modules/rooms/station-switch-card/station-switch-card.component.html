@@ -7,7 +7,21 @@
     <app-rooms-station-switch-card-status-icon-text-display
       [status]="station.status"
     ></app-rooms-station-switch-card-status-icon-text-display>
-    <h5 class="{{ station.durationColor }}" [ngClass]="{ 'bold': station.isActive }">{{ station.time }}</h5>
+    <app-shared-tooltip
+      text="{{
+        station.durationColor === 'green'
+          ? 'Station was completed within time bounds'
+          : station.durationColor === 'white'
+          ? 'Station assignment duration timer'
+          : station.durationColor === 'yellow'
+          ? 'Station is close to overtime'
+          : station.durationColor === 'red'
+          ? 'Station went overtime'
+          : ''
+      }}"
+    >
+      <h5 class="{{ station.durationColor }}" [ngClass]="{ bold: station.isActive }">{{ station.time }}</h5>
+    </app-shared-tooltip>
     <app-shared-outlined-button
       ngClass="button"
       *ngIf="selectedRoom?.status === 'green' && station.status === 'current'"

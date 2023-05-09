@@ -110,11 +110,12 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
       // Check red first, since it's the greater threshold
       if (this.shouldColor(thresholds.red, durationDisplay)) {
         _durationColor = 'red';
+        // If it's completed, then it's green (not active) then we don't need to warn with yellow. It's completed.
+      } else if (isCompleted) {
+        _durationColor = 'green';
         // Check yellow next, since it's the lesser threshold
       } else if (this.shouldColor(thresholds.yellow, durationDisplay)) {
         _durationColor = 'yellow';
-      } else if (isCompleted) {
-        _durationColor = 'green';
       }
     }
     return _durationColor;
