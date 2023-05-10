@@ -6,7 +6,7 @@ import { CrewmemberMsg } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
-type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia'>;
+type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rov'>;
 class User {
   // private room_id: number;
   private readonly team_name: string;
@@ -151,6 +151,11 @@ class User {
     } catch (err) {
       console.error('Error:', err);
     }
+  }
+
+  public updateRovCmd(payload: any): any {
+    // update table that has room id matching
+    this._models.rov.update(payload, { where: { room_id: this.user_record.room_id } });
   }
 }
 

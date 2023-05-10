@@ -41,6 +41,17 @@ function connect_user(test_user: TestUser): void {
     };
 
     ws.send(JSON.stringify(data));
+    const payload = {
+      "rover": {
+        "cmd": "navigate",
+        "goal_lat": 0.0,
+        "goal_lon": 0.0,
+      }
+    }
+    setTimeout(() => {
+      console.log('Sending payload...', payload);
+      ws.send(JSON.stringify(payload));
+    }, 2000);
   });
 
   ws.on('message', (message) => {
@@ -51,6 +62,7 @@ function connect_user(test_user: TestUser): void {
   ws.on('close', (code, reason) => {
     console.log(`ws closed with code ${code} and reason: ${reason}`);
   });
+
 }
 
 connect_user(test_user_1);

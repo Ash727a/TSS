@@ -15,7 +15,6 @@ export class TSSWebSocketServer {
 
     this._wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
       console.log(`*** USER CONNECTED ***`);
-
       handleSocketConnection(ws, _models, HMD_UPDATE_INTERVAL);
     });
 
