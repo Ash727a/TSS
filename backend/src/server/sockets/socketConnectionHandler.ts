@@ -13,12 +13,12 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
   const parser = new Parser();
   let current_user: User | null;
   ws.on('message', async (data, req) => {
-    console.log(`** MESSAGE RECEIVED **`);    
+    console.log(`** MESSAGE RECEIVED **`);
     const parsedMsg = JSON.parse(data.toString('utf-8')) as UnknownMsg;
-    
+
     const msg: any = parsedMsg as any;
-    if (msg.rover && checkFields(msg.rover, ['cmd', 'goal_lat', 'goal_lon'])) {    
-      console.log('ROVER COMMAND RECEIVED', msg.rover);        
+    if (msg.rover && checkFields(msg.rover, ['cmd', 'goal_lat', 'goal_lon'])) {
+      console.log('ROVER COMMAND RECEIVED', msg.rover);
       if (msg.rover.cmd === 'navigate') {
         if (current_user) {
           current_user.updateRovCmd(msg.rover);
