@@ -4,10 +4,9 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, D
 /** MODEL: rover
  * This model is for holding live ROV states and data for all rooms.
  * @column room_id Room ID (PK)
- * @column started_at Current simulation start time
  * @column command Command to send to ROV
  * @column goal_lat Goal latitude coordinate
- * @column g Goal longitude coordinate
+ * @column goal_lon Goal longitude coordinate
  */
 
 // We export a function that defines the model.
@@ -20,11 +19,6 @@ export default class rover extends Model<InferAttributes<rover>, InferCreationAt
   @AutoIncrement
   @Column(DataType.INTEGER)
   declare room_id: number;
-
-  // Current simulation start time
-  @AllowNull(true)
-  @Column(DataType.DATE)
-  declare started_at: Date;
 
   @Default('')
   @Column(DataType.STRING)

@@ -10,6 +10,7 @@ import telemetryStationLog from './telemetryStationLog.class.js';
 import uia from './uia.class.js';
 import rover from './rover.class.js';
 import users from './users.class.js';
+import devices from './devices.class.js';
 
 export {
   auth,
@@ -24,4 +25,5 @@ export {
   telemetryStationLog,
   telemetryErrorLog,
   users,
+  devices,
 };

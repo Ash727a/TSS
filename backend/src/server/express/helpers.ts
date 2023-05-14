@@ -12,7 +12,7 @@ function getIdParam(req: APIRequest): number {
   } else if (UUIDV4_REGEX.test(id)) {
     return id;
     // TODO: Next intern, you'll need to edit the backend url endpoint to be {model}/id/:id instead of {model}/:id to prevent this error
-  } else if (id === 'completed') {
+  } else if (id === 'completed' || id === 'rover') {
     return id;
   }
   throw new TypeError(`Invalid ':id' param: "${id}"`);

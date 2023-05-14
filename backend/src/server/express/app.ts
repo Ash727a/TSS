@@ -50,6 +50,7 @@ class ExpressApp {
       telemetrySessionLog: new routes.telemetrySessionLog(_models.telemetrySessionLog),
       telemetryStationLog: new routes.telemetryStationLog(_models.telemetryStationLog),
       telemetryErrorLog: new routes.telemetryErrorLog(_models.telemetryErrorLog),
+      devices: new routes.devices(_models.devices),
     };
 
     // We define the standard REST APIs for each route (if they exist).

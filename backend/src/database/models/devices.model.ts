@@ -5,6 +5,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, D
  * This is the model for the devices.
  * @column name: device name (PK)
  * @column is_connected: connection status
+ * @column connected_at: connection timestamp
  */
 
 // We export a function that defines the model.
@@ -22,4 +23,10 @@ export default class devices extends Model<InferAttributes<devices>, InferCreati
   @Default(false)
   @Column(DataType.BOOLEAN)
   declare is_connected: boolean;
+
+  // Device connection timestamp
+  @AllowNull(true)
+  @Default(null)
+  @Column(DataType.DATE)
+  declare connected_at: Date;
 }
