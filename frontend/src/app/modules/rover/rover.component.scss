@@ -41,6 +41,28 @@
       justify-content: space-between;
       align-items: center;
 
+      .left-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .command {
+          font-weight: bold;
+          color: $green;
+        }
+
+        .time-since {
+          align-self: flex-end;
+          color: $lightGray;
+        }
+
+        .coords {
+          color: $lightGray;
+          margin-top: 0.2rem;
+        //   margin-left: 9.4rem;
+        }
+      }
+
       .stop-button {
         margin-top: 1rem;
         margin-bottom: 1rem;

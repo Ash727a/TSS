@@ -135,13 +135,13 @@ class ExpressApp {
         );
       }
 
-      // If it's an instance of rover, we define its endpoints.
-      if (routeController instanceof routes.rover) {
-        this.app.put(
-          '/api/updaterover',
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateRover(req, res))
-        );
-      }
+      // // If it's an instance of rover, we define its endpoints.
+      // if (routeController instanceof routes.rover) {
+      //   this.app.put(
+      //     '/api/updaterover',
+      //     this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateRover(req, res))
+      //   );
+      // }
 
       // If it's an instance of room, we define its endpoints.
       if (routeController instanceof routes.room) {

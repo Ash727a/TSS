@@ -17,9 +17,8 @@ export class RoverComponent {
 
   protected readonly ROVER_IMG_PATH = 'assets/rover.png'; // Path is relative to "/app" root
   protected commandName: string = '';
+  protected commandDetails: string = '';
   protected commandTimeSince: string = '';
-  // protected sensors1: StatusSensor[] = [];
-  // protected sensors2: StatusSensor[] = [];
   private roverData: RoverData = {} as RoverData;
   protected connected: boolean = false;
 
@@ -43,21 +42,30 @@ export class RoverComponent {
       this.roverService.getRoverStateByRoomID(roomID).then((result) => {
         if (result.ok) {
           this.roverData = result.data;
-          // this.connected = Boolean(this.roverData?.started_at);
+          this.connected = Boolean(this.roverData?.started_at);
           // Check time since the last update time, and if greater than 5 seconds, set connected to false in frontend and database
-          if (this.connected && this.roverData?.updated_at) {
-            const lastUpdate = new Date(this.roverData.updated_at);
-            const now = new Date();
-            const diff = now.getTime() - lastUpdate.getTime();
-            if (diff > 5000) {
-              this.connected = false;
-              // Set started_at to null in database. This will mark the UIA as not connected to the room
-              this.roverService.updateByRoomID(roomID, { ...result.data, started_at: null })
-            }
+          if (this.connected && this.roverData?.updatedAt) {
+            const lastUpdate = new Date(this.roverData.updatedAt);
+            this.commandName = this.roverData?.cmd ?? '';
+            this.commandDetails = this.roverData?.goal_lat || this.roverData?.goal_lon ? `(${this.roverData?.goal_lat}, ${this.roverData?.goal_lon})` : '';
+            this.commandTimeSince = this.getDurationDisplay(lastUpdate, new Date());
+            // const now = new Date();
+            // const diff = now.getTime() - lastUpdate.getTime();
+            // if (diff > 5000) {
+            //   this.connected = false;
+            //   // Set started_at to null in database. This will mark the UIA as not connected to the room
+            //   this.roverService.updateByRoomID(roomID, { ...result.data, started_at: null })
+            // }
           }
         }
       });
     }, POLL_INTERVAL);
+  }
+
+  private getDurationDisplay(time1: Date, time2: Date): string {
+    const timeDiff = time2.getTime() - time1.getTime();
+    const durationDisplay = new Date(timeDiff).toISOString().slice(14, 19);
+    return durationDisplay;
   }
 
   public dropdownVisibilityChanged(event: any) {

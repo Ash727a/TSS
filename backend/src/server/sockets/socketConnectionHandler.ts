@@ -21,7 +21,11 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
       console.log('ROVER COMMAND RECEIVED', msg.rover);
       if (msg.rover.cmd === 'navigate') {
         if (current_user) {
-          current_user.updateRovCmd(msg.rover);
+          const payload = {
+            ...msg.rover,
+            started_at: new Date(),
+          };
+          current_user.updateRovCmd(payload);
         } else {
           console.log('User not registered');
         }
