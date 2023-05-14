@@ -46,6 +46,7 @@ class ExpressApp {
       simulationState: new routes.simulationState(_models.simulationState),
       simulationFailure: new routes.simulationFailure(_models.simulationFailure),
       uia: new routes.uia(_models.uia, _models.room),
+      rover: new routes.rover(_models.rover, _models.room),
       telemetrySessionLog: new routes.telemetrySessionLog(_models.telemetrySessionLog),
       telemetryStationLog: new routes.telemetryStationLog(_models.telemetryStationLog),
       telemetryErrorLog: new routes.telemetryErrorLog(_models.telemetryErrorLog),
@@ -131,6 +132,14 @@ class ExpressApp {
         this.app.put(
           '/api/updateuia',
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateUIA(req, res))
+        );
+      }
+
+      // If it's an instance of rover, we define its endpoints.
+      if (routeController instanceof routes.rover) {
+        this.app.put(
+          '/api/updaterover',
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateRover(req, res))
         );
       }
 

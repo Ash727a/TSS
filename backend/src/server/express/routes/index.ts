@@ -8,6 +8,7 @@ import telemetryErrorLog from './telemetryErrorLog.class.js';
 import telemetrySessionLog from './telemetrySessionLog.class.js';
 import telemetryStationLog from './telemetryStationLog.class.js';
 import uia from './uia.class.js';
+import rover from './rover.class.js';
 import users from './users.class.js';
 
 export {
@@ -18,6 +19,7 @@ export {
   simulationFailure,
   simulationState,
   uia,
+  rover,
   telemetrySessionLog,
   telemetryStationLog,
   telemetryErrorLog,

@@ -98,6 +98,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
 
 function checkFields(object: any, attributes: string[]): boolean {
   for (const attribute of attributes) {
+    // eslint-disable-next-line no-prototype-builtins
     if (!object.hasOwnProperty(attribute)) {
       return false;
     }

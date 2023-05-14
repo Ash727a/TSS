@@ -2,14 +2,14 @@ import { Component, Input } from '@angular/core';
 import { Room, RoverData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
-import { UIAService } from '@services/api/uia.service';
+import { RoverService } from '@services/api/rover.service';
 
 const POLL_INTERVAL = 1000;
 @Component({
   selector: 'app-rover',
   templateUrl: './rover.component.html',
   styleUrls: ['./rover.component.scss'],
-  providers: [RoomsService, UIAService],
+  providers: [RoomsService, RoverService],
 })
 export class RoverComponent {
   @Input() public variant: 'default' | 'small' = 'default';
@@ -23,7 +23,7 @@ export class RoverComponent {
   private roverData: RoverData = {} as RoverData;
   protected connected: boolean = false;
 
-  constructor(private roomsService: RoomsService, private uiaService: UIAService) { }
+  constructor(private roomsService: RoomsService, private roverService: RoverService) { }
 
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1
@@ -40,7 +40,7 @@ export class RoverComponent {
   private pollRoverData() {
     setInterval(() => {
       const roomID = this.selectedRoom?.id ?? 1;
-      this.uiaService.getUIAStateByRoomID(roomID).then((result) => {
+      this.roverService.getRoverStateByRoomID(roomID).then((result) => {
         if (result.ok) {
           this.roverData = result.data;
           // this.connected = Boolean(this.roverData?.started_at);
@@ -52,7 +52,7 @@ export class RoverComponent {
             if (diff > 5000) {
               this.connected = false;
               // Set started_at to null in database. This will mark the UIA as not connected to the room
-              this.uiaService.updateByRoomID(roomID, { ...result.data, started_at: null })
+              this.roverService.updateByRoomID(roomID, { ...result.data, started_at: null })
             }
           }
         }
