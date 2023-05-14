@@ -6,7 +6,10 @@ import { CrewmemberMsg } from '../socketInterfaces.js';
 // import { ISocketServerModels } from '../model_interfaces.js';
 import type user from '../../../database/models/teams/user.model.js';
 
-type ModelsForUser = Pick<typeof liveModels, 'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover'>;
+type ModelsForUser = Pick<
+  typeof liveModels,
+  'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover'
+>;
 class User {
   // private room_id: number;
   private readonly team_name: string;

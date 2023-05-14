@@ -23,7 +23,6 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
         if (current_user) {
           const payload = {
             ...msg.rover,
-            started_at: new Date(),
           };
           current_user.updateRovCmd(payload);
         } else {

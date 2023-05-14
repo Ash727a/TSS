@@ -43,7 +43,6 @@ export class RoverComponent {
         if (result.ok) {
           this.roverData = result.data;
           this.connected = Boolean(this.roverData?.started_at);
-          // Check time since the last update time, and if greater than 5 seconds, set connected to false in frontend and database
           if (this.connected && this.roverData?.updatedAt) {
             const lastUpdate = new Date(this.roverData.updatedAt);
             this.commandName = this.roverData?.cmd ?? '';

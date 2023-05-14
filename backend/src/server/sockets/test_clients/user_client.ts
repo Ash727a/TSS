@@ -46,6 +46,7 @@ function connect_user(test_user: TestUser): void {
         cmd: 'navigate',
         goal_lat: 1.0,
         goal_lon: 2.0,
+        is_connected: true, // TODO move to on connection socket event later
       },
     };
     setTimeout(() => {
