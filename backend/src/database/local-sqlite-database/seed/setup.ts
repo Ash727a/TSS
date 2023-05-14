@@ -1,4 +1,4 @@
-import { liveDatabaseName, teams } from '../../../config.js';
+import { liveDatabaseName, teams, devices } from '../../../config.js';
 import { SequelizeModel } from '../../../interfaces.js';
 import Database from '../../Database.class.js';
 import { ILiveModels } from '../../models';
@@ -36,6 +36,11 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     };
     await models.gpsMsg.create(gpsRow);
     // await models.imuMsg.create(simRow);
+  });
+
+  // Seed devices in DB as not connected
+  devices.forEach(async (deviceData) => {
+    await models.devices.create(deviceData);
   });
 
   console.log('Done!');
