@@ -14,6 +14,7 @@ export class HeaderComponent {
     this.routes = [
       { name: 'Rooms', path: '/rooms' },
       { name: 'UIA', path: '/uia' },
+      { name: 'Rover', path: '/rover' },
       { name: 'Telemetry', path: '/telemetry' },
       { name: 'Logs', path: '/logs' },
     ];

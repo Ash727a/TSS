@@ -1,11 +1,18 @@
 <div class="container">
-  <app-shared-card [ngClass]="variant" [size]="variant !== 'small' ? 'small' : ''" [title]="variant !== 'small' ? 'UIA Statistics' : ''" [variant]="variant === 'small' ? 'light' : 'default'">
+  <app-shared-card
+    [ngClass]="variant"
+    [size]="variant !== 'small' ? 'small' : ''"
+    [title]="variant !== 'small' ? 'UIA Statistics' : ''"
+    [variant]="variant === 'small' ? 'light' : 'default'"
+  >
     <h3 *ngIf="variant === 'small'">UIA Statistics</h3>
     <div *ngIf="variant != 'small'" class="room-display-container">
       <h3>Room {{ selectedRoom?.id }}</h3>
       <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
     </div>
-    <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">{{ connected ? 'Connected' : 'Not connected' }}</h5>
+    <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">
+      {{ connected ? 'Connected' : 'Not connected' }}
+    </h5>
     <div class="table-container">
       <table style="text-align: left">
         <thead>
