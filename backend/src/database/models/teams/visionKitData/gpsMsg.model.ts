@@ -94,6 +94,11 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   @Default(0)
   @Column(DataType.DOUBLE)
   declare epc?: number;
+
+  // SEMAPHORE
+  @Default(0)
+  @Column(DataType.STRING)
+  declare fix_status?: string;
 }
 
 export type GpsAttributes = InferCreationAttributes<gpsMsg>;

@@ -2,8 +2,10 @@ import { IAllModels } from '../../../database/models/index.js';
 import type { IRosTypeSensorMsgsNavSatFix } from './roverInterfaces';
 import ROSLIB from 'roslib';
 
-const SOCKET_URL = 'ws://192.168.0.105:9090';
-const WHERE_CONSTRAINT = { where: { name: 'rover' } };
+// const SOCKET_URL = 'ws://192.168.0.105:9090';
+const SOCKET_URL = 'ws://leo-raspi.local:9090';
+
+const WHERE_CONSTRAINT = { where: { name: 'rover' } } as const;
 const HEARTBEAT_INTERVAL = 1000;
 const COMMAND_INTERVAL = 1000;
 
@@ -24,27 +26,12 @@ export class RoverSocketServer {
 
     // Set up socket event listeners
     this.initializeSocketListeners();
-
-    /**
-    const cmdVel = new ROSLIB.Topic({
-      ros: this._ros,
-      name: '/cmd_vel',
-      messageType: 'geometry_msgs/Twist',
-    });
-
-    const twist = new ROSLIB.Message({
-      lat: 0,
-      lon: 0,
-    });
-    console.log('Publishing cmd_vel');
-    cmdVel.publish(twist);
-    */
     this.pollForCommands();
   }
 
   private initializeSocketListeners(): void {
     this._ros.on('connection', () => {
-      console.log('Connected to websocket server.');
+      console.log('Connected to ROVER websocket server.');
       this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
       this.roverIsConnected = true;
       this.hbInterval = setInterval(() => {
@@ -53,14 +40,21 @@ export class RoverSocketServer {
     });
 
     this._ros.on('error', (error) => {
-      console.log('Error connecting to websocket server: ', error);
+      console.log('Error connecting to ROVER websocket server: ', error);
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+      this.connect();
       this.roverIsConnected = false;
     });
 
     this._ros.on('close', () => {
-      console.log('Connection to websocket server closed.');
+      console.log('Connection to ROVER websocket server closed.');
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+      clearInterval(this.hbInterval);
+      this.connect();
+    });
+  }
+
+  private sendEmptyMessage(): void {
       this.roverIsConnected = false;
       clearInterval(this.hbInterval);
     });
@@ -139,5 +133,9 @@ export class RoverSocketServer {
 
   public isConnected(): boolean {
     return this._ros.isConnected;
+  }
+
+  public connect(): void {
+    this._ros.connect(SOCKET_URL);
   }
 }
