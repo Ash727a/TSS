@@ -40,7 +40,8 @@ export class RoverSocketServer {
     });
 
     this._ros.on('error', (error) => {
-      console.log('Error connecting to ROVER websocket server: ', error);
+      // console.log('Error connecting to ROVER websocket server: ', error);
+      console.log('Error connecting to ROVER websocket server');
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
       this.connect();
       this.roverIsConnected = false;
@@ -58,10 +59,10 @@ export class RoverSocketServer {
     const heartbeatTopic = new ROSLIB.Topic({
       ros: this._ros,
       name: '/stop_movement',
-      messageType: 'std_msgs/Empty',
+      messageType: 'std_msgs/Bool',
     });
     // Send empty message as a heartbeat to rover
-    const heartbeatMessage = new ROSLIB.Message({});
+    const heartbeatMessage = new ROSLIB.Message({ data: false });
     heartbeatTopic.publish(heartbeatMessage);
   }
 
@@ -69,6 +70,7 @@ export class RoverSocketServer {
     this.commandInterval = setInterval(async () => {
       // If the rover isn't connected, don't poll it backend for commands
       if (!this.roverIsConnected) {
+        console.log('rover not connected')
         return;
       }
       const deviceResult = await this.models.devices.findOne({ where: { name: 'rover' } });
@@ -78,18 +80,23 @@ export class RoverSocketServer {
       }
       const room_id = deviceResult.room_id;
       const roverResult = await this.models.rover.findOne({ where: { room_id: room_id } });
-      if (roverResult === null) {
+      if (roverResult === null || !roverResult?.dataValues) {
         console.log('No rover found for room');
         return;
       }
       // Command received. Send to rover
-      this.sendRoverCommand(roverResult);
+      // console.log('sending', roverResult)
+      this.sendRoverCommand(roverResult.dataValues);
     }, COMMAND_INTERVAL);
   }
 
   private sendRoverCommand(roverResult: any): void {
     let roverTopic: ROSLIB.Topic<ROSLIB.Message>;
     let roverMessage: ROSLIB.Message;
+    if (!roverResult.cmd) {
+      return;
+    }
+    console.log('SENDING ROVER', roverResult);
     switch (roverResult.cmd) {
       // case 'navigate': {
       //   roverTopic = new ROSLIB.Topic({

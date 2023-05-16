@@ -35,7 +35,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
           console.log('User not registered');
         }
       } else {
-        console.log(`Invalid rover command: ${msg.rover.cmd}`);
+        console.log(`Invalid rover command: '${msg.rover.cmd}'`);
       }
       return;
     }

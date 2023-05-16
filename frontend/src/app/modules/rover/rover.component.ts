@@ -39,10 +39,13 @@ export class RoverComponent {
 
   private pollRoverData() {
     setInterval(async () => {
-      if (this.selectedRoom === null) {
+      if (!this.selectedRoom || !this.selectedRoom.id) {
         return;
       }
       const roomID = this.selectedRoom?.id;
+      if (roomID === undefined) {
+        return;
+      }
       // Updates the rover's assigned room in the database under rover table
       this.devicesService.updateRoverAssignedRoom(roomID);
       // Get the rover's data from the database
@@ -77,11 +80,16 @@ export class RoverComponent {
     }
   }
 
-  protected stopRover(): void {
+  protected async stopRover(): Promise<void> {
     console.log('Stopping rover');
-    if (!this.selectedRoom) {
-      return;
+    // if (!this.selectedRoom || !this.selectedRoom.id) {
+    //   return;
+    // }
+    const payload = {
+      cmd: 'stop',
+      goal_lat: 0,
+      goal_lon: 0
     }
-    this.roverService.updateByRoomID(this.selectedRoom?.id, { ...this.roverData, cmd: 'stop' });
+    await this.roverService.updateByRoomID(1, payload);
   }
 }
