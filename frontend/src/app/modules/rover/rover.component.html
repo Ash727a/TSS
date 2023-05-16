@@ -18,7 +18,7 @@
         <div class="left-item">
             <div class="row gap">
             <h4>Last Command:</h4>
-            <h4 class="command">{{ commandName ? commandName : 'None' }}</h4>
+            <h4 class="command" [ngClass]="!commandName ? 'gray' : ''">{{ commandName ? commandName : 'None' }}</h4>
             <h5 class="time-since" *ngIf="commandName">(sent {{ commandTimeSince }} ago)</h5>
             </div>
             <h6 class="coords" *ngIf="commandDetails">Command coordinates: {{ commandDetails }}</h6>

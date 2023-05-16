@@ -3,6 +3,7 @@ import type { IRosTypeSensorMsgsNavSatFix } from './roverInterfaces';
 import ROSLIB from 'roslib';
 
 const SOCKET_URL = 'ws://192.168.0.105:9090';
+const WHERE_CONSTRAINT = { where: { name: 'rover' } };
 
 export class RoverSocketServer {
   private readonly _ros: ROSLIB.Ros;
@@ -13,6 +14,10 @@ export class RoverSocketServer {
     this._ros = new ROSLIB.Ros({
       url: SOCKET_URL,
     });
+    // On initial connection, set rover device to disconnected (in case it was an ungraceful shutdown)
+    this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+
+    // Set up socket event listeners
     this.initializeSocketListeners();
 
     const cmdVel = new ROSLIB.Topic({
@@ -30,20 +35,19 @@ export class RoverSocketServer {
   }
 
   private initializeSocketListeners(): void {
-    const whereConstraint = { where: { name: 'rover' } };
     this._ros.on('connection', () => {
       console.log('Connected to websocket server.');
-      this.models.devices.update({ is_connected: true, connected_at: new Date() }, whereConstraint);
+      this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
     });
 
     this._ros.on('error', (error) => {
       console.log('Error connecting to websocket server: ', error);
-      this.models.devices.update({ is_connected: false }, whereConstraint);
+      this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
     });
 
     this._ros.on('close', () => {
       console.log('Connection to websocket server closed.');
-      this.models.devices.update({ is_connected: false }, whereConstraint);
+      this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
     });
   }
 
