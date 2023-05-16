@@ -1,8 +1,9 @@
 import { IAllModels, ILiveModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
-import { GpsMsg, IMUMsg, SpecMsg } from '../socketInterfaces.js';
+import { GpsMsg, IMUMsg, RoverMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
+import room from '../../express/routes/room.class.js';
 
 class Parser {
   // constructor() {}
@@ -140,6 +141,27 @@ class Parser {
     );
 
     // TODO: Log tag_id and scan_time to logs db
+  }
+
+  async handleRoverData(rover_msg: RoverMsg, _model: Pick<IAllModels, 'rover' | 'room'>): Promise<void> {
+    // 1. Map rfid ID -> spec data (either through db or just an object)
+    let curr_lat = rover_msg.BLOB.DATA.lat;
+    let curr_lon = rover_msg.BLOB.DATA.lon;
+    let curr_time = rover_msg.BLOB.DATA.time;
+
+    // const room_in_rover = await _model.room.findOne({ where: { station_name: 'ROV' } });
+    const room_in_rover = await _model.room.findOne({ where: { station_name: 'ROV' } });
+    if (room_in_rover == null) {
+      console.log('No room assigned rover task');
+      return; 
+    }
+    
+    _model.rover.update({
+      lat: curr_lat,
+      lon: curr_lon,
+      time: curr_time
+    }, {where: { room_id: room_in_rover.id}});
+
   }
 
   // parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {

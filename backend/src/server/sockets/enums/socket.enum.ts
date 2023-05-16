@@ -3,4 +3,5 @@ export const enum DATATYPE {
   'IMU' = 'IMU',
   'GPS' = 'GPS',
   'SPEC' = 'SPEC',
+  'ROV' = 'ROV',
 }

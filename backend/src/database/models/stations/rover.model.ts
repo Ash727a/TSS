@@ -31,4 +31,17 @@ export default class rover extends Model<InferAttributes<rover>, InferCreationAt
   @Default(0)
   @Column(DataType.FLOAT)
   declare goal_lon: number;
+  
+  @Default(0)
+  @Column(DataType.FLOAT)
+  declare lat: number;
+
+  @Default(0)
+  @Column(DataType.FLOAT)
+  declare lon: number;
+
+  @Default(0)
+  @Column(DataType.STRING)
+  declare time: string;
+  
 }

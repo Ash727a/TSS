@@ -6,6 +6,7 @@ export const enum DATATYPE {
   'IMU' = 'IMU',
   'GPS' = 'GPS',
   'SPEC' = 'SPEC',
+  'ROV' = 'ROV',
 }
 
 interface SocketMsg {
@@ -92,4 +93,21 @@ interface SpecMsgBlob {
   DATA: {
     TAG_ID: string;
   };
+}
+
+
+export interface RoverMsg extends SocketMsg {
+  BLOB: RoverMsgBlob;
+}
+
+interface RoverMsgBlob {
+  DATATYPE: 'ROV';
+  DATA: RoverMsgData;
+}
+
+interface RoverMsgData {
+  class?: 'TPV';
+  lat: number;
+  lon: number;
+  time: string;
 }
