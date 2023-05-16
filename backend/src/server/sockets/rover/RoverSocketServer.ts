@@ -4,11 +4,14 @@ import ROSLIB from 'roslib';
 
 const SOCKET_URL = 'ws://192.168.0.105:9090';
 const WHERE_CONSTRAINT = { where: { name: 'rover' } };
+const HEARTBEAT_INTERVAL = 1000;
+const COMMAND_INTERVAL = 1000;
 
 export class RoverSocketServer {
   private readonly _ros: ROSLIB.Ros;
   private readonly models: IAllModels;
   private hbInterval: ReturnType<typeof setTimeout> | undefined = undefined;
+  private commandInterval: ReturnType<typeof setTimeout> | undefined = undefined;
 
   constructor(_models: IAllModels) {
     this.models = _models;
@@ -21,6 +24,7 @@ export class RoverSocketServer {
     // Set up socket event listeners
     this.initializeSocketListeners();
 
+    /**
     const cmdVel = new ROSLIB.Topic({
       ros: this._ros,
       name: '/cmd_vel',
@@ -33,6 +37,8 @@ export class RoverSocketServer {
     });
     console.log('Publishing cmd_vel');
     cmdVel.publish(twist);
+    */
+    this.pollForCommands();
   }
 
   private initializeSocketListeners(): void {
@@ -41,8 +47,8 @@ export class RoverSocketServer {
       this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
 
       this.hbInterval = setInterval(() => {
-        this.sendEmptyMessage();
-      }, 1000);
+        this.sendHeartbeatMessage();
+      }, HEARTBEAT_INTERVAL);
     });
 
     this._ros.on('error', (error) => {
@@ -57,7 +63,7 @@ export class RoverSocketServer {
     });
   }
 
-  private sendEmptyMessage(): void {
+  private sendHeartbeatMessage(): void {
     const heartbeatTopic = new ROSLIB.Topic({
       ros: this._ros,
       name: '/stop_movement',
@@ -66,6 +72,61 @@ export class RoverSocketServer {
     // Send empty message as a heartbeat to rover
     const heartbeatMessage = new ROSLIB.Message({});
     heartbeatTopic.publish(heartbeatMessage);
+  }
+
+  private async pollForCommands(): Promise<void> {
+    this.commandInterval = setInterval(async () => {
+      const deviceResult = await this.models.devices.findOne({ where: { name: 'rover' } });
+      if (deviceResult === null) {
+        console.log('No rover device found');
+        return;
+      }
+      const room_id = deviceResult.room_id;
+      const roverResult = await this.models.rover.findOne({ where: { room_id: room_id } });
+      if (roverResult === null) {
+        console.log('No rover found for room');
+        return;
+      }
+      // Command received. Send to rover
+      this.sendRoverCommand(roverResult);
+    }, COMMAND_INTERVAL);
+  }
+
+  private sendRoverCommand(roverResult: any): void {
+    let roverTopic: ROSLIB.Topic<ROSLIB.Message>;
+    let roverMessage: ROSLIB.Message;
+    switch (roverResult.cmd) {
+      // case 'navigate': {
+      //   roverTopic = new ROSLIB.Topic({
+      //     ros: this._ros,
+      //     name: '/cmd_vel',
+      //     messageType: 'geometry_msgs/Twist',
+      //   });
+      //   break;
+      // }
+      // case 'recall': {
+      //   roverTopic = new ROSLIB.Topic({
+      //     ros: this._ros,
+      //     name: '/recall',
+      //     messageType: 'std_msgs/Empty',
+      //   });
+      //   break;
+      // }
+      case 'stop': {
+        roverTopic = new ROSLIB.Topic({
+          ros: this._ros,
+          name: '/system/shutdown',
+          messageType: 'std_msgs/Empty',
+        });
+        roverMessage = new ROSLIB.Message({});
+        break;
+      }
+      default: {
+        console.log(`Invalid rover command: ${roverResult.cmd}`);
+        return;
+      }
+    }
+    roverTopic.publish(roverMessage);
   }
 
   public isConnected(): boolean {

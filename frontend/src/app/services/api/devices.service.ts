@@ -18,4 +18,13 @@ export class DevicesService {
         return { ok: false, err: e };
       });
   }
+
+  async updateRoverAssignedRoom(room_id: number): Promise<any> {
+    return await firstValueFrom(this.http.put(`${config.BACKEND_URL}/api/devices/rover/room_id`, { room_id: room_id })).then((result) => {
+      return { ok: true, data: result }
+    }
+    ).catch((e) => {
+      return { ok: false, err: e };
+    });
+  }
 }

@@ -24,6 +24,12 @@ export default class devices extends Model<InferAttributes<devices>, InferCreati
   @Column(DataType.BOOLEAN)
   declare is_connected: boolean;
 
+  // Device's current room
+  @AllowNull(true)
+  @Default(null)
+  @Column(DataType.INTEGER)
+  declare room_id: number;
+
   // Device connection timestamp
   @AllowNull(true)
   @Default(null)

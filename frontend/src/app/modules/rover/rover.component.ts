@@ -40,6 +40,9 @@ export class RoverComponent {
   private pollRoverData() {
     setInterval(async () => {
       const roomID = this.selectedRoom?.id ?? 1;
+      // Updates the rover's assigned room in the database under rover table
+      this.devicesService.updateRoverAssignedRoom(roomID);
+      // Get the rover's data from the database
       const result = await this.roverService.getRoverStateByRoomID(roomID);
       if (result.ok) {
         this.roverData = result.data;
