@@ -145,22 +145,14 @@ class Parser {
 
   async handleRoverData(rover_msg: RoverMsg, _model: Pick<IAllModels, 'rover' | 'room'>): Promise<void> {
     // 1. Map rfid ID -> spec data (either through db or just an object)
-    let curr_lat = rover_msg.BLOB.DATA.lat;
-    let curr_lon = rover_msg.BLOB.DATA.lon;
-    let curr_time = rover_msg.BLOB.DATA.time;
 
-    // const room_in_rover = await _model.room.findOne({ where: { station_name: 'ROV' } });
     const room_in_rover = await _model.room.findOne({ where: { station_name: 'ROV' } });
     if (room_in_rover == null) {
       console.log('No room assigned rover task');
       return; 
     }
     
-    _model.rover.update({
-      lat: curr_lat,
-      lon: curr_lon,
-      time: curr_time
-    }, {where: { room_id: room_in_rover.id}});
+    _model.rover.update(rover_msg.BLOB.DATA, {where: { room_id: room_in_rover.id}});
 
   }
 

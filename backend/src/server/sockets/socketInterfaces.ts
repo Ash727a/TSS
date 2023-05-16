@@ -106,8 +106,11 @@ interface RoverMsgBlob {
 }
 
 interface RoverMsgData {
-  class?: 'TPV';
   lat: number;
   lon: number;
   time: string;
+  heading: number;
+  mag_x: number;
+  mag_y: number;
+  mag_z: number;
 }
