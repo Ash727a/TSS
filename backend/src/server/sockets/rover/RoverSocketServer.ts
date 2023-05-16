@@ -8,6 +8,7 @@ const WHERE_CONSTRAINT = { where: { name: 'rover' } };
 export class RoverSocketServer {
   private readonly _ros: ROSLIB.Ros;
   private readonly models: IAllModels;
+  private hbInterval: ReturnType<typeof setTimeout> | undefined = undefined;
 
   constructor(_models: IAllModels) {
     this.models = _models;
@@ -38,6 +39,10 @@ export class RoverSocketServer {
     this._ros.on('connection', () => {
       console.log('Connected to websocket server.');
       this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
+
+      this.hbInterval = setInterval(() => {
+        this.sendEmptyMessage();
+      }, 1000);
     });
 
     this._ros.on('error', (error) => {
@@ -48,7 +53,19 @@ export class RoverSocketServer {
     this._ros.on('close', () => {
       console.log('Connection to websocket server closed.');
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+      clearInterval(this.hbInterval);
     });
+  }
+
+  private sendEmptyMessage(): void {
+    const heartbeatTopic = new ROSLIB.Topic({
+      ros: this._ros,
+      name: '/stop_movement',
+      messageType: 'std_msgs/Empty',
+    });
+    // Send empty message as a heartbeat to rover
+    const heartbeatMessage = new ROSLIB.Message({});
+    heartbeatTopic.publish(heartbeatMessage);
   }
 
   public isConnected(): boolean {
