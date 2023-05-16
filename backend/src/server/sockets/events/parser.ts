@@ -76,9 +76,9 @@ class Parser {
     delete msgData.class;
 
     if(msgData.lat === 0 && msgData.lon === 0) {
-      Object.assign(msgData, {semaphore: GPS_SEMAPHORE.NOFIX}); 
+      Object.assign(msgData, {fix_status: GPS_SEMAPHORE.NOFIX}); 
     } else {
-      Object.assign(msgData, {semaphore: GPS_SEMAPHORE.FIX}); 
+      Object.assign(msgData, {fix_status: GPS_SEMAPHORE.FIX}); 
     }
 
     const newGpsRecord: Pick<GpsAttributes, 'user_guid' | 'mode'> & Partial<GpsAttributes> = {

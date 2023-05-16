@@ -98,7 +98,7 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   // SEMAPHORE
   @Default(0)
   @Column(DataType.STRING)
-  declare semaphore?: string;
+  declare fix_semaphore?: string;
 }
 
 export type GpsAttributes = InferCreationAttributes<gpsMsg>;
