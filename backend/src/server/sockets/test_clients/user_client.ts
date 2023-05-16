@@ -41,6 +41,17 @@ function connect_user(test_user: TestUser): void {
     };
 
     ws.send(JSON.stringify(data));
+    const payload = {
+      rover: {
+        cmd: 'navigate',
+        goal_lat: 1.0,
+        goal_lon: 2.0,
+      },
+    };
+    setTimeout(() => {
+      console.log('Sending payload...', payload);
+      ws.send(JSON.stringify(payload));
+    }, 2000);
   });
 
   ws.on('message', (message) => {

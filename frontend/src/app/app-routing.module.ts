@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LogsComponent } from './modules/logs/logs.component';
 import { RoomsComponent } from './modules/rooms/rooms.component';
 import { TelemetryComponent } from './modules/telemetry/telemetry.component';
+import { RoverComponent } from './modules/rover/rover.component';
 import { UIAComponent } from './modules/uia/uia.component';
 
 const routes: Routes = [
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'telemetry',
     component: TelemetryComponent,
+  },
+  {
+    path: 'rover',
+    component: RoverComponent,
   },
   {
     path: 'logs',

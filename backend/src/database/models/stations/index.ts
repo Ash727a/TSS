@@ -1,5 +1,6 @@
 import geo from './geo.model.js';
 import uia from './uia.model.js';
+import rover from './rover.model.js';
 
 /** EXPORT MODULE: stations
  * @fileoverview Exports all models in the stations directory.
@@ -8,4 +9,4 @@ import uia from './uia.model.js';
  * @subcategory stations
  */
 
-export default { uia, geo };
+export default { uia, geo, rover };

@@ -11,16 +11,34 @@ import visionKitMap from './vision-kit.map.js';
 
 export default function handleSocketConnection(ws: WebSocket, models: IAllModels, hmd_update_interval: number): void {
   const parser = new Parser();
-
-  ws.on('message', async (data) => {
+  let current_user: User | null;
+  ws.on('message', async (data, req) => {
     console.log(`** MESSAGE RECEIVED **`);
-
     const parsedMsg = JSON.parse(data.toString('utf-8')) as UnknownMsg;
-    // console.log(data);
-    // const msgtype = parsedMsg.MSGTYPE;
-    // const header = parsedMsg.BLOB;
-    // const datatype = header.DATATYPE;
-    // const msgdata = header.DATA;
+
+    const msg: any = parsedMsg as any;
+    if (msg.rover && checkFields(msg.rover, ['cmd', 'goal_lat', 'goal_lon'])) {
+      console.log('ROVER COMMAND RECEIVED', msg.rover);
+      if (msg.rover.cmd === 'navigate') {
+        if (current_user) {
+          const payload = {
+            ...msg.rover,
+          };
+          current_user.updateRovCmd(payload);
+        } else {
+          console.log('User not registered');
+        }
+      } else if (msg.rover.cmd === 'recall') {
+        if (current_user) {
+          // current_user.recall();
+        } else {
+          console.log('User not registered');
+        }
+      } else {
+        console.log(`Invalid rover command: ${msg.rover.cmd}`);
+      }
+      return;
+    }
 
     //Client messages are always DATA
     if (parsedMsg.MSGTYPE !== 'DATA') {
@@ -39,7 +57,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
           break;
         }
         const user = await User.build(crewMemberMsg.BLOB.DATA, models, ws, hmd_update_interval);
-
+        current_user = user;
         if (user == null) {
           ws.close(1008, 'Failed to register user');
           console.log('Failed to register user');
@@ -79,4 +97,14 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
       }
     }
   });
+}
+
+function checkFields(object: any, attributes: string[]): boolean {
+  for (const attribute of attributes) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (!object.hasOwnProperty(attribute)) {
+      return false;
+    }
+  }
+  return true;
 }

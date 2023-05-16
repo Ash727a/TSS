@@ -1,0 +1,44 @@
+<div class="container">
+  <app-shared-card
+    [ngClass]="variant"
+    [size]="variant !== 'small' ? 'small' : ''"
+    [title]="variant !== 'small' ? 'Rover Command' : ''"
+    [variant]="variant === 'small' ? 'light' : 'default'"
+  >
+    <h3 *ngIf="variant === 'small'">Rover Command</h3>
+    <div *ngIf="variant != 'small'" class="room-display-container">
+      <h3>Room {{ selectedRoom?.id }}</h3>
+      <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
+    </div>
+    <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">
+      {{ connected ? 'Connected' : 'Not connected' }}
+    </h5>
+    <div class="body column gap">
+      <div class="top-row">
+        <div class="left-item">
+            <div class="row gap">
+            <h4>Last Command:</h4>
+            <h4 class="command" [ngClass]="!commandName ? 'gray' : ''">{{ commandName ? commandName : 'None' }}</h4>
+            <h5 class="time-since" *ngIf="commandName">(sent {{ commandTimeSince }} ago)</h5>
+            </div>
+            <h6 class="coords" *ngIf="commandDetails">Command coordinates: {{ commandDetails }}</h6>
+        </div>
+        <div class="stop-button row gap">
+          <app-shared-control-button
+            type="stop"
+            [disabled]="false"
+            [variant]="variant === 'small' ? 'light' : 'default'"
+          >
+            Stop Rover</app-shared-control-button
+          >
+        </div>
+      </div>
+      <img [src]="ROVER_IMG_PATH" alt="rover"/>
+      <!-- <div class="socket-url-row row gap">
+        <h4>Socket URL:</h4>
+        <input class="input" placeholder="ws://192.168.0.105:9090" />
+        <app-shared-outlined-button> Save </app-shared-outlined-button>
+      </div> -->
+    </div>
+  </app-shared-card>
+</div>

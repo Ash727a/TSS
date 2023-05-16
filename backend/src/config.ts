@@ -78,12 +78,17 @@ export const teams = [
 ];
 
 /**
- * The list of vision kit mappings.
- * @type {Array<{name: string, guid: string}>}
- * @constant visionKits
+ * The list of devices. Used to populate the database.
+ * @type {Array<{name: string}>}
+ * @constant devices
  * @memberof config
  * @usedAt backend/src/database/local-sqlite-database/seed/setup.ts
  */
+export const devices = [
+  {
+    name: 'rover',
+  },
+];
 
 /**
  * Live database file name. No need to add '.sqlite' extension.

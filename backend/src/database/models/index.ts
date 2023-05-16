@@ -4,6 +4,7 @@ import room from './room.model.js';
 import * as stations from './stations/index.js';
 import * as teams from './teams/index.js';
 import * as telemetry from './telemetry/index.js';
+import devices from './devices.model.js';
 
 /** EXPORT MODULE: models
  * @fileoverview Exports all models in the models directory.
@@ -18,6 +19,7 @@ const allModels = {
   ...stations.default,
   ...teams.default,
   ...telemetry.default,
+  devices,
 };
 export default allModels;
 export type IAllModels = typeof allModels;
@@ -33,6 +35,7 @@ export const liveModels = {
   ...stations.default,
   ...teams.default,
   ...telemetry.default,
+  devices,
 };
 export type ILiveModels = typeof liveModels;
 

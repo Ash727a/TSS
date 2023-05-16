@@ -26,6 +26,7 @@ import { SwitchRoomButtonComponent } from './shared/components/switch-room-butto
 import { StationSwitchCardComponent } from './modules/rooms/station-switch-card/station-switch-card.component';
 import { StatusIconTextDisplayComponent } from './modules/rooms/station-switch-card/status-icon-text-display/status-icon-text-display.component';
 import { TooltipComponent } from './shared/components/tooltip/tooltip.component';
+import { RoverComponent } from './modules/rover/rover.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { TooltipComponent } from './shared/components/tooltip/tooltip.component'
     StationSwitchCardComponent,
     StatusIconTextDisplayComponent,
     TooltipComponent,
+    RoverComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
