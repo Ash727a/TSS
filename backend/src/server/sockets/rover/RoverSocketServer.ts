@@ -14,7 +14,7 @@ export class RoverSocketServer {
   private readonly models: IAllModels;
   private hbInterval: ReturnType<typeof setTimeout> | undefined = undefined;
   private commandInterval: ReturnType<typeof setTimeout> | undefined = undefined;
-  private roverIsConnected: boolean = false;
+  private roverIsConnected = false;
 
   constructor(_models: IAllModels) {
     this.models = _models;
@@ -51,12 +51,6 @@ export class RoverSocketServer {
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
       clearInterval(this.hbInterval);
       this.connect();
-    });
-  }
-
-  private sendEmptyMessage(): void {
-      this.roverIsConnected = false;
-      clearInterval(this.hbInterval);
     });
   }
 
