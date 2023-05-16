@@ -12,6 +12,7 @@ export class RoverSocketServer {
   private readonly models: IAllModels;
   private hbInterval: ReturnType<typeof setTimeout> | undefined = undefined;
   private commandInterval: ReturnType<typeof setTimeout> | undefined = undefined;
+  private roverIsConnected: boolean = false;
 
   constructor(_models: IAllModels) {
     this.models = _models;
@@ -45,7 +46,7 @@ export class RoverSocketServer {
     this._ros.on('connection', () => {
       console.log('Connected to websocket server.');
       this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
-
+      this.roverIsConnected = true;
       this.hbInterval = setInterval(() => {
         this.sendHeartbeatMessage();
       }, HEARTBEAT_INTERVAL);
@@ -54,11 +55,13 @@ export class RoverSocketServer {
     this._ros.on('error', (error) => {
       console.log('Error connecting to websocket server: ', error);
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+      this.roverIsConnected = false;
     });
 
     this._ros.on('close', () => {
       console.log('Connection to websocket server closed.');
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
+      this.roverIsConnected = false;
       clearInterval(this.hbInterval);
     });
   }
@@ -76,6 +79,10 @@ export class RoverSocketServer {
 
   private async pollForCommands(): Promise<void> {
     this.commandInterval = setInterval(async () => {
+      // If the rover isn't connected, don't poll it backend for commands
+      if (!this.roverIsConnected) {
+        return;
+      }
       const deviceResult = await this.models.devices.findOne({ where: { name: 'rover' } });
       if (deviceResult === null) {
         console.log('No rover device found');
@@ -113,6 +120,7 @@ export class RoverSocketServer {
       //   break;
       // }
       case 'stop': {
+        console.log('Sending STOP command to rover');
         roverTopic = new ROSLIB.Topic({
           ros: this._ros,
           name: '/system/shutdown',

@@ -73,4 +73,12 @@ export class RoverComponent {
       this.selectedRoom = room;
     }
   }
+
+  protected stopRover(): void {
+    console.log('Stopping rover');
+    if (!this.selectedRoom) {
+      return;
+    }
+    this.roverService.updateByRoomID(this.selectedRoom?.id, { ...this.roverData, cmd: 'stop' });
+  }
 }
