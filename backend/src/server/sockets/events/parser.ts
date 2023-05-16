@@ -3,6 +3,7 @@ import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsM
 import { GpsMsg, IMUMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
+import { GPS_SEMAPHORE } from '../enums/socket.enum.js';
 
 class Parser {
   // constructor() {}
@@ -73,6 +74,12 @@ class Parser {
 
     delete msgData.device;
     delete msgData.class;
+
+    if(msgData.lat === 0 && msgData.lon === 0) {
+      Object.assign(msgData, {semaphore: GPS_SEMAPHORE.NOFIX}); 
+    } else {
+      Object.assign(msgData, {semaphore: GPS_SEMAPHORE.FIX}); 
+    }
 
     const newGpsRecord: Pick<GpsAttributes, 'user_guid' | 'mode'> & Partial<GpsAttributes> = {
       user_guid: msgObj.MACADDRESS,
