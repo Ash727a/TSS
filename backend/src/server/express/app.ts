@@ -184,7 +184,7 @@ class ExpressApp {
 
       // If it's an instance of devices, we define its endpoints.
       if (routeController instanceof routes.devices) {
-        this.app.get(
+        this.app.put(
           `/api/${routeName}/rover/room_id`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateRoverRoomID(req, res))
         );

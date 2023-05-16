@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DevicesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   async getDeviceByName(name: string): Promise<any> {
     return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/devices/${name}`))
@@ -20,11 +20,12 @@ export class DevicesService {
   }
 
   async updateRoverAssignedRoom(room_id: number): Promise<any> {
-    return await firstValueFrom(this.http.put(`${config.BACKEND_URL}/api/devices/rover/room_id`, { room_id: room_id })).then((result) => {
-      return { ok: true, data: result }
-    }
-    ).catch((e) => {
-      return { ok: false, err: e };
-    });
+    return await firstValueFrom(this.http.put(`${config.BACKEND_URL}/api/devices/rover/room_id`, { room_id: room_id }))
+      .then((result) => {
+        return { ok: true, data: result }
+      }
+      ).catch((e) => {
+        return { ok: false, err: e };
+      });
   }
 }

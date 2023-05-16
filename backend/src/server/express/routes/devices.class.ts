@@ -17,10 +17,9 @@ class devices extends ModelRoute {
    * Get all completed stations where the session_log_id is the queried one
    */
   async updateRoverRoomID(req: APIRequest, res: APIResult): Promise<void> {
-    const room_id = req.body.room_id;
-    const result = await this.model.update({ room_id: room_id }, { where: { name: 'rover' } });
+    const result = await this.model.update(req.body, { where: { name: 'rover' } });
     if (result) {
-      res.status(200).json(res);
+      res.status(200);
     } else {
       res.status(404).send('404 - Not found');
     }
