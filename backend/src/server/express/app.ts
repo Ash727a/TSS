@@ -181,6 +181,14 @@ class ExpressApp {
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.findCompletedStations(req, res))
         );
       }
+
+      // If it's an instance of devices, we define its endpoints.
+      if (routeController instanceof routes.devices) {
+        this.app.get(
+          `/api/${routeName}/rover/room_id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.updateRoverRoomID(req, res))
+        );
+      }
     }
   }
 
