@@ -96,7 +96,7 @@ export default class gpsMsg extends Model<InferAttributes<gpsMsg>, InferCreation
   declare epc?: number;
 
   // SEMAPHORE
-  @Default(0)
+  @Default('NO_FIX')
   @Column(DataType.STRING)
   declare fix_status?: string;
 }

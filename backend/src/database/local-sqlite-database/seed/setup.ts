@@ -31,11 +31,11 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     };
     await models.user.create(userRow);
     // Create a new row of data for each gpsMsg for user guid
-    const gpsRow = {
+    const defaultRow = {
       user_guid: teamData.user_guid,
     };
-    await models.gpsMsg.create(gpsRow);
-    // await models.imuMsg.create(simRow);
+    await models.gpsMsg.create(defaultRow);
+    await models.imuMsg.create(defaultRow);
   });
 
   // Seed devices in DB as not connected
