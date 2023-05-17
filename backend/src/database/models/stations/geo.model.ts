@@ -1,6 +1,6 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
-import { default_rock } from '../../../server/sockets/events/mappings/spec_data.map';
+import { default_rock } from '../../../server/sockets/events/mappings/spec_data.map.js';
 
 /** MODEL: geo
  * This model is for holding live GEO states and data for all rooms.

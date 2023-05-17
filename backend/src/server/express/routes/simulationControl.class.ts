@@ -215,6 +215,8 @@ class simulationControl extends ModelRoute {
       }
       this.sims.push(simInst);
     });
+    // Set all hmd_is_connected to false on restore
+    this.dependentModels.user.update({ hmd_is_connected: false }, { where: {} });
     if (VERBOSE) {
       console.log(`Restored ${sims.length} simulations`);
     }

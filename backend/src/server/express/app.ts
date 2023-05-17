@@ -39,6 +39,7 @@ class ExpressApp {
         simulationState: _models.simulationState,
         simulationFailure: _models.simulationFailure,
         room: _models.room,
+        user: _models.user,
         telemetrySessionLog: _models.telemetrySessionLog,
         telemetryStationLog: _models.telemetryStationLog,
         telemetryErrorLog: _models.telemetryErrorLog,
