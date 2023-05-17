@@ -39,6 +39,9 @@ async function assertDatabaseConnectionOk(): Promise<void> {
 async function init(): Promise<void> {
   await assertDatabaseConnectionOk();
 
+  // Sets cmd field of rover to empty on (re)start
+  const rover_bois = await LiveDatabase.getModels().rover.update({ cmd: '' }, { where: {} });
+
   console.log(`Starting Sequelize + Express example on port ${API_PORT}...`);
 
   const socket_server = new TSSWebSocketServer(
