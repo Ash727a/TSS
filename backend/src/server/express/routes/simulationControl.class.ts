@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { VERBOSE } from '../../../config.js';
 
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
-import EVASimulation from '../../../simulations/EVASimulation.js';
+import EVASimulation from '../../../simulations/evasimulation.js';
 import ModelRoute from './ModelRoute.class.js';
 import { primaryKeyOf } from '../../../helpers.js';
 

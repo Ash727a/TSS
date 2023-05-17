@@ -70,7 +70,7 @@ export class RoverSocketServer {
     this.commandInterval = setInterval(async () => {
       // If the rover isn't connected, don't poll it backend for commands
       if (!this.roverIsConnected) {
-        console.log('rover not connected')
+        console.log('rover not connected');
         return;
       }
       const deviceResult = await this.models.devices.findOne({ where: { name: 'rover' } });
@@ -86,6 +86,7 @@ export class RoverSocketServer {
       }
       // Command received. Send to rover
       // console.log('sending', roverResult)
+      // console.log('sending rover cmd');
       this.sendRoverCommand(roverResult.dataValues);
     }, COMMAND_INTERVAL);
   }
