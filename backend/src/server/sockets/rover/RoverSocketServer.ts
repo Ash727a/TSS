@@ -8,6 +8,7 @@ const SOCKET_URL = 'ws://leo-raspi.local:9090';
 const WHERE_CONSTRAINT = { where: { name: 'rover' } } as const;
 const HEARTBEAT_INTERVAL = 1000;
 const COMMAND_INTERVAL = 1000;
+const VERBOSE = false;
 
 export class RoverSocketServer {
   private readonly _ros: ROSLIB.Ros;
@@ -31,7 +32,9 @@ export class RoverSocketServer {
 
   private initializeSocketListeners(): void {
     this._ros.on('connection', () => {
-      console.log('Connected to ROVER websocket server.');
+      if (VERBOSE) {
+        console.log('Connected to ROVER websocket server.');
+      }
       this.models.devices.update({ is_connected: true, connected_at: new Date() }, WHERE_CONSTRAINT);
       this.roverIsConnected = true;
       this.hbInterval = setInterval(() => {
@@ -41,14 +44,18 @@ export class RoverSocketServer {
 
     this._ros.on('error', (error) => {
       // console.log('Error connecting to ROVER websocket server: ', error);
-      console.log('Error connecting to ROVER websocket server');
+      if (VERBOSE) {
+        console.log('Error connecting to ROVER websocket server');
+      }
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
       this.connect();
       this.roverIsConnected = false;
     });
 
     this._ros.on('close', () => {
-      console.log('Connection to ROVER websocket server closed.');
+      if (VERBOSE) {
+        console.log('Connection to ROVER websocket server closed.');
+      }
       this.models.devices.update({ is_connected: false }, WHERE_CONSTRAINT);
       clearInterval(this.hbInterval);
       this.connect();
@@ -70,7 +77,7 @@ export class RoverSocketServer {
     this.commandInterval = setInterval(async () => {
       // If the rover isn't connected, don't poll it backend for commands
       if (!this.roverIsConnected) {
-        console.log('rover not connected');
+        // console.log('rover not connected');
         return;
       }
       const deviceResult = await this.models.devices.findOne({ where: { name: 'rover' } });
@@ -97,7 +104,9 @@ export class RoverSocketServer {
     if (!roverResult.cmd) {
       return;
     }
-    console.log('SENDING ROVER', roverResult);
+    if (VERBOSE) {
+      console.log('SENDING TO ROVER', roverResult);
+    }
     switch (roverResult.cmd) {
       // case 'navigate': {
       //   roverTopic = new ROSLIB.Topic({
@@ -119,7 +128,7 @@ export class RoverSocketServer {
         console.log('Sending STOP command to rover');
         roverTopic = new ROSLIB.Topic({
           ros: this._ros,
-          name: '/system/shutdown',
+          name: '/system/shutdown/test',
           messageType: 'std_msgs/Empty',
         });
         roverMessage = new ROSLIB.Message({});

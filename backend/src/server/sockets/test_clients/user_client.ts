@@ -3,6 +3,7 @@ import WebSocket from 'ws';
 import user from '../../../database/models/teams/user.model';
 
 const socketUrl = 'ws://localhost:3001';
+const VERBOSE = true;
 
 interface TestUser {
   team_name: string;
@@ -55,8 +56,10 @@ function connect_user(test_user: TestUser): void {
   });
 
   ws.on('message', (message) => {
-    console.log('Message Received:');
-    console.log(message.toString());
+    if (VERBOSE) {
+      console.log('Message Received:');
+      console.log(message.toString());
+    }
   });
 
   ws.on('close', (code, reason) => {

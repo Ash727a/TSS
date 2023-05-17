@@ -8,6 +8,8 @@ import { liveModels, logModels } from './database/models/index.js';
 import ExpressApp from './server/express/app.js';
 import { TSSWebSocketServer } from './server/sockets/TSSWebSocketServer.js';
 
+import * as utils from 'node:util'
+
 // Environment variables
 dotenv.config();
 const API_URL: string | undefined = process.env.API_URL as string | undefined;
@@ -52,6 +54,8 @@ async function init(): Promise<void> {
   express.app.listen(API_PORT, () => {
     console.log(`Express server started on port ${API_PORT}. Try some routes, such as '/api/users'.`);
   });
+
+  // console.log(`Express route:\n${utils.inspect(express.app._router.stack)}`)
 }
 
 init();

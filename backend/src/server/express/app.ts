@@ -77,26 +77,6 @@ class ExpressApp {
           `/api/${routeName}/:id`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.remove(req, res))
         );
-        this.app.get(
-          `/api/${routeName}`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getAll(req, res))
-        );
-        this.app.get(
-          `/api/${routeName}/:id`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.getById(req, res))
-        );
-        this.app.post(
-          `/api/${routeName}`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.create(req, res))
-        );
-        this.app.put(
-          `/api/${routeName}/:id`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.update(req, res))
-        );
-        this.app.delete(
-          `/api/${routeName}/:id`,
-          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.remove(req, res))
-        );
       }
 
       // Check if the getByRoomID method exists in this routeController. If so, we define its endpoint.

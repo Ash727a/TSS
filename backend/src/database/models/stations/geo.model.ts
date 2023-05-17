@@ -1,5 +1,6 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
+import { default_rock } from '../../../server/sockets/events/mappings/spec_data.map';
 
 /** MODEL: geo
  * This model is for holding live GEO states and data for all rooms.
@@ -19,9 +20,11 @@ export default class geo extends Model<InferAttributes<geo>, InferCreationAttrib
   @Column(DataType.INTEGER)
   declare room_id: number;
 
+  @Default('')
   @Column(DataType.STRING)
   declare rock_tag_id?: string;
 
+  @Default(JSON.stringify(default_rock))
   @Column(DataType.STRING)
   declare rock_data?: string;
 }

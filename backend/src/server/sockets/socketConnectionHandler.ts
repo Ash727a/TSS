@@ -18,7 +18,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
 
     const msg: any = parsedMsg as any;
     if (msg.rover && checkFields(msg.rover, ['cmd', 'goal_lat', 'goal_lon'])) {
-      console.log('ROVER COMMAND RECEIVED', msg.rover);
+      // console.log('ROVER COMMAND RECEIVED', msg.rover);
       if (msg.rover.cmd === 'navigate') {
         if (current_user) {
           const payload = {

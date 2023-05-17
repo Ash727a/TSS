@@ -121,6 +121,7 @@ class Parser {
   async handleSpecData(spec_msg: SpecMsg, _model: Pick<IAllModels, 'geo' | 'room'>): Promise<void> {
     // 1. Map rfid ID -> spec data (either through db or just an object)
     const tag_id = spec_msg.BLOB.DATA.TAG_ID;
+    // console.log(`TAG ID:\n${tag_id}\n`);
     if (!isValidRockId(tag_id)) {
       console.log(`"${tag_id}" is not a valid RFID tag`);
       return;

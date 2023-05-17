@@ -12,6 +12,18 @@
 // |  K2O       | -0.11                     | -0.13                                 | -0.12                       | 0.43                                  | -0.02                               | -0.08                                  | 0.28                                 |
 // |  P2O3      | 0.34                      | 0.29                                  | 0.28                        | 0.65                                  | 0.38                                | 0.34                                   | 0.44                                 |
 
+export const default_rock = {
+  SiO2: 0,
+  TiO2: 0,
+  Al2O3: 0,
+  FeO: 0,
+  MnO: 0,
+  MgO: 0,
+  CaO: 0,
+  K2O: 0,
+  P2O3: 0,
+} as const;
+
 const mare_basalt = {
   SiO2: 40.58,
   TiO2: 12.83,
@@ -96,7 +108,7 @@ const ilmenite_basalt = {
   P2O3: 0.44,
 } as const;
 
-const rock_2_data = {
+const cheese = {
   GOUDA: 12.53,
   CHEDDAR: 59.13,
   MOZZARELLA: 28.34,
@@ -105,8 +117,11 @@ const rock_2_data = {
 export const spec_data_map = {
   '333030303237424545303439': mare_basalt,
   '333030303332433934413831': vesicular_basalt,
-  'id-3': olivine_basalt_1,
-  'id-4': feldspathic_basalt,
+  '333030303335303644444445': olivine_basalt_1,
+  '333030303241424236344335': feldspathic_basalt,
+  '333030303241353233353744': pigeonite_basalt,
+  '333030303238373435463333': olivine_basalt_2,
+  '333030303239353835383139': ilmenite_basalt,
 } as const;
 
 type ValidRockId = keyof typeof spec_data_map;

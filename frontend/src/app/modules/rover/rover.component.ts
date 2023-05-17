@@ -22,6 +22,7 @@ export class RoverComponent {
   protected commandTimeSince: string = '';
   private roverData: RoverData = {} as RoverData;
   protected connected: boolean = false;
+  private pollRoverInterval?: ReturnType<typeof setTimeout>;
 
   constructor(private roomsService: RoomsService, private roverService: RoverService, private devicesService: DevicesService) { }
 
@@ -38,14 +39,11 @@ export class RoverComponent {
   }
 
   private pollRoverData() {
-    setInterval(async () => {
+    this.pollRoverInterval = setInterval(async () => {
       if (!this.selectedRoom || !this.selectedRoom.id) {
         return;
       }
       const roomID = this.selectedRoom?.id;
-      if (roomID === undefined) {
-        return;
-      }
       // Updates the rover's assigned room in the database under rover table
       this.devicesService.updateRoverAssignedRoom(roomID);
       // Get the rover's data from the database
