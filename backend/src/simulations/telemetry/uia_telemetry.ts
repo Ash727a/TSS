@@ -7,7 +7,7 @@ function simulationStepUIA(dt: any, uiaControls: { depress_pump?: any; O2_vent?:
   //if (uiaControls.emu_on_off === true)
 
   return {
-    emu1: emu1OnOff(dt, uiaControls, uiaOldSimState),
+    emu1: emu1OnOff(dt, uiaControls, uiaOldSimState).emu1_is_booted,
     emu2: emu2OnOff(dt, uiaControls, uiaOldSimState),
     o2_supply_pressure1: o2SupplyPressure(dt, uiaControls, uiaOldSimState).o2_pressure1,
     o2_supply_pressure2: o2SupplyPressure(dt, uiaControls, uiaOldSimState).o2_pressure2,
@@ -21,6 +21,9 @@ function simulationStepUIA(dt: any, uiaControls: { depress_pump?: any; O2_vent?:
     emu2_O2: oxygen(dt, uiaControls, uiaOldSimState).oxygen_status2,
     depress_pump: dPump(dt, uiaControls, uiaOldSimState),
     O2_vent: o2Vent(dt, uiaControls, uiaOldSimState),
+    airlock_pressure: airlockPressure(dt, uiaControls, uiaOldSimState),
+
+    //airlock supply water emu1 
   };
 }
 /*
@@ -50,6 +53,7 @@ function emu1OnOff(dt: any, uiaControls: any, uiaOldSimState: { onOff1: any }): 
   let onOff1 = uiaOldSimState.onOff1;
 
   if (emu1 == true) {
+    setTimeout(() => {  console.log("World!"); }, 5000);
     onOff1 = 'ON';
   } else {
     onOff1 = 'OFF';
@@ -188,4 +192,28 @@ function o2Vent(dt: any, { O2_vent }: any, uiaOldSimState: { O2_vent: any }): an
   if (O2_vent) vent = 'VENT';
   else vent = 'CLOSE';
   return vent;
+}
+
+function airlockPressure(
+  dt: number,
+  uiaControls: any,
+  uiaOldSimState: { airlock_pressure: any; }
+): any {
+  const airlcok_fill_rate = 3500 / (0.5 * 60); //(oz/s)
+  const amountFilled = airlcok_fill_rate * (dt / 1000);
+  const max_o2_psi = 3500;
+  let airlock = uiaOldSimState.airlock_pressure;
+
+
+  if (airlock < max_o2_psi && uiaControls.emu1_O2 === true && uiaControls.O2_vent === false)
+    airlock = airlock + amountFilled;
+
+  if (uiaControls.depress_pump === true) {
+    airlock -= airlcok_fill_rate;
+    if (airlock > 10) airlock = 10.3;
+
+  //const o2_pressure_out1 = Math.floor(airlock);
+
+
+  return { airlock };
 }
