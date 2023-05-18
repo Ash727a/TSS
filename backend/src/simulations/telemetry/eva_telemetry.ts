@@ -1,15 +1,18 @@
 import { TelemetryData } from '../../interfaces.js';
 import { HEART_RATE, SUIT_PRESSURE, FAN_TACHOMETER, O2_PRESSURE, O2_RATE, BATTERY_CAPACITY } from './values.js';
+import { secondsToHms, round, generateRandomValueInBounds, decreaseTimeDisplay } from './helpers.js';
 
-function simulationStep(dt: any, failure: any, oldSimState: any): TelemetryData {
-  const battery_percentage = batteryStep(dt, oldSimState).battery_percentage;
-  const battery_output = batteryStep(dt, oldSimState).battery_output;
+function simulationStep(dt: any, failure: any, prevSimState: any): TelemetryData {
+  const { room_id, is_running, is_paused, started_at } = prevSimState;
+  const battery_percentage = batteryStep(dt, prevSimState).battery_percentage;
+  const battery_output = batteryStep(dt, prevSimState).battery_output;
   const returnSim: TelemetryData = {
-    room_id: oldSimState.room_id,
-    is_running: oldSimState.is_running,
-    is_paused: oldSimState.is_paused,
-    time: missionTimer(dt, oldSimState).time,
-    timer: missionTimer(dt, oldSimState).timer,
+    room_id,
+    is_running,
+    is_paused,
+    started_at,
+    time: missionTimer(dt, prevSimState).time,
+    timer: missionTimer(dt, prevSimState).timer,
     heart_rate: generateRandomValueInBounds(HEART_RATE, failure.fan_error, 0), // AFFECTED BY: FAN ERROR
     suit_pressure: generateRandomValueInBounds(SUIT_PRESSURE, failure.pump_error, 2), // AFFECTED BY: PUMP ERROR
     sub_pressure: pressureSUB(),
@@ -25,28 +28,15 @@ function simulationStep(dt: any, failure: any, oldSimState: any): TelemetryData 
     battery_output: battery_output,
     temperature: tempSub(),
     battery_time_left: decreaseTimeDisplay(4, battery_percentage),
-    o2_time_left: oxygenLife(dt, oldSimState).o2_time,
+    o2_time_left: oxygenLife(dt, prevSimState).o2_time,
     h2o_time_left: decreaseTimeDisplay(5.5, battery_percentage),
-    oxygen_primary_time: oxygenLife(dt, oldSimState).oxygen_primary_time,
-    oxygen_secondary_time: oxygenLife(dt, oldSimState).oxygen_secondary_timeondary,
-    water_capacity: waterLife(dt, oldSimState).water_capacity,
-    primary_oxygen: oxygenLife(dt, oldSimState).oxPrimar_out,
-    secondary_oxygen: oxygenLife(dt, oldSimState).oxSecondary_out,
-    started_at: oldSimState.started_at,
+    oxygen_primary_time: oxygenLife(dt, prevSimState).oxygen_primary_time,
+    oxygen_secondary_time: oxygenLife(dt, prevSimState).oxygen_secondary_timeondary,
+    water_capacity: waterLife(dt, prevSimState).water_capacity,
+    primary_oxygen: oxygenLife(dt, prevSimState).oxPrimar_out,
+    secondary_oxygen: oxygenLife(dt, prevSimState).oxSecondary_out,
   };
   return returnSim;
-}
-
-function generateRandomValueInBounds(dataBounds: any, isErroring: boolean, decimalPlaces: number | undefined): number {
-  const max = isErroring ? dataBounds.ERROR_MAX : dataBounds.NOMINAL_MAX;
-  const min = isErroring ? dataBounds.ERROR_MIN : dataBounds.NOMINAL_MIN;
-  const value: number = Math.random() * (max - min) + min;
-  return round(value, decimalPlaces);
-}
-
-function decreaseTimeDisplay(hoursOfLife: number, percentage: number): string {
-  const translatedLifetime = 100 / (hoursOfLife * 60 * 60);
-  return secondsToHms(percentage / translatedLifetime);
 }
 
 function batteryStep(dt: number, oldSimState: any): any {
@@ -147,27 +137,6 @@ function missionTimer(dt: number, oldSimState: any): any {
   const time = oldSimState.time + dt / 1000;
   const timer = secondsToHms(time);
   return { timer, time };
-}
-
-// HELPERS
-function padValues(n: string | number | any[], width: number, z = '0'): string {
-  n = n.toString();
-  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
-
-function secondsToHms(dt: number): string {
-  dt = Number(dt);
-  const h = Math.floor(dt / 3600);
-  const m = Math.floor((dt % 3600) / 60);
-  const s = Math.floor((dt % 3600) % 60);
-
-  const time = padValues(h, 2) + ':' + padValues(m, 2) + ':' + padValues(s, 2);
-  return time;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
-function round(num: number, round: number = 2): number {
-  return parseFloat(num.toFixed(round));
 }
 
 export default {
