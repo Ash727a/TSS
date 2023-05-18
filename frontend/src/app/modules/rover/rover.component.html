@@ -8,7 +8,6 @@
     <h3 *ngIf="variant === 'small'">Rover Command</h3>
     <div *ngIf="variant != 'small'" class="room-display-container">
       <h3>Room {{ selectedRoom?.id }}</h3>
-      <app-shared-switch-room-button [room]="selectedRoom" (changeEvent)="dropdownVisibilityChanged($event)" />
     </div>
     <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">
       {{ connected ? 'Connected' : 'Not connected' }}
