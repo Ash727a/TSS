@@ -1,6 +1,6 @@
 import { IAllModels, ILiveModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
-import { GpsMsg, IMUMsg, SpecMsg } from '../socketInterfaces.js';
+import { GpsMsg, IMUMsg, RoverMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 import { GPS_SEMAPHORE } from '../enums/socket.enum.js';
@@ -75,10 +75,10 @@ class Parser {
     delete msgData.device;
     delete msgData.class;
 
-    if(msgData.lat === 0 && msgData.lon === 0) {
-      Object.assign(msgData, {fix_status: GPS_SEMAPHORE.NOFIX}); 
+    if (msgData.lat === 0 && msgData.lon === 0) {
+      Object.assign(msgData, { fix_status: GPS_SEMAPHORE.NOFIX });
     } else {
-      Object.assign(msgData, {fix_status: GPS_SEMAPHORE.FIX}); 
+      Object.assign(msgData, { fix_status: GPS_SEMAPHORE.FIX });
     }
 
     const newGpsRecord: Pick<GpsAttributes, 'user_guid' | 'mode'> & Partial<GpsAttributes> = {
@@ -148,6 +148,18 @@ class Parser {
     );
 
     // TODO: Log tag_id and scan_time to logs db
+  }
+
+  async handleRoverData(rover_msg: RoverMsg, _model: Pick<IAllModels, 'rover' | 'room'>): Promise<void> {
+    // 1. Map rfid ID -> spec data (either through db or just an object)
+
+    const room_in_rover = await _model.room.findOne({ where: { station_name: 'ROV' } });
+    if (room_in_rover == null) {
+      console.log('No room assigned rover task');
+      return;
+    }
+
+    _model.rover.update(rover_msg.BLOB.DATA, { where: { room_id: room_in_rover.id } });
   }
 
   // parseMessageCrewmember(msg: SocketMsg<CrewmemberMsgBlob>): void {

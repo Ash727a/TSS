@@ -3,6 +3,7 @@ export const enum DATATYPE {
   'IMU' = 'IMU',
   'GPS' = 'GPS',
   'SPEC' = 'SPEC',
+  'ROV' = 'ROV',
 }
 
 export const enum GPS_SEMAPHORE {

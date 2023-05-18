@@ -5,7 +5,7 @@ import User from './events/user.class.js';
 
 import type { IAllModels } from '../../database/models/index.js';
 
-import type { CrewmemberMsg, GpsMsg, IMUMsg, SpecMsg, UnknownMsg } from './socketInterfaces.js';
+import type { CrewmemberMsg, GpsMsg, IMUMsg, SpecMsg, RoverMsg, UnknownMsg} from './socketInterfaces.js';
 import { DATATYPE } from './enums/socket.enum.js';
 import visionKitMap from './vision-kit.map.js';
 
@@ -90,6 +90,13 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
         await parser.handleSpecData(specMsg, models);
         break;
       }
+      case DATATYPE.ROV: {
+        const roverMsg = parsedMsg as RoverMsg;
+
+        await parser.handleRoverData(roverMsg, models); 
+        break;
+      }
+
       default: {
         console.log(`Invalid parsedMsg.BLOB.DATATYPE: ${parsedMsg.BLOB.DATATYPE}`);
         ws.close(1008, `Invalid parsedMsg.BLOB.DATATYPE: ${parsedMsg.BLOB.DATATYPE}`);
