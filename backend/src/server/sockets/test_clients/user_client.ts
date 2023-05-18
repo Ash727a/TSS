@@ -2,7 +2,12 @@ import { InferCreationAttributes } from 'sequelize';
 import WebSocket from 'ws';
 import user from '../../../database/models/teams/user.model';
 
+<<<<<<< Updated upstream
 const socketUrl = 'ws://localhost:3001';
+=======
+const socketUrl = 'ws://192.168.52.201:3001';
+const VERBOSE = true;
+>>>>>>> Stashed changes
 
 interface TestUser {
   team_name: string;
