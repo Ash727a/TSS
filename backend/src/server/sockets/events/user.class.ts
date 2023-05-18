@@ -141,6 +141,12 @@ class User {
         },
       });
 
+      const rover_data = await this._models.rover.findOne({
+        where: {
+          room_id: room_id,
+        },
+      });
+
       // Assumes UIA PK is just the room id
       const uiaMsg = await this._models.uia.findByPk(room_id);
 
@@ -152,6 +158,7 @@ class User {
         uiaMsg: uiaMsg,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
+        roverMsg: rover_data,
       };
 
       if (sim_state?.is_running) {
