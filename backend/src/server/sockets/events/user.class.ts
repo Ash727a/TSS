@@ -119,7 +119,7 @@ class User {
 
       const simulation_failures = await this._models.simulationFailure.findOne({
         where: { room_id: room_id },
-        attributes: ['room_id', 'started_at', 'o2_error', 'pump_error', 'power_error', 'fan_error']
+        attributes: ['room_id', 'started_at', 'o2_error', 'pump_error', 'power_error', 'fan_error'],
       });
 
       const sim_state = sim_state_res?.get({ plain: true });
@@ -141,11 +141,20 @@ class User {
         },
       });
 
-      const rover_data = await this._models.rover.findOne({
+      const rover_data_from_table = await this._models.rover.findOne({
         where: {
           room_id: room_id,
         },
+        attributes: ['lat', 'lon', 'goal_lat', 'goal_lon'],
       });
+
+      const rover_msg = {
+        lat: rover_data_from_table?.lat,
+        lon: rover_data_from_table?.lon,
+        navigation_status: 'NOT_NAVIGATING',
+        goal_lat: rover_data_from_table?.goal_lat,
+        goal_lon: rover_data_from_table?.goal_lon,
+      };
 
       // Assumes UIA PK is just the room id
       const uiaMsg = await this._models.uia.findByPk(room_id);
@@ -158,7 +167,7 @@ class User {
         uiaMsg: uiaMsg,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
-        roverMsg: rover_data,
+        roverMsg: rover_msg,
       };
 
       if (sim_state?.is_running) {
