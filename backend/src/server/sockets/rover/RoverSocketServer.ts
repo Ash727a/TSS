@@ -128,7 +128,7 @@ export class RoverSocketServer {
         console.log('Sending STOP command to rover');
         roverTopic = new ROSLIB.Topic({
           ros: this._ros,
-          name: '/system/shutdown/test',
+          name: '/system/shutdown',
           messageType: 'std_msgs/Empty',
         });
         roverMessage = new ROSLIB.Message({});
