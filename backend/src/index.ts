@@ -8,7 +8,7 @@ import { liveModels, logModels } from './database/models/index.js';
 import ExpressApp from './server/express/app.js';
 import { TSSWebSocketServer } from './server/sockets/TSSWebSocketServer.js';
 
-import * as utils from 'node:util'
+import * as utils from 'node:util';
 
 // Environment variables
 dotenv.config();

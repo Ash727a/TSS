@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ServerService } from '@services/api/server.service';
 import * as moment from 'moment';
+import config from './config';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import * as moment from 'moment';
 })
 export class AppComponent {
   private static readonly DATETIME_FORMAT = 'MM-DD-YYYY hh:mm:ss A';
+  protected readonly backendURL: string = config.BACKEND_URL ?? 'BACKEND URL';
   private interval!: ReturnType<typeof setTimeout>;
   protected lastConnectionTime = moment().format(AppComponent.DATETIME_FORMAT);
   protected connectionStatus: string = 'pending';

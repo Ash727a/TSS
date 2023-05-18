@@ -1,7 +1,7 @@
 <app-header></app-header>
 <div class="content-container">
   <div class="info-row">
-    <h5>USER ID, SOCKET URL</h5>
+    <h5>BACKEND URL: {{ backendURL }}</h5>
     <div>
       <h5 *ngIf="connectionStatus === 'pending'" class="yellow-text flashAnimation">Connecting...</h5>
       <h5 *ngIf="connectionStatus === 'connected'" class="green-text flashAnimation">Connected: {{ lastConnectionTime }}</h5>
