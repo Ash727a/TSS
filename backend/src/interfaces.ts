@@ -34,7 +34,7 @@ export interface TelemetryData {
   o2_time_left: string;
   h2o_time_left: string;
   battery_percentage: number;
-  battery_outputput: number;
+  battery_output: number;
   oxygen_primary_time: number;
   oxygen_secondary_time: number;
   water_capacity: string;
@@ -64,7 +64,7 @@ export const INIT_TELEMETRY_DATA: TelemetryData = {
   o2_time_left: '00:00:00',
   h2o_time_left: '00:00:00',
   battery_percentage: 100,
-  battery_outputput: 100,
+  battery_output: 100,
   oxygen_primary_time: 100,
   oxygen_secondary_time: 100,
   water_capacity: '00:00:00',

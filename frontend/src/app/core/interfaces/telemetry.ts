@@ -23,7 +23,7 @@ export interface TelemetryData {
   o2_time_left: number;
   h2o_time_left: number;
   battery_percentage: number;
-  battery_outputput: number;
+  battery_output: number;
   oxygen_primary_time: number;
   oxygen_secondary_time: number;
   water_capacity: number;

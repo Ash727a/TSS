@@ -43,7 +43,7 @@ export class StateComponent {
    * @column o2_time_left: O2 time left
    * @column h2o_time_left: H2O time left
    * @column battery_percentage: Battery percentage
-   * @column battery_outputput: Battery output
+   * @column battery_output: Battery output
    * @column oxygen_primary_time: Oxygen primary time
    * @column oxygen_secondary_time: Oxygen secondary time
    * @column water_capacity: Water capacity

@@ -7,5 +7,5 @@ export const enum DATATYPE {
 
 export const enum GPS_SEMAPHORE {
   'FIX' = 'FIX',
-  'NOFIX' = 'NOFIX'
+  'NOFIX' = 'NOFIX',
 }

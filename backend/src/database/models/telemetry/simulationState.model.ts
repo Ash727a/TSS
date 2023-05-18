@@ -189,7 +189,7 @@ export default class simulationState extends Model<
   @AllowNull(false)
   @Default(0)
   @Column(DataType.NUMBER)
-  declare battery_outputput: number;
+  declare battery_output: number;
 
   // Oxygen primary time
   @AllowNull(false)
