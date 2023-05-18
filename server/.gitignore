@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+# Public
+/public
+
 # Node
 /node_modules
 *node_modules
