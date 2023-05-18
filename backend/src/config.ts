@@ -16,15 +16,15 @@ export const VERBOSE = false;
  */
 export const teams = [
   {
-    name: 'Interscholar',
+    name: 'AEGIS',
     username: 'VK01',
-    university: 'Cerritos | College of the Desert | CSU Fullerton',
+    university: 'University of Southern California | UC Berkeley',
     user_guid: 'fdbee7e5-9887-495e-aabb-f10d1386a7e9',
   },
   {
-    name: 'AEGIS',
+    name: 'Interscholar',
     username: 'VK02',
-    university: 'University of Southern California | UC Berkeley',
+    university: 'Cerritos | College of the Desert | CSU Fullerton',
     user_guid: 'a75e207e-f70f-4e4f-a66a-9f47bb84ab29',
   },
   {
