@@ -8,7 +8,7 @@ import type user from '../../../database/models/teams/user.model.js';
 
 type ModelsForUser = Pick<
   typeof liveModels,
-  'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover'
+  'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover' | 'simulationFailure'
 >;
 class User {
   // private room_id: number;
@@ -117,6 +117,11 @@ class User {
         attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'] },
       });
 
+      const simulation_failures = await this._models.simulationFailure.findOne({
+        where: { room_id: room_id },
+        attributes: ['room_id', 'started_at', 'o2_error', 'pump_error', 'power_error', 'fan_error']
+      });
+
       const sim_state = sim_state_res?.get({ plain: true });
       if (sim_state == undefined) {
         return;
@@ -143,6 +148,7 @@ class User {
         gpsMsg: gps_val,
         imuMsg: imu_val,
         simulationStates: sim_state,
+        simulationFailures: simulation_failures,
         uiaMsg: uiaMsg,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
