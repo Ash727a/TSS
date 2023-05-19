@@ -101,24 +101,28 @@ export default class UIASim {
     }
 
     const dt_secs = Date.now() / 1000 - this.last_sim_update;
+    this.last_sim_update = Date.now() / 1000;
 
     this.current_uia_state.uia_supply_pressure = this.step_uia_supply_pressure(dt_secs);
     this.current_uia_state.water_level = this.step_uia_water_level(dt_secs);
     this.current_uia_state.airlock_pressure = this.step_airlock_pressure(dt_secs);
 
-    this.emu1_poweron(dt_secs);
+    this.models.uiaState.update(this.current_uia_state, { where: { room_id: this.room_id } });
 
+    this.emu1_poweron(dt_secs);
     Object.assign(this.previous_uia_switches, this.current_uia_switches);
   }
 
   private async update_sim_variables(): Promise<void> {
-    console.log();
-    this.current_uia_state = (await this.models.uiaState
-      .findByPk(this.room_id)
-      .then((current_uiaState) => current_uiaState?.get())) as uiaState;
+    // this.current_uia_state = (await this.models.uiaState
+    //   .findByPk(this.room_id)
+    //   .then((current_uiaState) => current_uiaState?.get())) as uiaState;
+    // console.log('---------------------\ncurrent_uia_state:\n' + util.inspect(this.current_uia_state));
+
     this.current_uia_switches = (await this.models.uia
       .findByPk(this.room_id)
       .then((current_uia) => current_uia?.get())) as uia;
+    // console.log('---------------------\ncurrent_uia_switches:\n' + util.inspect(this.current_uia_switches));
   }
 
   /**
@@ -199,7 +203,6 @@ export default class UIASim {
    */
   private emu1_poweron_timeout: ReturnType<typeof setTimeout> | undefined = undefined;
   private emu1_poweron(dt_secs: number): void {
-    console.log('emu1_poweron');
     if (this.current_uia_switches.emu1_pwr_switch == this.previous_uia_switches.emu1_pwr_switch) {
       return;
     }
@@ -207,8 +210,9 @@ export default class UIASim {
     if (this.current_uia_switches.emu1_pwr_switch == true) {
       console.log('Beginning EMU1 poweron');
       setTimeout(() => {
+        console.log('EMU1 Powered On');
         this.current_uia_state.emu1_is_booted = true;
-      }, EMU1_POWER.BOOTUP_TIME);
+      }, EMU1_POWER.BOOTUP_TIME * 1000);
     } else {
       console.log('Cancelling EMU1 poweron');
       clearTimeout(this.emu1_poweron_timeout);
