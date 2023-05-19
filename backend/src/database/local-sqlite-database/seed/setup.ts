@@ -36,6 +36,7 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     };
     await models.gpsMsg.create(defaultRow);
     await models.imuMsg.create(defaultRow);
+    await models.uiaState.create(defaultRow);
   });
 
   // Seed devices in DB as not connected
