@@ -1,6 +1,6 @@
 export enum SUPPLY_PRESSURE {
-  PRESSURIZATION_RATE = 10, // psi/sec
-  DEPRESSURIZATION_RATE = 10, // psi/sec
+  PRESSURIZATION_RATE = 180, // psi/sec
+  DEPRESSURIZATION_RATE = 170, // psi/sec
 }
 
 export enum AIRLOCK_PRESSURE {
