@@ -43,6 +43,8 @@ class ExpressApp {
         telemetrySessionLog: _models.telemetrySessionLog,
         telemetryStationLog: _models.telemetryStationLog,
         telemetryErrorLog: _models.telemetryErrorLog,
+        uia: _models.uia,
+        uiaState: _models.uiaState,
       }),
       simulationState: new routes.simulationState(_models.simulationState),
       simulationFailure: new routes.simulationFailure(_models.simulationFailure),
