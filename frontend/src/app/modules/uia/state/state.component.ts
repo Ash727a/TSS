@@ -55,7 +55,7 @@ export class UIAStateComponent {
   }
 
   private translateDataToDisplayString(data: any, metricSuffix: string = '') {
-    let displayString = data.toString().substring(0, 5);
+    let displayString = data?.toString().substring(0, 5);
     return data ? `${displayString} ${metricSuffix}` : UIAStateComponent.EMPTY_TEXT_LABEL;
   }
 
