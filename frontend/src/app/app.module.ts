@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { UIAComponent } from './modules/uia/uia.component';
+import { UIAStateComponent } from './modules/uia/state/state.component';
 import { RoomsComponent } from './modules/rooms/rooms.component';
 import { TelemetryComponent } from './modules/telemetry/telemetry.component';
 import { LogsComponent } from './modules/logs/logs.component';
@@ -34,6 +35,7 @@ import { RoverComponent } from './modules/rover/rover.component';
     HeaderComponent,
     FooterComponent,
     UIAComponent,
+    UIAStateComponent,
     RoomsComponent,
     TelemetryComponent,
     LogsComponent,

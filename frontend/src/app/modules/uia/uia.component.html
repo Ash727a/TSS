@@ -48,4 +48,13 @@
       </table>
     </div>
   </app-shared-card>
+  <app-shared-card
+    [ngClass]="variant"
+    [size]="variant !== 'small' ? 'small' : ''"
+    [title]="variant !== 'small' ? 'UIA Telemetry' : ''"
+    [variant]="variant === 'small' ? 'light' : 'default'"
+  >
+    <h3 *ngIf="variant === 'small'">UIA Telemetry</h3>
+    <app-uia-state [uiaTelemetry]="uiaTelemetry"></app-uia-state>
+  </app-shared-card>
 </div>
