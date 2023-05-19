@@ -31,6 +31,7 @@ export default class specScanLog extends Model {
   declare rock_name: string;
 
   // ID of the room where the error was thrown (FK)
+  @AllowNull(false)
   @Column(DataType.INTEGER)
   declare room_id: number;
 
