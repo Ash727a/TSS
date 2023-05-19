@@ -43,4 +43,16 @@ export class LogsService {
         return { ok: false, err: e };
       });
   }
+
+  // Geology Logs
+  async getGeologyScansBySessionLogID(session_log_id: string) {
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/specScanLog/session/${session_log_id}`))
+      .then((result) => {
+        let res: Object[] = result as Object[];
+        return { ok: true, payload: res };
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

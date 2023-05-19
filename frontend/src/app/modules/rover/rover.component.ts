@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Room, RoverData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
-import { RoverService } from '@services/api/rover.service';
+import { RoverService } from '@app/services/api/rover.service';
 import { DevicesService } from '@services/api/devices.service';
 
 const POLL_INTERVAL = 1000;

@@ -1,0 +1,28 @@
+<div class="container">
+    <app-shared-card
+      [ngClass]="variant"
+      [size]="variant !== 'small' ? 'small' : ''"
+      [title]="variant !== 'small' ? 'Geology' : ''"
+      [variant]="variant === 'small' ? 'light' : 'default'"
+    >
+      <h3 *ngIf="variant === 'small'">Geology</h3>
+      <div *ngIf="variant != 'small'" class="room-display-container">
+        <h3>Room {{ selectedRoom?.id }}</h3>
+      </div>
+      <!-- <h5 class="connection-status" [ngClass]="connected ? 'green' : 'gray'">
+        {{ connected ? 'Connected' : 'Not connected' }}
+      </h5> -->
+      <div class="body column gap">
+        <div class="top-row">
+          <div class="left-item">
+              <!-- <div class="row gap">
+              <h4>Last Command:</h4>
+              <h4 class="command" [ngClass]="!commandName ? 'gray' : ''">{{ commandName ? commandName : 'None' }}</h4>
+              <h5 class="time-since" *ngIf="commandName">(sent {{ commandTimeSince }} ago)</h5>
+              </div> -->
+          </div>
+        </div>
+      </div>
+    </app-shared-card>
+  </div>
+  

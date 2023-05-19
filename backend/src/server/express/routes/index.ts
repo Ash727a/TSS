@@ -7,6 +7,7 @@ import simulationState from './simulationState.class.js';
 import telemetryErrorLog from './telemetryErrorLog.class.js';
 import telemetrySessionLog from './telemetrySessionLog.class.js';
 import telemetryStationLog from './telemetryStationLog.class.js';
+import specScanLog from './specScanLog.class.js';
 import uia from './uia.class.js';
 import uiaState from './uiaState.class.js';
 import rover from './rover.class.js';
@@ -26,6 +27,7 @@ export {
   telemetrySessionLog,
   telemetryStationLog,
   telemetryErrorLog,
+  specScanLog,
   users,
   devices,
 };
