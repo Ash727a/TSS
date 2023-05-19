@@ -12,3 +12,7 @@ export enum WATER {
   FILL_RATE = 10, //   %/sec
   EMPTY_RATE = 10, //   %/sec
 }
+
+export enum EMU1_POWER {
+  BOOTUP_TIME = 7, // sec
+}
