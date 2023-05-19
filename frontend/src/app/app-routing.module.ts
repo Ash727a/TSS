@@ -5,6 +5,7 @@ import { LogsComponent } from './modules/logs/logs.component';
 import { RoomsComponent } from './modules/rooms/rooms.component';
 import { TelemetryComponent } from './modules/telemetry/telemetry.component';
 import { RoverComponent } from './modules/rover/rover.component';
+import { GeologyComponent } from './modules/geology/geology.component';
 import { UIAComponent } from './modules/uia/uia.component';
 
 const routes: Routes = [
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'rover',
     component: RoverComponent,
+  },
+  {
+    path: 'geology',
+    component: GeologyComponent,
   },
   {
     path: 'logs',

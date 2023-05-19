@@ -23,6 +23,7 @@ async function seed(models: { [key: string]: SequelizeModel }): Promise<void> {
     await models.simulationState.create(simRow);
     await models.uia.create(teamData);
     await models.rover.create(teamData);
+    await models.geo.create(teamData);
     // Create a new row of data for each user
     const userRow = {
       team_name: teamData.name,
