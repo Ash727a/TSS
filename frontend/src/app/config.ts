@@ -1,7 +1,7 @@
 const config = {
     VERBOSE: true,
-    BACKEND_URL: 'http://localhost:8080',
-    // BACKEND_URL: `http://${location.hostname}:8080`,
+    // BACKEND_URL: 'http://localhost:8080',
+    BACKEND_URL: `http://${location.hostname}:8080`,
     USE_HASH_ROUTING: true,
     /**
      * For each station, there's a timer that counts how long the station has been assigned for

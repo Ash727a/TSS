@@ -72,9 +72,9 @@ class User {
         }
         user_record.update({ hmd_is_connected: true });
       } else {
-        const empty_room = await room.findOne({ where: { user_guid: null } });
+        const empty_room = await room.findOne({ where: { user_guid: registration_info.user_guid } });
         if (empty_room === null) {
-          console.log(`No empty room found to assign the following user to:\nUsername: ${registration_info.username}`);
+          console.log(`No room w/ matching guid to assign ${registration_info.username}`);
           return null;
         }
         empty_room.update({ user_guid: registration_info.user_guid });
@@ -110,6 +110,7 @@ class User {
 
   async sendData(): Promise<void> {
     try {
+      console.log(`Sending data to ${this.team_name}`)
       const room_id = this.user_record.room_id;
 
       const sim_state_res = await this._models.simulationState.findOne({
