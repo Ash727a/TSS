@@ -37,37 +37,44 @@ STEP 6 & 8: WHEN DEPRESS PUMP -> OPEN
 
 export default class UIASim {
   private readonly models: UIASimModels;
-  private previous_uia_switches: Omit<InferCreationAttributes<uia>, keyof Model>;
+  private previous_uia_switches: Omit<InferAttributes<uia>, keyof Model>;
   private current_uia_switches: uia;
-  private last_sim_update: number;
+  private last_sim_update = 0;
 
   private current_sim_state: uiaState;
 
   private room_id: number;
   private simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 
-  constructor(uia_models: UIASimModels, room_id: number) {
+  constructor(uia_models: UIASimModels, room_id: number, current_uia_switches: uia, current_sim_state: uiaState) {
     this.models = uia_models;
     this.room_id = room_id;
+
+    this.current_sim_state = current_sim_state;
+    this.current_uia_switches = current_uia_switches;
+
+    this.previous_uia_switches = this.current_uia_switches.get();
+  }
+
+  public static async build(uia_models: UIASimModels, room_id: number): Promise<UIASim | void> {
+    const uiaSwitches = await uia_models.uia.findOne({ where: { room_id: room_id } });
+    if (uiaSwitches == null) {
+      console.log(`No uia switch state found for room_id ${room_id} in the uia table`);
+      return;
+    }
+    const current_uia_switches = uiaSwitches;
+
+    const uiaSimState = await uia_models.uiaState.findOne({ where: { room_id: room_id } });
+    if (uiaSimState == null) {
+      console.log(`No uia state found for room_id ${room_id} in the uiaState table`);
+      return;
+    }
+    const current_sim_state = uiaSimState;
+
+    return new UIASim(uia_models, room_id, current_uia_switches, current_sim_state);
   }
 
   public async start_sim(): Promise<void> {
-    const uiaSwitches = await this.models.uia.findOne({ where: { room_id: this.room_id } });
-    if (uiaSwitches == null) {
-      console.log(`No uia switch state found for room_id ${this.room_id} in the uia table`);
-      return;
-    }
-
-    this.current_uia_switches = uiaSwitches;
-
-    const uiaSimState = await this.models.uiaState.findOne({ where: { room_id: this.room_id } });
-    if (uiaSimState == null) {
-      console.log(`No uia state found for room_id ${this.room_id} in the uiaState table`);
-      return;
-    }
-
-    this.current_sim_state = uiaSimState;
-
     this.simTimer = setInterval(async () => {
       this.step();
     }, POLL_INTERVAL);
@@ -80,7 +87,7 @@ export default class UIASim {
     this.current_sim_state.water_level = this.step_uia_water_level(dt_secs);
     this.current_sim_state.airlock_pressure = this.step_airlock_pressure(dt_secs);
 
-    this.previous_uia_switches = this.current_sim_state.get();
+    this.previous_uia_switches = this.current_uia_switches.get();
   }
 
   /**

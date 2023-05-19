@@ -30,17 +30,14 @@ export default class uiaState extends Model<InferAttributes<uiaState>, InferCrea
   declare room_id: number;
 
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.BOOLEAN)
   declare emu1_is_booted: boolean;
 
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.NUMBER)
   declare uia_supply_pressure: number;
 
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.NUMBER)
   declare water_level: number;
 
@@ -50,7 +47,6 @@ export default class uiaState extends Model<InferAttributes<uiaState>, InferCrea
   declare depress_pump_fault: boolean;
 
   @AllowNull(false)
-  @AutoIncrement
   @Column(DataType.NUMBER)
   declare airlock_pressure: number;
 }
