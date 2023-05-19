@@ -21,6 +21,7 @@ export default class geo extends Model<InferAttributes<geo>, InferCreationAttrib
   declare room_id: number;
 
   @Default('')
+  @AllowNull(false)
   @Column(DataType.STRING)
   declare rock_tag_id?: string;
 
