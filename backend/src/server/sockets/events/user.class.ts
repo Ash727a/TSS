@@ -8,7 +8,7 @@ import type user from '../../../database/models/teams/user.model.js';
 
 type ModelsForUser = Pick<
   typeof liveModels,
-  'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover' | 'simulationFailure'
+  'user' | 'room' | 'simulationState' | 'geo' | 'gpsMsg' | 'imuMsg' | 'uia' | 'rover' | 'simulationFailure' | 'uiaState'
 >;
 class User {
   // private room_id: number;
@@ -159,12 +159,15 @@ class User {
       // Assumes UIA PK is just the room id
       const uiaMsg = await this._models.uia.findByPk(room_id);
 
+      const uiaState = await this._models.uiaState.findByPk(room_id);
+
       const data = {
         gpsMsg: gps_val,
         imuMsg: imu_val,
         simulationStates: sim_state,
         simulationFailures: simulation_failures,
         uiaMsg: uiaMsg,
+        uiaState: uiaState,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
         roverMsg: rover_msg,
