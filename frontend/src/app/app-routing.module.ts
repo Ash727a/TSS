@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
+import config from './config';
 import { LogsComponent } from './modules/logs/logs.component';
 import { RoomsComponent } from './modules/rooms/rooms.component';
 import { TelemetryComponent } from './modules/telemetry/telemetry.component';
@@ -36,7 +36,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true } )],
+  imports: [RouterModule.forRoot(routes, { useHash: config.USE_HASH_ROUTING })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
