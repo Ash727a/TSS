@@ -25,9 +25,18 @@ export default class specScanLog extends Model {
   @Column(DataType.UUIDV4)
   declare session_log_id: string;
 
+  // ID of the telemetry session where the error was thrown (FK)
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare rock_name: string;
+
   // ID of the room where the error was thrown (FK)
   @Column(DataType.INTEGER)
   declare room_id: number;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare team_name: string;
 
   @Default('')
   @AllowNull(false)

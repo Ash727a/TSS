@@ -121,8 +121,7 @@ class Parser {
 
   async handleSpecData(
     spec_msg: SpecMsg,
-    _model: Pick<IAllModels, 'geo' | 'room'>,
-    log_models: Pick<ILogModels, 'specScanLog'>
+    _model: Pick<IAllModels, 'geo' | 'room' | 'specScanLog' | 'user'>
   ): Promise<void> {
     // 1. Map rfid ID -> spec data (either through db or just an object)
     const tag_id = spec_msg.BLOB.DATA.TAG_ID;
@@ -138,29 +137,40 @@ class Parser {
       return;
     }
 
+    const scanned_rock = spec_data_map[tag_id];
+
     // 2. Add scan to record for the room currently in GEO
     _model.geo.upsert({
       room_id: room_in_geo.id,
       rock_tag_id: tag_id,
-      rock_name: spec_data_map[tag_id].name,
-      rock_data: JSON.stringify(spec_data_map[tag_id].data),
+      rock_name: scanned_rock.name,
+      rock_data: JSON.stringify(scanned_rock.data),
     });
 
     console.log(
       `Recording: ${{
         rock_tag_id: tag_id,
-        rock_data: JSON.stringify(spec_data_map[tag_id]),
+        rock_name: scanned_rock.name,
+        rock_data: JSON.stringify(scanned_rock.data),
       }} under room ${room_in_geo.name}`
     );
+
+    const user_in_geo = await _model.user.findOne({ where: { room_id: room_in_geo.id } });
+    if (user_in_geo == null) {
+      console.log('No user_in_geo - should be impossible');
+      return;
+    }
 
     const spec_scan_log = {
       scan_log_id: uuidv4(),
       session_log_id: room_in_geo.session_log_id,
+      rock_name: scanned_rock.name,
+      team_name: user_in_geo.team_name,
       room_id: room_in_geo.id,
       rock_tag_id: tag_id,
     };
 
-    log_models.specScanLog.create(spec_scan_log);
+    _model.specScanLog.create(spec_scan_log);
 
     // TODO: Log tag_id and scan_time to logs db
   }
