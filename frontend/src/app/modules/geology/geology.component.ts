@@ -17,7 +17,7 @@ export class GeologyComponent {
   @Input() public variant: 'default' | 'small' = 'default';
   @Input() selectedRoom: Room | null = null;
   private pollGeoInterval?: ReturnType<typeof setTimeout>;
-  private specScanLogs: any[] = [];
+  protected logs: any[] = [];
 
   constructor(private logsService: LogsService, private roomsService: RoomsService) {
     
@@ -26,7 +26,7 @@ export class GeologyComponent {
   ngOnInit() {
     // If no room is selected, get Room 1 data and default to Room 1
     if (this.selectedRoom === null) {
-      this.roomsService.getRoomById(1).then((result) => {
+      this.roomsService.getRoomByStationName('GEO').then((result) => {
         this.selectedRoom = result;
       });
     }
@@ -46,8 +46,14 @@ export class GeologyComponent {
       // Get the rover's data from the database
       const result: any = await this.logsService.getGeologyScansBySessionLogID(session_log_id);
       if (result.ok) {
-        this.specScanLogs = result.payload;
+        this.logs = result.payload;
       }
     }, POLL_INTERVAL);
+  }
+
+  ngOnDestroy() {
+    if (this.pollGeoInterval) {
+      clearInterval(this.pollGeoInterval);
+    }
   }
 }
