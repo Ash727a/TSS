@@ -47,36 +47,35 @@ export default class UIASim {
   private room_id: number;
   private simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 
-  constructor(uia_models: UIASimModels, room_id: number) {
+  constructor(uia_models: UIASimModels, room_id: number, initial_uia_state: uiaState, initial_uia_switches: uia) {
     this.models = uia_models;
     this.room_id = room_id;
 
-    this.current_uia_state = (await this.models.uiaState
-      .findByPk(this.room_id)
-      .then((current_uiaState) => current_uiaState?.get())) as uiaState;
-    this.current_uia_switches = (await this.models.uia
-      .findByPk(this.room_id)
-      .then((current_uia) => current_uia?.get())) as uia;
+    this.current_uia_state = initial_uia_state;
+    this.current_uia_switches = initial_uia_switches;
 
-    Object.assign(this.previous_uia_switches, this.current_uia_switches);
+    this.previous_uia_switches = structuredClone(this.current_uia_switches);
   }
 
   public static async build(uia_models: UIASimModels, room_id: number): Promise<UIASim | void> {
-    const uiaSwitches = await uia_models.uia.findOne({ where: { room_id: room_id } });
-    if (uiaSwitches == null) {
+    const initial_uia_switches = (await uia_models.uia
+      .findByPk(room_id)
+      .then((current_uia) => current_uia?.get())) as uia;
+    if (initial_uia_switches == null) {
       console.log(`No uia switch state found for room_id ${room_id} in the uia table`);
       return;
     }
-    const current_uia_switches = uiaSwitches;
 
+    const initial_uia_state = (await uia_models.uiaState
+      .findByPk(room_id)
+      .then((current_uiaState) => current_uiaState?.get())) as uiaState;
     const uiaSimState = await uia_models.uiaState.findOne({ where: { room_id: room_id } });
     if (uiaSimState == null) {
       console.log(`No uia state found for room_id ${room_id} in the uiaState table`);
       return;
     }
-    const current_sim_state = uiaSimState;
 
-    return new UIASim(uia_models, room_id);
+    return new UIASim(uia_models, room_id, initial_uia_state, initial_uia_switches);
   }
 
   public async start_sim(): Promise<void> {
@@ -86,10 +85,10 @@ export default class UIASim {
     }, POLL_INTERVAL);
   }
 
-  private step(): void {
+  private async step(): Promise<void> {
     console.log('Stepping');
     // console.log(`\nUIA Switches: ${util.inspect(this.current_uia_switches.get())}`);
-    this.update_sim_variables();
+    await this.update_sim_variables();
 
     if (!this.current_uia_state) {
       console.log(`current_uia_state is: ${this.current_uia_state}, skipping sim step`);
@@ -112,7 +111,8 @@ export default class UIASim {
     Object.assign(this.previous_uia_switches, this.current_uia_switches);
   }
 
-  private update_sim_variables(): void {
+  private async update_sim_variables(): Promise<void> {
+    console.log();
     this.current_uia_state = (await this.models.uiaState
       .findByPk(this.room_id)
       .then((current_uiaState) => current_uiaState?.get())) as uiaState;
