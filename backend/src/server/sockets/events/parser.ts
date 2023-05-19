@@ -1,9 +1,10 @@
-import { IAllModels, ILiveModels } from '../../../database/models/index.js';
+import { IAllModels, ILiveModels, ILogModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
 import { GpsMsg, IMUMsg, RoverMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 import { GPS_SEMAPHORE } from '../enums/socket.enum.js';
+import { v4 as uuidv4 } from 'uuid';
 
 class Parser {
   // constructor() {}
@@ -118,7 +119,10 @@ class Parser {
     }
   }
 
-  async handleSpecData(spec_msg: SpecMsg, _model: Pick<IAllModels, 'geo' | 'room'>): Promise<void> {
+  async handleSpecData(
+    spec_msg: SpecMsg,
+    _model: Pick<IAllModels, 'geo' | 'room' | 'specScanLog' | 'user'>
+  ): Promise<void> {
     // 1. Map rfid ID -> spec data (either through db or just an object)
     const tag_id = spec_msg.BLOB.DATA.TAG_ID;
     // console.log(`TAG ID:\n${tag_id}\n`);
@@ -133,19 +137,40 @@ class Parser {
       return;
     }
 
+    const scanned_rock = spec_data_map[tag_id];
+
     // 2. Add scan to record for the room currently in GEO
     _model.geo.upsert({
       room_id: room_in_geo.id,
       rock_tag_id: tag_id,
-      rock_data: JSON.stringify(spec_data_map[tag_id]),
+      rock_name: scanned_rock.name,
+      rock_data: JSON.stringify(scanned_rock.data),
     });
 
     console.log(
       `Recording: ${{
         rock_tag_id: tag_id,
-        rock_data: JSON.stringify(spec_data_map[tag_id]),
+        rock_name: scanned_rock.name,
+        rock_data: JSON.stringify(scanned_rock.data),
       }} under room ${room_in_geo.name}`
     );
+
+    const user_in_geo = await _model.user.findOne({ where: { room_id: room_in_geo.id } });
+    if (user_in_geo === null) {
+      console.log('No user_in_geo - should be impossible');
+      return;
+    }
+
+    const spec_scan_log = {
+      scan_log_id: uuidv4(),
+      session_log_id: room_in_geo.session_log_id,
+      rock_name: scanned_rock.name,
+      team_name: user_in_geo.team_name,
+      room_id: room_in_geo.id,
+      rock_tag_id: tag_id,
+    };
+
+    _model.specScanLog.create(spec_scan_log);
 
     // TODO: Log tag_id and scan_time to logs db
   }
