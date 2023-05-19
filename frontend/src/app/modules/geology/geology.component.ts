@@ -24,12 +24,10 @@ export class GeologyComponent {
   }
 
   ngOnInit() {
-    // If no room is selected, get Room 1 data and default to Room 1
-    if (this.selectedRoom === null) {
-      this.roomsService.getRoomByStationName('GEO').then((result) => {
-        this.selectedRoom = result;
-      });
-    }
+    // On init fetch the room assigned to GEO
+    this.roomsService.getRoomByStationName('GEO').then((result) => {
+      this.selectedRoom = result;
+    });
     this.pollGeologyLogs();
   }
 
