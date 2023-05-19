@@ -76,12 +76,12 @@ export const teams = [
     user_guid: 'b16f5bff-a93a-48c1-bfd9-6d74dec1b144',
   },
   // Copied from TerpVision and modified
-  {
-    name: 'Test User',
-    username: 'VK11',
-    university: 'D.U.',
-    user_guid: 'icecream-2051-40e1-b8fe-6fa6706a6cab',
-  },
+  // {
+  //   name: 'Test User',
+  //   username: 'VK11',
+  //   university: 'D.U.',
+  //   user_guid: 'icecream-2051-40e1-b8fe-6fa6706a6cab',
+  // },
 ];
 
 /**

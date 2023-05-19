@@ -15,12 +15,12 @@ interface ITestUser {
 }
 
 const TestUsers = {
-  test_user: {
-    team_name: 'Test Team',
-    username: 'Test User',
-    university: 'Test Uni',
-    user_guid: 'icecream-2051-40e1-b8fe-6fa6706a6cab',
-  } as const,
+  // test_user: {
+  //   team_name: 'Test Team',
+  //   username: 'Test User',
+  //   university: 'Test Uni',
+  //   user_guid: 'icecream-2051-40e1-b8fe-6fa6706a6cab',
+  // } as const,
   claws: {
     team_name: 'CLAWS',
     username: 'Patrick',
