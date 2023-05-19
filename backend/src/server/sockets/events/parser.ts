@@ -1,9 +1,10 @@
-import { IAllModels, ILiveModels } from '../../../database/models/index.js';
+import { IAllModels, ILiveModels, ILogModels } from '../../../database/models/index.js';
 import { GpsAttributes } from '../../../database/models/teams/visionKitData/gpsMsg.model.js';
 import { GpsMsg, IMUMsg, RoverMsg, SpecMsg } from '../socketInterfaces.js';
 import { isValidRockId, spec_data_map } from './mappings/spec_data.map.js';
 import { IMUAttributes } from '../../../database/models/teams/visionKitData/imuMsg.model.js';
 import { GPS_SEMAPHORE } from '../enums/socket.enum.js';
+import { v4 as uuidv4 } from 'uuid';
 
 class Parser {
   // constructor() {}
@@ -118,7 +119,11 @@ class Parser {
     }
   }
 
-  async handleSpecData(spec_msg: SpecMsg, _model: Pick<IAllModels, 'geo' | 'room'>): Promise<void> {
+  async handleSpecData(
+    spec_msg: SpecMsg,
+    _model: Pick<IAllModels, 'geo' | 'room'>,
+    log_models: Pick<ILogModels, 'specScanLog'>
+  ): Promise<void> {
     // 1. Map rfid ID -> spec data (either through db or just an object)
     const tag_id = spec_msg.BLOB.DATA.TAG_ID;
     // console.log(`TAG ID:\n${tag_id}\n`);
@@ -137,7 +142,8 @@ class Parser {
     _model.geo.upsert({
       room_id: room_in_geo.id,
       rock_tag_id: tag_id,
-      rock_data: JSON.stringify(spec_data_map[tag_id]),
+      rock_name: spec_data_map[tag_id].name,
+      rock_data: JSON.stringify(spec_data_map[tag_id].data),
     });
 
     console.log(
@@ -146,6 +152,15 @@ class Parser {
         rock_data: JSON.stringify(spec_data_map[tag_id]),
       }} under room ${room_in_geo.name}`
     );
+
+    const spec_scan_log = {
+      scan_log_id: uuidv4(),
+      session_log_id: room_in_geo.session_log_id,
+      room_id: room_in_geo.id,
+      rock_tag_id: tag_id,
+    };
+
+    log_models.specScanLog.create(spec_scan_log);
 
     // TODO: Log tag_id and scan_time to logs db
   }
