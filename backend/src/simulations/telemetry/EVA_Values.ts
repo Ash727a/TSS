@@ -22,6 +22,8 @@ export enum FAN_TACHOMETER {
 export enum O2_PRESSURE {
   NOMINAL_MAX = 780,
   NOMINAL_MIN = 778,
+  ERROR_MAX = 777,
+  ERROR_MIN = 755,
 }
 
 export enum O2_RATE {
