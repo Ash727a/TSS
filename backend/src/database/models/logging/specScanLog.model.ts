@@ -42,5 +42,5 @@ export default class specScanLog extends Model {
   @Default('')
   @AllowNull(false)
   @Column(DataType.STRING)
-  declare rock_tag_id?: string;
+  declare rock_tag_id: string;
 }
