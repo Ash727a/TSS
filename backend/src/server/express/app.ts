@@ -54,6 +54,7 @@ class ExpressApp {
       telemetrySessionLog: new routes.telemetrySessionLog(_models.telemetrySessionLog),
       telemetryStationLog: new routes.telemetryStationLog(_models.telemetryStationLog),
       telemetryErrorLog: new routes.telemetryErrorLog(_models.telemetryErrorLog),
+      specScanLog: new routes.specScanLog(_models.specScanLog),
       devices: new routes.devices(_models.devices),
     };
 
@@ -163,6 +164,14 @@ class ExpressApp {
         this.app.get(
           `/api/${routeName}/completed/:session_log_id`,
           this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.findCompletedStations(req, res))
+        );
+      }
+
+      // If it's an instance of specScanLog, we define its endpoints.
+      if (routeController instanceof routes.specScanLog) {
+        this.app.get(
+          `/api/${routeName}/session/:session_log_id`,
+          this.makeHandlerAwareOfAsyncErrors((req, res) => routeController.findAllWithSessionLogID(req, res))
         );
       }
 

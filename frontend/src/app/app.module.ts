@@ -28,6 +28,7 @@ import { StationSwitchCardComponent } from './modules/rooms/station-switch-card/
 import { StatusIconTextDisplayComponent } from './modules/rooms/station-switch-card/status-icon-text-display/status-icon-text-display.component';
 import { TooltipComponent } from './shared/components/tooltip/tooltip.component';
 import { RoverComponent } from './modules/rover/rover.component';
+import { GeologyComponent } from './modules/geology/geology.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { RoverComponent } from './modules/rover/rover.component';
     StatusIconTextDisplayComponent,
     TooltipComponent,
     RoverComponent,
+    GeologyComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
