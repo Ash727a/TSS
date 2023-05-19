@@ -55,7 +55,8 @@ export class UIAStateComponent {
   }
 
   private translateDataToDisplayString(data: any, metricSuffix: string = '') {
-    return data ? `${data} ${metricSuffix}` : UIAStateComponent.EMPTY_TEXT_LABEL;
+    let displayString = data.toString().substring(0, 5);
+    return data ? `${displayString} ${metricSuffix}` : UIAStateComponent.EMPTY_TEXT_LABEL;
   }
 
   // Detects when the telemetry data changes
