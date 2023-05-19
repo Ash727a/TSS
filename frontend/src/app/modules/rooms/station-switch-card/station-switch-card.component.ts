@@ -81,6 +81,7 @@ export class StationSwitchCardComponent implements OnInit, OnDestroy {
             this.selectedRoom.status = 'green';
           } else {
             this.selectedRoom.status = '';
+            this.refreshData();
           }
         }
       });

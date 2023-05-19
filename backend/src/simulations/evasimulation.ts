@@ -146,6 +146,8 @@ class EVASimulation {
     if (!this.simState.is_running) {
       throw new Error('Cannot stop: simulation is not running');
     }
+    // Unassign the currently assigned stations (if any)
+    this.unassignCurrentStation();
     // Update the room's session id to null, since the session has ended
     await this.models.room.update({ session_log_id: '' }, { where: { [primaryKeyOf(this.models.room)]: this.room } });
     // Set the session's end time to now
@@ -193,33 +195,27 @@ class EVASimulation {
 
   async step(): Promise<void> {
     if (VERBOSE) console.log(`StateID: ${this.simStateID}`);
-    try {
-      const now = Date.now();
-      const dt = now - (this.lastTimestamp || 0);
-      this.lastTimestamp = now;
-      const failureData = await this.models.simulationFailure.findAll({
-        where: { [primaryKeyOf(this.models.simulationFailure)]: this.simStateID },
-      });
-      const newSimFailure = failureData[0].dataValues;
-      this.simFailure = { ...this.simFailure, ...newSimFailure };
-      this.updateTelemetryErrorLogs();
-      this.updateTelemetryStation();
-      const newSimState: TelemetryData = evaTelemetry.simulationStep(dt, this.simFailure, this.simState);
-      Object.assign(this.simState, newSimState);
-      // await simState.save()
-      await this.models.simulationState
-        .update(this.simState, {
-          where: {
-            [primaryKeyOf(this.models.simulationState)]: this.simStateID,
-          },
-        })
-        .then(() => {
-          if (VERBOSE) console.log('Updated');
-        });
-    } catch (error: any) {
-      console.error('Caught failed error');
-      console.error(error.toString());
+    const now = Date.now();
+    const dt = now - (this.lastTimestamp || 0);
+    this.lastTimestamp = now;
+    const failureData = await this.models.simulationFailure.findAll({
+      where: { [primaryKeyOf(this.models.simulationFailure)]: this.simStateID },
+    });
+    const newSimFailure = failureData[0].dataValues;
+    this.simFailure = { ...this.simFailure, ...newSimFailure };
+    this.updateTelemetryErrorLogs();
+    this.updateTelemetryStation();
+    const newSimState: TelemetryData = evaTelemetry.simulationStep(dt, this.simFailure, this.simState);
+    Object.assign(this.simState, newSimState);
+    const simStateData = await this.models.simulationState.update(this.simState, {
+      where: {
+        [primaryKeyOf(this.models.simulationState)]: this.simStateID,
+      },
+    });
+    if (!simStateData) {
+      throw new Error('Failed to update simulation state');
     }
+    if (VERBOSE) console.log('Updated');
     // this.printState();
   }
 
@@ -332,19 +328,7 @@ class EVASimulation {
       );
     } else {
       // (2) Unassigned Station
-      this.models.room.update(
-        {
-          station_name: '',
-          station_log_id: '',
-        },
-        {
-          where: {
-            [primaryKeyOf(this.models.room)]: this.room,
-          },
-        }
-      );
-      this.station_log_id = '';
-      this.station_name = '';
+      this.unassignCurrentStation();
     }
     // this.printState();
   }
@@ -391,6 +375,22 @@ class EVASimulation {
         }
       );
     }
+  }
+
+  private unassignCurrentStation(): void {
+    this.models.room.update(
+      {
+        station_name: '',
+        station_log_id: '',
+      },
+      {
+        where: {
+          [primaryKeyOf(this.models.room)]: this.room,
+        },
+      }
+    );
+    this.station_log_id = '';
+    this.station_name = '';
   }
 
   /**
