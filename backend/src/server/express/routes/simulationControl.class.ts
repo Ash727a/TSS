@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { VERBOSE } from '../../../config.js';
 
 import { APIRequest, APIResult, SequelizeModel } from '../../../interfaces.js';
-import EVASimulation from '../../../simulations/evasimulation.js';
+import EVASimulation, { SimulationModels } from '../../../simulations/evasimulation.js';
 import ModelRoute from './ModelRoute.class.js';
 import { primaryKeyOf } from '../../../helpers.js';
 
@@ -21,9 +21,9 @@ type SimulationInstance = {
 };
 class simulationControl extends ModelRoute {
   private sims: SimulationInstance[] = [];
-  private dependentModels: { [key: string]: SequelizeModel };
+  private readonly dependentModels: SimulationModels;
 
-  constructor(_model: SequelizeModel, _dependentModels: { [key: string]: SequelizeModel }) {
+  constructor(_model: SequelizeModel, _dependentModels: SimulationModels) {
     super(_model);
     this.dependentModels = _dependentModels;
   }
@@ -39,19 +39,10 @@ class simulationControl extends ModelRoute {
           {
             let simInst: SimulationInstance;
             const session_log_id = uuidv4();
-            const simModels = {
-              simulationState: this.dependentModels.simulationState,
-              simulationControl: this.dependentModels.simulationControl,
-              simulationFailure: this.dependentModels.simulationFailure,
-              room: this.dependentModels.room,
-              telemetrySessionLog: this.dependentModels.telemetrySessionLog,
-              telemetryStationLog: this.dependentModels.telemetryStationLog,
-              telemetryErrorLog: this.dependentModels.telemetryErrorLog,
-            };
             if (!existingSim) {
               simInst = {
                 room: req.params.room,
-                sim: new EVASimulation(simModels, req.params.room, session_log_id, false),
+                sim: new EVASimulation(this.dependentModels, req.params.room, session_log_id, false),
               };
             } else {
               // There is an existing simulation, but the session is different. Set the session_id to the new generated id
@@ -166,6 +157,8 @@ class simulationControl extends ModelRoute {
         telemetrySessionLog: this.dependentModels.telemetrySessionLog,
         telemetryStationLog: this.dependentModels.telemetryStationLog,
         telemetryErrorLog: this.dependentModels.telemetryErrorLog,
+        uia: this.dependentModels.uia,
+        uiaState: this.dependentModels.uiaState,
       };
       const _savedStateValues = sim.dataValues;
       let _session_log_id;
@@ -199,7 +192,7 @@ class simulationControl extends ModelRoute {
 
       const simInst: SimulationInstance = {
         room: _savedStateValues.room_id,
-        sim: new EVASimulation(simModels, _savedStateValues.room_id, _session_log_id, true),
+        sim: new EVASimulation(this.dependentModels, _savedStateValues.room_id, _session_log_id, true),
       };
       simInst.sim.station_log_id = _station_log_id;
       simInst.sim.station_name = _station_name;

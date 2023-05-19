@@ -4,15 +4,19 @@ import { primaryKeyOf } from '../helpers.js';
 import { INIT_TELEMETRY_DATA, TelemetryData } from '../interfaces.js';
 import simFailureSeed from './seed/simfailure.js';
 import evaTelemetry from './telemetry/eva_telemetry.js';
+import UIASim from './telemetry/UIASim.class.js';
 import { VERBOSE } from '../config.js';
 
-interface SimulationModels {
+export interface SimulationModels {
+  user: any;
   simulationState: any;
   simulationFailure: any;
   room: any;
   telemetrySessionLog: any;
   telemetryStationLog: any;
   telemetryErrorLog: any;
+  uia: any;
+  uiaState: any;
 }
 
 const UNASSIGN_MARKER = 'UNASSIGN';
@@ -31,6 +35,7 @@ class EVASimulation {
 
   station_log_id: string | null | undefined;
   station_name = '';
+  private uiaSim: any;
 
   constructor(_models: SimulationModels, _room_id: any, _session_log_id: string | null, _restore_flag: boolean) {
     this.models = _models;
@@ -330,6 +335,11 @@ class EVASimulation {
           },
         }
       );
+      // If the new station is UIA, create a new UIA simulation instance
+      if (this.station_name === 'UIA') {
+        this.uiaSim = new UIASim(this.models, this.room);
+        this.uiaSim.start();
+      }
     } else {
       // (2) Unassigned Station
       this.models.room.update(

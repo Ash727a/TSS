@@ -1,5 +1,5 @@
 import { TelemetryData } from '../../interfaces.js';
-import { HEART_RATE, SUIT_PRESSURE, FAN_TACHOMETER, O2_PRESSURE, O2_RATE, BATTERY_CAPACITY } from './values.js';
+import { HEART_RATE, SUIT_PRESSURE, FAN_TACHOMETER, O2_PRESSURE, O2_RATE, BATTERY_CAPACITY } from './EVA_Values.js';
 import { secondsToHms, round, generateRandomValueInBounds, decreaseTimeDisplay } from './helpers.js';
 
 function simulationStep(dt: any, failure: any, prevSimState: any): TelemetryData {
