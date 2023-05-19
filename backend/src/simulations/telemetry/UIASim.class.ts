@@ -3,7 +3,8 @@ import type { IAllModels } from '../../database/models';
 import uia from '../../database/models/stations/uia.model';
 import uiaState from '../../database/models/stations/uiaState.model';
 import { Model } from 'sequelize-typescript';
-import { WATER, AIRLOCK_PRESSURE, SUPPLY_PRESSURE } from './UIA_Values.js';
+import { WATER, AIRLOCK_PRESSURE, SUPPLY_PRESSURE, EMU1_POWER } from './UIA_Values.js';
+import * as util from 'node:util';
 
 type UIASimModels = Pick<IAllModels, 'uia' | 'uiaState'>;
 const POLL_INTERVAL = 1000 as const;
@@ -37,23 +38,27 @@ STEP 6 & 8: WHEN DEPRESS PUMP -> OPEN
 
 export default class UIASim {
   private readonly models: UIASimModels;
-  private previous_uia_switches: Omit<InferAttributes<uia>, keyof Model>;
+  private previous_uia_switches: uia;
   private current_uia_switches: uia;
   private last_sim_update = 0;
 
-  private current_sim_state: uiaState;
+  private current_uia_state: uiaState;
 
   private room_id: number;
   private simTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 
-  constructor(uia_models: UIASimModels, room_id: number, current_uia_switches: uia, current_sim_state: uiaState) {
+  constructor(uia_models: UIASimModels, room_id: number) {
     this.models = uia_models;
     this.room_id = room_id;
 
-    this.current_sim_state = current_sim_state;
-    this.current_uia_switches = current_uia_switches;
+    this.current_uia_state = (await this.models.uiaState
+      .findByPk(this.room_id)
+      .then((current_uiaState) => current_uiaState?.get())) as uiaState;
+    this.current_uia_switches = (await this.models.uia
+      .findByPk(this.room_id)
+      .then((current_uia) => current_uia?.get())) as uia;
 
-    this.previous_uia_switches = this.current_uia_switches.get();
+    Object.assign(this.previous_uia_switches, this.current_uia_switches);
   }
 
   public static async build(uia_models: UIASimModels, room_id: number): Promise<UIASim | void> {
@@ -71,23 +76,49 @@ export default class UIASim {
     }
     const current_sim_state = uiaSimState;
 
-    return new UIASim(uia_models, room_id, current_uia_switches, current_sim_state);
+    return new UIASim(uia_models, room_id);
   }
 
   public async start_sim(): Promise<void> {
+    console.log('Starting UIA Sim');
     this.simTimer = setInterval(async () => {
       this.step();
     }, POLL_INTERVAL);
   }
 
   private step(): void {
+    console.log('Stepping');
+    // console.log(`\nUIA Switches: ${util.inspect(this.current_uia_switches.get())}`);
+    this.update_sim_variables();
+
+    if (!this.current_uia_state) {
+      console.log(`current_uia_state is: ${this.current_uia_state}, skipping sim step`);
+      return;
+    }
+
+    if (!this.current_uia_switches) {
+      console.log(`current_uia_switches is: ${this.current_uia_switches}, skipping sim step`);
+      return;
+    }
+
     const dt_secs = Date.now() / 1000 - this.last_sim_update;
 
-    this.current_sim_state.uia_supply_pressure = this.step_uia_supply_pressure(dt_secs);
-    this.current_sim_state.water_level = this.step_uia_water_level(dt_secs);
-    this.current_sim_state.airlock_pressure = this.step_airlock_pressure(dt_secs);
+    this.current_uia_state.uia_supply_pressure = this.step_uia_supply_pressure(dt_secs);
+    this.current_uia_state.water_level = this.step_uia_water_level(dt_secs);
+    this.current_uia_state.airlock_pressure = this.step_airlock_pressure(dt_secs);
 
-    this.previous_uia_switches = this.current_uia_switches.get();
+    this.emu1_poweron(dt_secs);
+
+    Object.assign(this.previous_uia_switches, this.current_uia_switches);
+  }
+
+  private update_sim_variables(): void {
+    this.current_uia_state = (await this.models.uiaState
+      .findByPk(this.room_id)
+      .then((current_uiaState) => current_uiaState?.get())) as uiaState;
+    this.current_uia_switches = (await this.models.uia
+      .findByPk(this.room_id)
+      .then((current_uia) => current_uia?.get())) as uia;
   }
 
   /**
@@ -96,18 +127,19 @@ export default class UIASim {
    * - STEP 3 & 4 & 7: WHEN O2 SUPPLY -> OPEN
    */
   private step_uia_supply_pressure(dt_secs: number): number {
-    let updated_uia_supply_pressure = this.current_sim_state.uia_supply_pressure;
+    // console.log('step_uia_supply_pressure');
+    let updated_uia_supply_pressure = this.current_uia_state.uia_supply_pressure;
 
     // WHEN O2 SUPPLY -> OPEN, INCREASE Supply Pressure
     if (this.current_uia_switches.emu1_o2_supply_switch) {
       updated_uia_supply_pressure =
-        this.current_sim_state.uia_supply_pressure + dt_secs * SUPPLY_PRESSURE.PRESSURIZATION_RATE;
+        this.current_uia_state.uia_supply_pressure + dt_secs * SUPPLY_PRESSURE.PRESSURIZATION_RATE;
     }
 
     // WHEN O2 VENT -> OPEN, INCREASE Supply Pressure
     if (this.current_uia_switches.o2_vent_switch) {
       updated_uia_supply_pressure =
-        this.current_sim_state.uia_supply_pressure - dt_secs * SUPPLY_PRESSURE.DEPRESSURIZATION_RATE;
+        this.current_uia_state.uia_supply_pressure - dt_secs * SUPPLY_PRESSURE.DEPRESSURIZATION_RATE;
 
       if (updated_uia_supply_pressure < 0) updated_uia_supply_pressure = 0;
     }
@@ -120,12 +152,14 @@ export default class UIASim {
    * - STEP 6 & 8: WHEN DEPRESS PUMP -> OPEN
    */
   private step_airlock_pressure(dt_secs: number): number {
-    let updated_airlock_pressure = this.current_sim_state.airlock_pressure;
+    // console.log('step_airlock_pressure');
+
+    let updated_airlock_pressure = this.current_uia_state.airlock_pressure;
 
     // WHEN DEPRESS PUMP -> OPEN, INCREASE Airlock Pressure
     if (this.current_uia_switches.depress_pump_switch) {
       updated_airlock_pressure =
-        this.current_sim_state.airlock_pressure - dt_secs * AIRLOCK_PRESSURE.DEPRESSURIZATION_RATE;
+        this.current_uia_state.airlock_pressure - dt_secs * AIRLOCK_PRESSURE.DEPRESSURIZATION_RATE;
 
       if (updated_airlock_pressure < 0.0) updated_airlock_pressure = 0.0;
     }
@@ -139,17 +173,18 @@ export default class UIASim {
    * - STEP 5: WHEN EV-1 Waste -> OPEN
    */
   private step_uia_water_level(dt_secs: number): number {
-    let updated_water_level = this.current_sim_state.water_level;
+    // console.log('step_uia_water_level');
+    let updated_water_level = this.current_uia_state.water_level;
 
     // WHEN O2 SUPPLY -> OPEN, INCREASE Water Level
     if (this.current_uia_switches.ev1_supply_switch) {
-      updated_water_level = this.current_sim_state.uia_supply_pressure + dt_secs * WATER.FILL_RATE;
+      updated_water_level = this.current_uia_state.uia_supply_pressure + dt_secs * WATER.FILL_RATE;
 
       if (updated_water_level > 100) updated_water_level = 100;
     }
     // WHEN EV-1 WASTE -> OPEN, DECREASE Water Level
     if (this.current_uia_switches.ev1_water_waste_switch) {
-      updated_water_level = this.current_sim_state.uia_supply_pressure - dt_secs * WATER.EMPTY_RATE;
+      updated_water_level = this.current_uia_state.uia_supply_pressure - dt_secs * WATER.EMPTY_RATE;
 
       if (updated_water_level < 0) updated_water_level = 0;
     }
@@ -164,17 +199,21 @@ export default class UIASim {
    */
   private emu1_poweron_timeout: ReturnType<typeof setTimeout> | undefined = undefined;
   private emu1_poweron(dt_secs: number): void {
+    console.log('emu1_poweron');
     if (this.current_uia_switches.emu1_pwr_switch == this.previous_uia_switches.emu1_pwr_switch) {
       return;
     }
 
     if (this.current_uia_switches.emu1_pwr_switch == true) {
+      console.log('Beginning EMU1 poweron');
       setTimeout(() => {
-        this.current_sim_state.emu1_is_booted = true;
-      });
+        this.current_uia_state.emu1_is_booted = true;
+      }, EMU1_POWER.BOOTUP_TIME);
     } else {
+      console.log('Cancelling EMU1 poweron');
       clearTimeout(this.emu1_poweron_timeout);
-      this.current_sim_state.emu1_is_booted = false;
+      this.emu1_poweron_timeout = undefined;
+      this.current_uia_state.emu1_is_booted = false;
     }
   }
 }
