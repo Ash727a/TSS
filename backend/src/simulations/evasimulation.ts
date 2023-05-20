@@ -333,8 +333,8 @@ class EVASimulation {
       );
       // If the new station is UIA, create a new UIA simulation instance
       if (this.station_name === 'UIA') {
-        // this.uiaSim = await UIASim.build(this.models, this.room);
-        // this.uiaSim.start_sim();
+        this.uiaSim = await UIASim.build(this.models, this.room);
+        this.uiaSim.start_sim();
       }
     } else {
       // (2) Unassigned Station
