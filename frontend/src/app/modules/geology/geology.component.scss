@@ -1,0 +1,154 @@
+@import 'src/styles/styles.scss';
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .small {
+    width: 100%;
+  }
+
+  .connection-status {
+    transform: translateY(1rem);
+
+    &.green {
+      color: $green;
+    }
+
+    &.gray {
+      color: $lightGray;
+    }
+  }
+
+  .room-display-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .body {
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 1rem;
+    margin-top: 2rem;
+
+    .top-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      .left-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .command {
+          font-weight: bold;
+          color: $green;
+        }
+
+        .gray {
+          color: $mediumGray;
+        }
+
+        .time-since {
+          align-self: flex-end;
+          color: $lightGray;
+        }
+
+        .coords {
+          color: $lightGray;
+          margin-top: 0.2rem;
+        //   margin-left: 9.4rem;
+        }
+      }
+
+      .stop-button {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    img {
+      width: 30%;
+      align-self: center;
+    }
+
+    .socket-url-row {
+      margin-top: 1rem;
+
+      align-items: center;
+      justify-content: flex-end;
+
+      .input {
+        background-color: transparent;
+        border: 1px solid $lightGray;
+        color: $white;
+        width: 10rem;
+        height: 1.7rem;
+        border-radius: 0.3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      ::placeholder {
+        color: $gray;
+      }
+    }
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gap {
+    gap: 0.5rem;
+  }
+}
+
+
+.logs-container {
+    margin-top: 2rem;
+
+    .logs-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      align-content: center;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0rem;
+      background-color: $secondary;
+      border-radius: 0.3rem;
+
+      &:hover {
+        background-color: $gray;
+        cursor: pointer;
+      }
+
+      .item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 2.5rem;
+
+        .error-label {
+          color: $red;
+          font-weight: 500;
+          font-size: 0.8rem;
+          font-weight: bold;
+          opacity: 0.7;
+          text-align: center;
+        }
+      }
+    }
+  }

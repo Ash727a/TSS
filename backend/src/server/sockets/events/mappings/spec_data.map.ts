@@ -103,7 +103,7 @@ const pigeonite_basalt = {
 } as const;
 
 const olivine_basalt_2 = {
-  name: 'default_rock',
+  name: 'olivine_basalt_2',
   data: {
     SiO2: 42.45,
     TiO2: 1.56,

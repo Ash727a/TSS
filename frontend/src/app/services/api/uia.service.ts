@@ -28,4 +28,14 @@ export class UIAService {
         return { ok: false, err: e };
       });
   }
+
+  async getUIATelemetryByRoomID(roomID: number): Promise<any> {
+    return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/uiaState/${roomID}`))
+      .then((result) => {
+        return { ok: true, data: result }
+      })
+      .catch((e) => {
+        return { ok: false, err: e };
+      });
+  }
 }

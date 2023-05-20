@@ -1,0 +1,32 @@
+@import 'src/styles/styles.scss';
+
+
+.table-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 3rem 3rem 0rem 3rem;
+
+  td {
+    padding: 1rem 1rem 1rem 0rem;
+
+    .title {
+      font-weight: bold;
+
+    }
+
+    .invisible {
+      display: none;
+    }
+    
+    .fixed-width {
+      width: 6rem;
+    }
+
+    .divider {
+      background-color: $lightGray;
+      height: 2px;
+      margin-right: 2.5rem;
+    }
+  }
+}
+
