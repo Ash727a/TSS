@@ -25,6 +25,14 @@
               <app-shared-status-indicator
                 status="{{ sensor.status === true ? 'green' : sensor.status === false ? 'red' : 'gray' }}"
               ></app-shared-status-indicator>
+              <!-- Test mode -->
+              <app-shared-toggle-switch
+                *ngIf="TEST_MODE"
+                [type]="'error'"
+                (click)="toggleUIASwitch(sensor)"
+                [isErroring]="sensor.status === false"
+              ></app-shared-toggle-switch>
+              <!-- End test mode -->
             </td>
             <td>{{ sensor.name }}</td>
           </tr>
@@ -41,6 +49,14 @@
               <app-shared-status-indicator
                 status="{{ sensor.status === true ? 'green' : sensor.status === false ? 'red' : 'gray' }}"
               ></app-shared-status-indicator>
+              <!-- Test mode -->
+              <app-shared-toggle-switch
+                *ngIf="TEST_MODE"
+                [type]="'error'"
+                (click)="toggleUIASwitch(sensor)"
+                [isErroring]="sensor.status === false"
+              ></app-shared-toggle-switch>
+              <!-- End test mode -->
             </td>
             <td>{{ sensor.name }}</td>
           </tr>
