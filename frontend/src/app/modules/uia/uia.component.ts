@@ -18,6 +18,7 @@ export class UIAComponent {
   protected sensors1: StatusSensor[] = [];
   protected sensors2: StatusSensor[] = [];
   private uiaData: UIAData = {} as UIAData;
+  protected uiaTelemetry: any = {};
   protected connected: boolean = false;
 
   constructor(private roomsService: RoomsService, private uiaService: UIAService) { }
@@ -67,6 +68,14 @@ export class UIAComponent {
             { name: 'EV2 OXYGEN', status: this.setSwitchStatus(this.uiaData?.emu2_o2_supply_switch) },
             { name: 'DEPRESS PUMP', status: this.setSwitchStatus(this.uiaData?.depress_pump_switch) },
           ];
+
+          // Get UIA telemetry data
+          this.uiaService.getUIATelemetryByRoomID(roomID).then((result) => {
+            if (result.ok) {
+              this.uiaTelemetry = result.data;
+            }
+          }
+          );
         }
       });
     }, POLL_INTERVAL);

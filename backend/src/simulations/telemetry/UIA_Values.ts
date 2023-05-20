@@ -1,6 +1,6 @@
 export enum SUPPLY_PRESSURE {
-  PRESSURIZATION_RATE = 10, // psi/sec
-  DEPRESSURIZATION_RATE = 10, // psi/sec
+  PRESSURIZATION_RATE = 180, // psi/sec
+  DEPRESSURIZATION_RATE = 170, // psi/sec
 }
 
 export enum AIRLOCK_PRESSURE {
@@ -11,4 +11,8 @@ export enum AIRLOCK_PRESSURE {
 export enum WATER {
   FILL_RATE = 10, //   %/sec
   EMPTY_RATE = 10, //   %/sec
+}
+
+export enum EMU1_POWER {
+  BOOTUP_TIME = 7, // sec
 }

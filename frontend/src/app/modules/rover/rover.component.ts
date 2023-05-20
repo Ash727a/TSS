@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Room, RoverData } from '@app/core/interfaces';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
-import { RoverService } from '@services/api/rover.service';
+import { RoverService } from '@app/services/api/rover.service';
 import { DevicesService } from '@services/api/devices.service';
 
 const POLL_INTERVAL = 1000;
@@ -27,15 +27,11 @@ export class RoverComponent {
   constructor(private roomsService: RoomsService, private roverService: RoverService, private devicesService: DevicesService) { }
 
   ngOnInit() {
-    // If no room is selected, get Room 1 data and default to Room 1
-    if (this.selectedRoom === null) {
-      this.roomsService.getRoomById(1).then((result) => {
-        this.selectedRoom = result;
-        this.pollRoverData();
-      });
-    } else {
+    // On init fetch the room assigned to GEO
+    this.roomsService.getRoomByStationName('ROV').then((result) => {
+      this.selectedRoom = result;
       this.pollRoverData();
-    }
+    });
   }
 
   private pollRoverData() {

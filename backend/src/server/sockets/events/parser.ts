@@ -156,7 +156,7 @@ class Parser {
     );
 
     const user_in_geo = await _model.user.findOne({ where: { room_id: room_in_geo.id } });
-    if (user_in_geo == null) {
+    if (user_in_geo === null) {
       console.log('No user_in_geo - should be impossible');
       return;
     }
