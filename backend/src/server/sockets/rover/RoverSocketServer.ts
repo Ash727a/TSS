@@ -88,7 +88,7 @@ export class RoverSocketServer {
       const room_id = deviceResult.room_id;
       const roverResult = await this.models.rover.findOne({ where: { room_id: room_id } });
       if (roverResult === null || !roverResult?.dataValues) {
-        console.log('No rover found for room');
+        // console.log('No rover found for room');
         return;
       }
       // Command received. Send to rover
