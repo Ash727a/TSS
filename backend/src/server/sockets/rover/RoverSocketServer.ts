@@ -135,7 +135,7 @@ export class RoverSocketServer {
         break;
       }
       default: {
-        console.log(`Invalid rover command: ${roverResult.cmd}`);
+        // console.log(`Invalid rover command: ${roverResult.cmd}`);
         return;
       }
     }
