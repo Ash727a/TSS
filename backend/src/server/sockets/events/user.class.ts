@@ -186,6 +186,22 @@ class User {
     // update table that has room id matching
     this._models.rover.update(payload, { where: { room_id: this.user_record.room_id } });
   }
+
+  public async upateRovCmdRecall() {
+    // console.log(`Attempting to recall to ${this.team_name}`)
+
+    const user_coords = await this._models.gpsMsg.findOne({where: { user_guid: this.guid } });
+    
+    let goal_lat = 0.0;
+    let goal_lon = 0.0; 
+
+    if(user_coords !== null) {
+      goal_lat = user_coords.lat ?? 0.0;
+      goal_lon = user_coords.lon ?? 0.0;
+
+    }
+    this._models.rover.update({ cmd: 'recall', goal_lat: goal_lat, goal_lon: goal_lon}, {where: { room_id: this.user_record.room_id}});
+  }
 }
 
 export default User;

@@ -30,7 +30,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
         }
       } else if (msg.rover.cmd === 'recall') {
         if (current_user) {
-          // current_user.recall();
+          current_user.upateRovCmdRecall();
         } else {
           console.log('User not registered');
         }
