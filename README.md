@@ -105,12 +105,12 @@ localhost:4200
 ```
 
 ## EVA Errors
-| Error      | Error Toggle     | DCU Toggle         | State Key | Nominal Max | Nominal Min | Error Max | Error Min |
-| ---------- | ---------------- | ------------------ | --------- | ----------- | ----------- | --------- | --------- |
-| Heart Rate | Fan Error (true) | Fan Switch (false) | heart_bpm | 100          | 80          | 120       | 101       |
-| Suit Pressure | Pump Error (true) | Pump (false)   | p_suit    | 4.0         | 2.0        | 1.9       | 1.0      |
-| Fan        | fan_error (true) | fan_switch (false) | v_fan     | 40,000.0    | 10,000.0    | 9,999.0  | 1,000.0  |
-| O2 Pressure | o2_error (true) | o2_switch (false)  | p_o2      | 950         | 750         | 749       | 650       |
-| O2 Rate    | o2_error (true) | o2_switch (false)  | rate_o2    | 1           | 0.5         | 0.4       | 0.1       |
-| Batt Capacity | power_error (true) | suit_power (false) | cap_battery? | 30 | 0 | 50 | 31 |
+| Error      | Error Toggle     | State Key | Nominal Max | Nominal Min | Error Max | Error Min |
+| ---------- | ---------------- | --------- | ----------- | ----------- | --------- | --------- |
+| Heart Rate | Fan Error (true) | heart_rate | 100          | 80          | 120       | 101       |
+| Suit Pressure | Pump Error (true) | suit_pressure    | 4.0         | 2.0        | 1.9       | 1.0      |
+| Fan        | fan_error (true) | fan_tachometer     | 40,000.0    | 10,000.0    | 9,999.0  | 1,000.0  |
+| O2 Pressure | o2_error (true) | o2_pressure      | 950         | 750         | 749       | 650       |
+| O2 Rate    | o2_error (true) | o2_rate    | 1           | 0.5         | 0.4       | 0.1       |
+| Batt Capacity | power_error (true) | battery_capacity | 30 | 0 | 50 | 31 |
 
