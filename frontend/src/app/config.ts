@@ -1,6 +1,6 @@
 const config = {
     VERBOSE: true,
-    TEST_MODE: true,
+    TEST_MODE: false,
     // BACKEND_URL: 'http://localhost:8080',
     BACKEND_URL: `http://${location.hostname}:8080`,
     USE_HASH_ROUTING: true,
