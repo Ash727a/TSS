@@ -2,12 +2,11 @@ import { InferCreationAttributes } from 'sequelize';
 import WebSocket from 'ws';
 import user from '../../../database/models/teams/user.model';
 
-// const socketUrl = 'ws://192.168.50.10:3001';
 const socketUrl = 'ws://localhost:3001';
 // const socketUrl = 'ws://192.168.52.201:3001';
 const VERBOSE = true;
 
-interface ITestUser {
+interface TestUser {
   team_name: string;
   username: string;
   university: string;
@@ -23,13 +22,20 @@ const TestUsers = {
   } as const,
   interscholar: {
     team_name: 'Interscholar',
-    username: 'VK02',
+    username: 'IS',
     university: 'Cerritos | College of the Desert | CSU Fullerton',
     user_guid: 'a75e207e-f70f-4e4f-a66a-9f47bb84ab29',
   } as const,
 } as const;
 
-function connect_user(test_user: ITestUser): void {
+const test_user_2: TestUser = {
+  team_name: 'Test Team 2',
+  username: 'User 2',
+  university: 'Uni 2',
+  user_guid: 'some_guid',
+};
+
+function connect_user(test_user: TestUser): void {
   const ws = new WebSocket(socketUrl);
 
   ws.on('open', () => {
@@ -45,17 +51,17 @@ function connect_user(test_user: ITestUser): void {
     };
 
     ws.send(JSON.stringify(data));
-    // const payload = {
-    //   rover: {
-    //     cmd: 'navigate',
-    //     goal_lat: 1.0,
-    //     goal_lon: 2.0,
-    //   },
-    // };
-    // setTimeout(() => {
-    //   console.log('Sending payload...', payload);
-    //   ws.send(JSON.stringify(payload));
-    // }, 2000);
+    const payload = {
+      rover: {
+        cmd: 'navigate',
+        goal_lat: 1.0,
+        goal_lon: 2.0,
+      },
+    };
+    setTimeout(() => {
+      console.log('Sending payload...', payload);
+      ws.send(JSON.stringify(payload));
+    }, 2000);
   });
 
   ws.on('message', (message) => {

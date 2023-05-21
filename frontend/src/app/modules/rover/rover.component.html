@@ -15,12 +15,12 @@
     <div class="body column gap">
       <div class="top-row">
         <div class="left-item">
-            <div class="row gap">
+          <div class="row gap">
             <h4>Last Command:</h4>
             <h4 class="command" [ngClass]="!commandName ? 'gray' : ''">{{ commandName ? commandName : 'None' }}</h4>
             <h5 class="time-since" *ngIf="commandName">(sent {{ commandTimeSince }} ago)</h5>
-            </div>
-            <h6 class="coords" *ngIf="commandDetails">Command coordinates: {{ commandDetails }}</h6>
+          </div>
+          <h6 class="coords" *ngIf="commandDetails">Command coordinates: {{ commandDetails }}</h6>
         </div>
         <div class="stop-button row gap">
           <app-shared-control-button
@@ -33,7 +33,15 @@
           >
         </div>
       </div>
-      <img [src]="ROVER_IMG_PATH" alt="rover"/>
+      <div *ngIf="commandName" class="second-row gap">
+        <h4>Navigation Complete:</h4>
+        <app-shared-toggle-switch
+          [type]="'default'"
+          [isErroring]="navigationComplete"
+          (click)="toggleNavigationComplete()"
+        ></app-shared-toggle-switch>
+      </div>
+      <img [src]="ROVER_IMG_PATH" alt="rover" />
       <!-- <div class="socket-url-row row gap">
         <h4>Socket URL:</h4>
         <input class="input" placeholder="ws://192.168.0.105:9090" />

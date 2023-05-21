@@ -32,7 +32,7 @@ export class UIAStateComponent {
   private mapTelemetryDataToTable() {
     this.sensors1 = [
       { name: 'EMU 1 Booted', value: this.translateDataToDisplayString(this.uiaTelemetry?.emu1_is_booted, '') },
-      { name: 'UIA Supply Pressure', value: this.translateDataToDisplayString(this.uiaTelemetry?.uia_supply_pressure, 'psia') },
+      { name: 'Supply Pressure', value: this.translateDataToDisplayString(this.uiaTelemetry?.uia_supply_pressure, 'psia') },
       { name: 'Water Level', value: this.translateDataToDisplayString(this.uiaTelemetry?.water_level, 'gal') },
 
     ];

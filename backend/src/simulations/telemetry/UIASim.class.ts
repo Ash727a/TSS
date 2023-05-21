@@ -86,7 +86,7 @@ export default class UIASim {
   }
 
   private async step(): Promise<void> {
-    console.log('Stepping');
+    // console.log('Stepping');
     // console.log(`\nUIA Switches: ${util.inspect(this.current_uia_switches.get())}`);
     await this.update_sim_variables();
 
@@ -104,8 +104,13 @@ export default class UIASim {
     this.last_sim_update = Date.now() / 1000;
 
     this.current_uia_state.uia_supply_pressure = this.step_uia_supply_pressure(dt_secs);
+    // console.log(`supply pressure:${this.current_uia_state.uia_supply_pressure}`);
+
     this.current_uia_state.water_level = this.step_uia_water_level(dt_secs);
+    // console.log(`water level:${this.current_uia_state.water_level}`);
+
     this.current_uia_state.airlock_pressure = this.step_airlock_pressure(dt_secs);
+    // console.log(`airlock pressure:${this.current_uia_state.airlock_pressure}`);
 
     this.models.uiaState.update(this.current_uia_state, { where: { room_id: this.room_id } });
 
@@ -182,13 +187,13 @@ export default class UIASim {
 
     // WHEN O2 SUPPLY -> OPEN, INCREASE Water Level
     if (this.current_uia_switches.ev1_supply_switch) {
-      updated_water_level = this.current_uia_state.uia_supply_pressure + dt_secs * WATER.FILL_RATE;
+      updated_water_level = this.current_uia_state.water_level + dt_secs * WATER.FILL_RATE;
 
       if (updated_water_level > 100) updated_water_level = 100;
     }
     // WHEN EV-1 WASTE -> OPEN, DECREASE Water Level
     if (this.current_uia_switches.ev1_water_waste_switch) {
-      updated_water_level = this.current_uia_state.uia_supply_pressure - dt_secs * WATER.EMPTY_RATE;
+      updated_water_level = this.current_uia_state.water_level - dt_secs * WATER.EMPTY_RATE;
 
       if (updated_water_level < 0) updated_water_level = 0;
     }

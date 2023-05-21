@@ -205,7 +205,7 @@ export default class simulationState extends Model<
 
   // Water capacity
   @AllowNull(false)
-  @Default('00:00:00')
+  @Default(100)
   @Column(DataType.STRING)
-  declare water_capacity: string;
+  declare water_capacity: number;
 }

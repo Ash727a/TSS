@@ -24,6 +24,10 @@ export default class rover extends Model<InferAttributes<rover>, InferCreationAt
   @Column(DataType.STRING)
   declare cmd: string;
 
+  @Default('NOT_NAVIGATING')
+  @Column(DataType.STRING)
+  declare navigation_status: string;
+
   @Default(0)
   @Column(DataType.FLOAT)
   declare goal_lat: number;

@@ -19,4 +19,5 @@ export interface UIAData {
 export interface StatusSensor {
   name: string;
   status: boolean | undefined;
+  key: string;
 }
