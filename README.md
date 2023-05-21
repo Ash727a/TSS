@@ -103,3 +103,14 @@ npm run dev
 ```
 localhost:4200
 ```
+
+## EVA Errors
+| Error      | State Key | Nominal Max | Nominal Min | Error Max | Error Min |
+| ---------- | --------- | ----------- | ----------- | --------- | --------- |
+| Heart Rate | heart_rate | 100          | 80          | 120       | 101       |
+| Suit Pressure | suit_pressure    | 4.0         | 2.0        | 1.9       | 1.0      |
+| Fan        | fan_tachometer     | 40,000.0    | 10,000.0    | 9,999.0  | 1,000.0  |
+| O2 Pressure | o2_pressure      | 950         | 750         | 749       | 650       |
+| O2 Rate    | o2_rate    | 1           | 0.5         | 0.4       | 0.1       |
+| Battery Capacity | battery_capacity | 30 | 0 | 50 | 31 |
+
