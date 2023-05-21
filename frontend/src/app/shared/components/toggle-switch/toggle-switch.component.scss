@@ -33,6 +33,9 @@ $TOGGLE-WIDTH: 55px;
     &.error {
       background-color: $lightGray;
     }
+    &.reverse {
+      background-color: $green;
+    }
   }
 
   &.round:before {
@@ -63,6 +66,9 @@ input {
       transform: translateX($TOGGLE-WIDTH - $TOGGLE-HEIGHT);
     }
     + .slider.error {
+      background-color: $red;
+    }
+    + .slider.reverse {
       background-color: $red;
     }
   }

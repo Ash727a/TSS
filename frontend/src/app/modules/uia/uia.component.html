@@ -28,7 +28,7 @@
               <!-- Test mode -->
               <app-shared-toggle-switch
                 *ngIf="TEST_MODE"
-                [type]="'error'"
+                [type]="'reverse'"
                 (click)="toggleUIASwitch(sensor)"
                 [isErroring]="sensor.status === false"
               ></app-shared-toggle-switch>
@@ -52,7 +52,7 @@
               <!-- Test mode -->
               <app-shared-toggle-switch
                 *ngIf="TEST_MODE"
-                [type]="'error'"
+                [type]="sensor.status === undefined ? 'error' : 'reverse'"
                 (click)="toggleUIASwitch(sensor)"
                 [isErroring]="sensor.status === false"
               ></app-shared-toggle-switch>
