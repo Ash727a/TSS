@@ -187,13 +187,13 @@ export default class UIASim {
 
     // WHEN O2 SUPPLY -> OPEN, INCREASE Water Level
     if (this.current_uia_switches.ev1_supply_switch) {
-      updated_water_level = this.current_uia_state.uia_supply_pressure + dt_secs * WATER.FILL_RATE;
+      updated_water_level = this.current_uia_state.water_level + dt_secs * WATER.FILL_RATE;
 
       if (updated_water_level > 100) updated_water_level = 100;
     }
     // WHEN EV-1 WASTE -> OPEN, DECREASE Water Level
     if (this.current_uia_switches.ev1_water_waste_switch) {
-      updated_water_level = this.current_uia_state.uia_supply_pressure - dt_secs * WATER.EMPTY_RATE;
+      updated_water_level = this.current_uia_state.water_level - dt_secs * WATER.EMPTY_RATE;
 
       if (updated_water_level < 0) updated_water_level = 0;
     }

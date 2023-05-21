@@ -13,12 +13,20 @@ interface TestUser {
   user_guid: string;
 }
 
-const test_user_1: TestUser = {
-  team_name: 'Test Team 1',
-  username: 'User 1',
-  university: 'Uni 1',
-  user_guid: 'fdbee7e5-9887-495e-aabb-f10d1386a7e9',
-};
+const TestUsers = {
+  claws: {
+    team_name: 'CLAWS',
+    username: 'Patrick',
+    university: 'U Michigan',
+    user_guid: 'eb0dde22-a403-45cd-a3bc-45c797634d32',
+  } as const,
+  interscholar: {
+    team_name: 'Interscholar',
+    username: 'IS',
+    university: 'Cerritos | College of the Desert | CSU Fullerton',
+    user_guid: 'a75e207e-f70f-4e4f-a66a-9f47bb84ab29',
+  } as const,
+} as const;
 
 const test_user_2: TestUser = {
   team_name: 'Test Team 2',
@@ -68,4 +76,4 @@ function connect_user(test_user: TestUser): void {
   });
 }
 
-connect_user(test_user_1);
+connect_user(TestUsers.interscholar);

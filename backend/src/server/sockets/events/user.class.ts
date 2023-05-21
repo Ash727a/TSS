@@ -115,7 +115,7 @@ class User {
 
       const sim_state_res = await this._models.simulationState.findOne({
         where: { room_id: room_id },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'] },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'], include: [['is_running', 'isRunning'], ['is_paused', 'isPaused']] },
       });
 
       const simulation_failures = await this._models.simulationFailure.findOne({
@@ -158,7 +158,9 @@ class User {
       };
 
       // Assumes UIA PK is just the room id
-      const uiaMsg = await this._models.uia.findByPk(room_id);
+      const uiaMsg = await this._models.uia.findByPk(room_id, {
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'], include: [['ev1_water_waste_switch', 'emu1_water_waste']]
+      }});
 
       const uiaState = await this._models.uiaState.findByPk(room_id);
 
@@ -168,7 +170,7 @@ class User {
         simulationStates: sim_state,
         simulationFailures: simulation_failures,
         uiaMsg: uiaMsg,
-        uiaState: uiaState,
+        uiaStateMsg: uiaState,
         specMsg: spec_data?.rock_data ? JSON.parse(spec_data.rock_data) : {},
         // add rover data
         roverMsg: rover_msg,
