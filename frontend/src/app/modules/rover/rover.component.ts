@@ -83,14 +83,13 @@ export class RoverComponent {
       const roverResult = await this.devicesService.getDeviceByName('rover');
       if (roverResult.ok) {
         const roverDevice = roverResult.data;
-        this.connected = Boolean(roverDevice.is_connected);
-        if (this.roverData?.updatedAt) {
+        this.connected = Boolean(roverDevice.is_connected) || (config.TEST_MODE && this.selectedRoom?.id);
+        if ((config.TEST_MODE || this.connected) && this.roverData?.updatedAt) {
           const lastUpdate = new Date(this.roverData.updatedAt);
           this.commandName = this.roverData?.cmd ?? '';
           this.commandDetails = this.roverData?.goal_lat || this.roverData?.goal_lon ? `(${this.roverData?.goal_lat}, ${this.roverData?.goal_lon})` : '';
           this.commandTimeSince = this.getDurationDisplay(lastUpdate, new Date());
         }
-        console.log(this.roverData.navigation_status);
       }
     }
   }
