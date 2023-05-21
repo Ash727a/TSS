@@ -10,7 +10,6 @@ export class RoverService {
   constructor(private http: HttpClient) {}
 
   async getRoverStateByRoomID(roomID: number): Promise<any> {
-    console.log("GETING STATE", roomID)
     return await firstValueFrom(this.http.get(`${config.BACKEND_URL}/api/rover/${roomID}`))
       .then((result) => {
         return { ok: true, data: result }
@@ -23,11 +22,10 @@ export class RoverService {
   async updateByRoomID(roomID: number, roverState: object): Promise<any> {
     // console.log(`updating rover\nroomID=${roomID}\nroverState=${JSON.stringify(roverState)}`);
     const url = `${config.BACKEND_URL}/api/rover/${roomID}`
-    console.log('updating rover',roomID, roverState, `\nurl: ${url}`);
+    // console.log('updating rover',roomID, roverState, `\nurl: ${url}`);
 
     return await firstValueFrom(this.http.put(url, roverState))
       .then((result) => {
-        console.log('YEET');
         return { ok: true, data: result }
       })
       .catch((e) => {

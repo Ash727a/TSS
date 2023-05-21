@@ -2,34 +2,32 @@ import { InferCreationAttributes } from 'sequelize';
 import WebSocket from 'ws';
 import user from '../../../database/models/teams/user.model';
 
-// const socketUrl = 'ws://192.168.50.10:3001';
 const socketUrl = 'ws://localhost:3001';
 // const socketUrl = 'ws://192.168.52.201:3001';
 const VERBOSE = true;
 
-interface ITestUser {
+interface TestUser {
   team_name: string;
   username: string;
   university: string;
   user_guid: string;
 }
 
-const TestUsers = {
-  claws: {
-    team_name: 'CLAWS',
-    username: 'Patrick',
-    university: 'U Michigan',
-    user_guid: 'eb0dde22-a403-45cd-a3bc-45c797634d32',
-  } as const,
-  interscholar: {
-    team_name: 'Interscholar',
-    username: 'VK02',
-    university: 'Cerritos | College of the Desert | CSU Fullerton',
-    user_guid: 'a75e207e-f70f-4e4f-a66a-9f47bb84ab29',
-  } as const,
-} as const;
+const test_user_1: TestUser = {
+  team_name: 'Test Team 1',
+  username: 'User 1',
+  university: 'Uni 1',
+  user_guid: 'fdbee7e5-9887-495e-aabb-f10d1386a7e9',
+};
 
-function connect_user(test_user: ITestUser): void {
+const test_user_2: TestUser = {
+  team_name: 'Test Team 2',
+  username: 'User 2',
+  university: 'Uni 2',
+  user_guid: 'some_guid',
+};
+
+function connect_user(test_user: TestUser): void {
   const ws = new WebSocket(socketUrl);
 
   ws.on('open', () => {
@@ -45,17 +43,17 @@ function connect_user(test_user: ITestUser): void {
     };
 
     ws.send(JSON.stringify(data));
-    // const payload = {
-    //   rover: {
-    //     cmd: 'navigate',
-    //     goal_lat: 1.0,
-    //     goal_lon: 2.0,
-    //   },
-    // };
-    // setTimeout(() => {
-    //   console.log('Sending payload...', payload);
-    //   ws.send(JSON.stringify(payload));
-    // }, 2000);
+    const payload = {
+      rover: {
+        cmd: 'navigate',
+        goal_lat: 1.0,
+        goal_lon: 2.0,
+      },
+    };
+    setTimeout(() => {
+      console.log('Sending payload...', payload);
+      ws.send(JSON.stringify(payload));
+    }, 2000);
   });
 
   ws.on('message', (message) => {
@@ -70,4 +68,4 @@ function connect_user(test_user: ITestUser): void {
   });
 }
 
-connect_user(TestUsers.interscholar);
+connect_user(test_user_1);

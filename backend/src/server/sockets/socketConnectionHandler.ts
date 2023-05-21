@@ -23,6 +23,7 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
         if (current_user) {
           const payload = {
             ...msg.rover,
+            navigation_status: 'NAVIGATING',
           };
           current_user.updateRovCmd(payload);
         } else {
