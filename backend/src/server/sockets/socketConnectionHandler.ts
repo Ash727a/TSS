@@ -26,23 +26,26 @@ export default function handleSocketConnection(ws: WebSocket, models: IAllModels
             navigation_status: 'NAVIGATING',
           };
           current_user.updateRovCmd(payload);
+          return;
         } else {
           console.log('User not registered');
+          return;
         }
-      } else if (msg.rover.cmd === 'recall') {
-        if (current_user) {
-          // current_user.recall();
-        } else {
-          console.log('User not registered');
-        }
-      } else {
-        console.log(`Invalid rover command: '${msg.rover.cmd}'`);
       }
-      return;
+    } else if (msg.rover && msg.rover.cmd && (msg.rover.cmd === 'recall')) {
+      if (current_user) {
+        current_user.updateRovCmdRecall();
+        return;
+      } else {
+        console.log('User not registered');
+        return;
+      }
+    } else {
+      console.log(`Invalid rover command`);
     }
 
     //Client messages are always DATA
-    if (parsedMsg.MSGTYPE !== 'DATA') {
+    if(parsedMsg.MSGTYPE !== 'DATA') {
       console.log(`MSGTYPE !== 'DATA' in:\n${parsedMsg}`);
       ws.send(JSON.stringify({ ERR: "MSGTYPE isn't DATA" }));
       return;

@@ -4,7 +4,7 @@ import { liveModels } from '../../../database/models/index.js';
 import { CrewmemberMsg } from '../socketInterfaces.js';
 
 // import { ISocketServerModels } from '../model_interfaces.js';
-import type user from '../../../database/models/teams/user.model.js';
+import user from '../../../database/models/teams/user.model.js';
 
 type ModelsForUser = Pick<
   typeof liveModels,
@@ -110,7 +110,7 @@ class User {
 
   async sendData(): Promise<void> {
     try {
-      console.log(`Sending data to ${this.team_name}`);
+      // console.log(`Sending data to ${this.team_name}`);
       const room_id = this.user_record.room_id;
 
       const sim_state_res = await this._models.simulationState.findOne({
@@ -146,16 +146,18 @@ class User {
         where: {
           room_id: room_id,
         },
-        attributes: ['lat', 'lon', 'goal_lat', 'goal_lon'],
+        attributes: ['lat', 'lon', 'goal_lat', 'goal_lon', 'navigation_status'],
       });
 
       const rover_msg = {
         lat: rover_data_from_table?.lat,
         lon: rover_data_from_table?.lon,
-        navigation_status: 'NOT_NAVIGATING',
+        navigation_status: rover_data_from_table?.navigation_status,
         goal_lat: rover_data_from_table?.goal_lat,
         goal_lon: rover_data_from_table?.goal_lon,
       };
+
+      // console.log(`nav_status: ${rover_data_from_table?.navigation_status}`)
 
       // Assumes UIA PK is just the room id
       const uiaMsg = await this._models.uia.findByPk(room_id, {
@@ -184,9 +186,36 @@ class User {
     }
   }
 
-  public updateRovCmd(payload: any): any {
+  public async updateRovCmd(payload: any): Promise<void> {
     // update table that has room id matching
-    this._models.rover.update(payload, { where: { room_id: this.user_record.room_id } });
+    const curent_room = await this._models.room.findByPk(this.user_record.room_id);
+    if (curent_room?.station_name == 'ROV') {
+      this._models.rover.update(payload, { where: { room_id: this.user_record.room_id } });
+    } else {
+      // console.log(`${this.team_name} attempting rover command while not in ROV station`);
+      return;
+    }
+  }
+
+  public async updateRovCmdRecall(): Promise<void> {
+
+    const curent_room = await this._models.room.findByPk(this.user_record.room_id);
+    // update table that has room id matching
+    if (curent_room?.station_name == 'ROV') {
+      const user_coords = await this._models.gpsMsg.findByPk(this.guid);
+      this._models.rover.update({cmd: 'recall', goal_lat: user_coords?.lat, goal_lon: user_coords?.lon, navigation_status: 'NAVIGATING'}, { where: { room_id: this.user_record.room_id } });
+    // console.log(`${this.team_name} attempting recall with coords ${user_coords?.lat}, ${user_coords?.lon}`);
+
+    } else {
+      // console.log(`${this.team_name} attempting rover command while not in ROV station`);
+      return;
+    }
+    // if( (user_coords === null) || (user_coords.lat === 0) || (user_coords.lon === 0)) {
+    //   console.log(`${this.team_name} attempted recall with invalid coords from VK, ignoring`);
+    //   return;
+    // }
+    
+    
   }
 }
 
