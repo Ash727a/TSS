@@ -113,9 +113,11 @@ class User {
       // console.log(`Sending data to ${this.team_name}`);
       const room_id = this.user_record.room_id;
 
+      // A lot of these fields are renamed to fix it for the Unity Pakcage
+
       const sim_state_res = await this._models.simulationState.findOne({
         where: { room_id: room_id },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'], include: [['is_running', 'isRunning'], ['is_paused', 'isPaused']] },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'user_guid'], include: [['is_running', 'isRunning'], ['is_paused', 'isPaused'], ['suit_pressure', 'suits_pressure']] },
       });
 
       const simulation_failures = await this._models.simulationFailure.findOne({
