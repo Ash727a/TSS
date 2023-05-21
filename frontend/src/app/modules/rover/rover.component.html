@@ -37,7 +37,7 @@
         <h4>Navigation Complete:</h4>
         <app-shared-toggle-switch
           [type]="'default'"
-          [isErroring]="roverData.navigation_status === 'NOT NAVIGATING'"
+          [isErroring]="navigationComplete"
           (click)="toggleNavigationComplete()"
         ></app-shared-toggle-switch>
       </div>

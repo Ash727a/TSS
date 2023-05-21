@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Room, RoverData } from '@app/core/interfaces';
+import config from '@app/config';
 // Backend
 import { RoomsService } from '@services/api/rooms.service';
 import { RoverService } from '@app/services/api/rover.service';
@@ -23,6 +24,7 @@ export class RoverComponent {
   protected commandTimeSince: string = '';
   protected roverData: RoverData = {} as RoverData;
   protected connected: boolean = false;
+  protected navigationComplete: boolean = false;
   private pollRoverInterval?: ReturnType<typeof setTimeout>;
 
   constructor(private roomsService: RoomsService, private roverService: RoverService, private devicesService: DevicesService) { }
@@ -55,7 +57,7 @@ export class RoverComponent {
       if (roverResult.ok) {
         const roverDevice = roverResult.data;
         this.connected = Boolean(roverDevice.is_connected);
-        if (this.roverData?.updatedAt) {
+        if ((config.TEST_MODE || this.connected) && this.roverData?.updatedAt) {
           const lastUpdate = new Date(this.roverData.updatedAt);
           this.commandName = this.roverData?.cmd ?? '';
           this.commandDetails = this.roverData?.goal_lat || this.roverData?.goal_lon ? `(${this.roverData?.goal_lat}, ${this.roverData?.goal_lon})` : '';
@@ -77,6 +79,7 @@ export class RoverComponent {
     const result = await this.roverService.getRoverStateByRoomID(roomID);
     if (result.ok) {
       this.roverData = result.data;
+      this.navigationComplete = this.roverData.navigation_status === 'NOT_NAVIGATING';
       const roverResult = await this.devicesService.getDeviceByName('rover');
       if (roverResult.ok) {
         const roverDevice = roverResult.data;
@@ -87,6 +90,7 @@ export class RoverComponent {
           this.commandDetails = this.roverData?.goal_lat || this.roverData?.goal_lon ? `(${this.roverData?.goal_lat}, ${this.roverData?.goal_lon})` : '';
           this.commandTimeSince = this.getDurationDisplay(lastUpdate, new Date());
         }
+        console.log(this.roverData.navigation_status);
       }
     }
   }

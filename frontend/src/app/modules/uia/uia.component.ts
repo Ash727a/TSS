@@ -43,7 +43,7 @@ export class UIAComponent {
       this.uiaService.getUIAStateByRoomID(roomID).then((result) => {
         if (result.ok) {
           this.uiaData = result.data;
-          if (!this.TEST_MODE) {
+          if (!config.TEST_MODE) {
             this.connected = Boolean(this.uiaData?.started_at);
             // Check time since the last update time, and if greater than 5 seconds, set connected to false in frontend and database
             if (this.connected && this.uiaData?.updatedAt) {
