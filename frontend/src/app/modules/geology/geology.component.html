@@ -1,0 +1,26 @@
+<div class="container">
+  <app-shared-card
+    [ngClass]="variant"
+    [size]="variant !== 'small' ? 'small' : ''"
+    [title]="variant !== 'small' ? 'Geology' : ''"
+    [variant]="variant === 'small' ? 'light' : 'default'"
+  >
+    <h3 *ngIf="variant === 'small'">Geology</h3>
+    <div *ngIf="variant != 'small'" class="room-display-container">
+      <h3>Room {{ selectedRoom?.id }}</h3>
+    </div>
+    <div class="logs-container">
+      <h4 *ngIf="logs && logs.length === 0">No log history</h4>
+      <div *ngIf="logs && logs.length > 0" class="log-container">
+        <div *ngFor="let log of logs" class="logs-row">
+          <div class="item">
+            <h5>{{ log.rock_name }}</h5>
+            <h5>Room {{ log.room_id }}</h5>
+            <h5>{{ log.team_name }}</h5>
+            <h5>{{ log.createdAt }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-shared-card>
+</div>

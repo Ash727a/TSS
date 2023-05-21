@@ -110,7 +110,7 @@ class User {
 
   async sendData(): Promise<void> {
     try {
-      console.log(`Sending data to ${this.team_name}`)
+      console.log(`Sending data to ${this.team_name}`);
       const room_id = this.user_record.room_id;
 
       const sim_state_res = await this._models.simulationState.findOne({

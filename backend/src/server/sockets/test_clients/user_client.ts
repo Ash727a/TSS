@@ -15,12 +15,6 @@ interface ITestUser {
 }
 
 const TestUsers = {
-  test_user: {
-    team_name: 'Test Team',
-    username: 'Test User',
-    university: 'Test Uni',
-    user_guid: 'icecream-2051-40e1-b8fe-6fa6706a6cab',
-  } as const,
   claws: {
     team_name: 'CLAWS',
     username: 'Patrick',
@@ -32,11 +26,8 @@ const TestUsers = {
     username: 'VK02',
     university: 'Cerritos | College of the Desert | CSU Fullerton',
     user_guid: 'a75e207e-f70f-4e4f-a66a-9f47bb84ab29',
-  } as const
+  } as const,
 } as const;
-
-
-
 
 function connect_user(test_user: ITestUser): void {
   const ws = new WebSocket(socketUrl);
@@ -48,7 +39,7 @@ function connect_user(test_user: ITestUser): void {
       BLOB: {
         DATATYPE: 'HMD',
         DATA: {
-          ...test_user
+          ...test_user,
         },
       },
     };

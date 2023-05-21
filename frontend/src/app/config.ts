@@ -12,15 +12,15 @@ const config = {
     stationTimes: {
         UIA: {
             yellow: '5:00',
-            red: '6:00',
+            red: '8:00',
         },
         GEO: {
-            yellow: '10:00',
-            red: '12:00',
+            yellow: '5:00',
+            red: '8:00',
         },
         ROV: {
-            yellow: '15:00',
-            red: '18:00',
+            yellow: '10:00',
+            red: '15:00',
         }
     }
 };

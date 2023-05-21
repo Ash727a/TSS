@@ -30,7 +30,7 @@ class uia extends ModelRoute {
 
     if (roomInUIA === null) {
       res.status(200).send('No room in UIA');
-      console.log('No room in UIA');
+      // console.log('No room in UIA');
       return;
     }
     const id = roomInUIA?.get('id');

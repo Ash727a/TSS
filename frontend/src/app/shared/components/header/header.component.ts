@@ -16,6 +16,7 @@ export class HeaderComponent {
       { name: 'Rooms', path: `${this.prefix}/rooms` },
       { name: 'UIA', path: `${this.prefix}/uia` },
       { name: 'Rover', path: `${this.prefix}/rover` },
+      { name: 'Geology', path: `${this.prefix}/geology` },
       { name: 'Telemetry', path: `${this.prefix}/telemetry` },
       { name: 'Logs', path: `${this.prefix}/logs` },
     ];
