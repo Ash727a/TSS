@@ -61,7 +61,7 @@ export class UIAComponent {
           }
           this.sensors1 = [
             { name: 'EMU1 POWER', status: this.setSwitchStatus(this.uiaData?.emu1_pwr_switch), key: 'emu1_pwr_switch' },
-            { name: 'EV1 SUPPLY', status: this.setSwitchStatus(this.uiaData?.ev1_supply_switch), key: 'ev1_supply_switch' },
+            { name: 'EV1 SUPPLY', status: this.setSwitchStatus(this.uiaData?.ev1_water_supply_switch), key: 'ev1_water_supply_switch' },
             { name: 'EV1 WASTE', status: this.setSwitchStatus(this.uiaData?.ev1_water_waste_switch), key: 'ev1_water_waste_switch' },
             { name: 'EV1 OXYGEN', status: this.setSwitchStatus(this.uiaData?.emu1_o2_supply_switch), key: 'emu1_o2_supply_switch' },
             { name: 'O2 VENT', status: this.setSwitchStatus(this.uiaData?.o2_vent_switch), key: 'o2_vent_switch' },
@@ -69,7 +69,7 @@ export class UIAComponent {
 
           this.sensors2 = [
             { name: 'EMU2 POWER', status: this.setSwitchStatus(this.uiaData?.emu2_pwr_switch), key: 'emu2_pwr_switch' },
-            { name: 'EV2 SUPPLY', status: this.setSwitchStatus(this.uiaData?.ev2_supply_switch), key: 'ev2_supply_switch' },
+            { name: 'EV2 SUPPLY', status: this.setSwitchStatus(this.uiaData?.ev2_water_supply_switch), key: 'ev2_water_supply_switch' },
             { name: 'EV2 WASTE', status: this.setSwitchStatus(this.uiaData?.ev2_water_waste_switch), key: 'ev2_water_waste_switch' },
             { name: 'EV2 OXYGEN', status: this.setSwitchStatus(this.uiaData?.emu2_o2_supply_switch), key: 'emu2_o2_supply_switch' },
             { name: 'DEPRESS PUMP', status: this.setSwitchStatus(this.uiaData?.depress_pump_switch), key: 'depress_pump_switch' },

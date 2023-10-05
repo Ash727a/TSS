@@ -6,7 +6,7 @@ import { AllowNull, AutoIncrement, Column, DataType, Default, Model, PrimaryKey,
  * @column room_id Room ID (PK)
  * @column started_at Current simulation start time
  * @column emu1_pwr_switch EMU1 Power Switch
- * @column ev1_supply_switch EV1 Supply Switch
+ * @column ev1_water_supply_switch EV1 Supply Switch
  * @column ev1_water_waste_switch EV1 Water Waste Switch
  * @column emu1_o2_supply_switch EMU1 O2 Supply Switch
  * @column emu2_pwr_switch EMU2 Power Switch
@@ -44,7 +44,7 @@ export default class uia extends Model<InferAttributes<uia>, InferCreationAttrib
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  declare ev1_supply_switch: boolean;
+  declare ev1_water_supply_switch: boolean;
 
   // EV1 Water Waste Switch
   @AllowNull(false)
@@ -58,29 +58,29 @@ export default class uia extends Model<InferAttributes<uia>, InferCreationAttrib
   @Column(DataType.BOOLEAN)
   declare emu1_o2_supply_switch: boolean;
 
-  // // EMU2 Power Switch
-  // @AllowNull(false)
-  // @Default(false)
-  // @Column(DataType.BOOLEAN)
-  // declare emu2_pwr_switch: boolean;
+  // EMU2 Power Switch
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare emu2_pwr_switch: boolean;
 
-  // // EV2 Supply Switch
-  // @AllowNull(false)
-  // @Default(false)
-  // @Column(DataType.BOOLEAN)
-  // declare ev2_water_supply_switch: boolean;
+  // EV2 Supply Switch
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare ev2_water_supply_switch: boolean;
 
-  // // EV2 Water Waste Switch
-  // @AllowNull(false)
-  // @Default(false)
-  // @Column(DataType.BOOLEAN)
-  // declare ev2_water_waste_switch: boolean;
+  // EV2 Water Waste Switch
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare ev2_water_waste_switch: boolean;
 
-  // // EMU2 O2 Supply Switch
-  // @AllowNull(false)
-  // @Default(false)
-  // @Column(DataType.BOOLEAN)
-  // declare emu2_o2_supply_switch: boolean;
+  // EMU2 O2 Supply Switch
+  @AllowNull(false)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  declare emu2_o2_supply_switch: boolean;
 
   // O2 Vent Switch
   @AllowNull(false)

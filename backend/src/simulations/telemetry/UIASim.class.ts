@@ -186,7 +186,7 @@ export default class UIASim {
     let updated_water_level = this.current_uia_state.water_level;
 
     // WHEN O2 SUPPLY -> OPEN, INCREASE Water Level
-    if (this.current_uia_switches.ev1_supply_switch) {
+    if (this.current_uia_switches.ev1_water_supply_switch) {
       updated_water_level = this.current_uia_state.water_level + dt_secs * WATER.FILL_RATE;
 
       if (updated_water_level > 100) updated_water_level = 100;
